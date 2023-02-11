@@ -3,7 +3,16 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "repository": "git@github.com:DateDreamer/DateDreamer.git",
-  "author": "Jorge Felico <jorgefelico@gmail.com>",
+  "contributors": [
+    {
+      "name": "Jorge Felico",
+      "url": "https://github.com/jorgefelico"
+    },
+    {
+      "name": "Romulo Filippini",
+      "url": "https://github.com/overthane"
+    }
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc"
   },
