@@ -1,0 +1,14 @@
+{
+  "name": "datedreamer",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "repository": "git@github.com:DateDreamer/DateDreamer.git",
+  "author": "Jorge Felico <jorgefelico@gmail.com>",
+  "scripts": {
+    "build": "tsc"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}
