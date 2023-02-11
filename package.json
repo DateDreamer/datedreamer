@@ -5,7 +5,7 @@
   "repository": "git@github.com:DateDreamer/DateDreamer.git",
   "author": "Jorge Felico <jorgefelico@gmail.com>",
   "scripts": {
-    "build": "tsc"
+    "build": "rm -rf dist && tsc"
   },
   "license": "MIT",
   "devDependencies": {
