@@ -1,13 +1,14 @@
 import { ICalendarOptions } from "./calendar.interface";
-import {monthNames} from "./utils";
+import {monthNames, weekdays} from "./utils";
 
 class DateDreamerCalendar implements ICalendarOptions {
     element: HTMLElement | string;
     calendarElement: HTMLElement | null = null;
     headerElement: HTMLElement | null | undefined = null;
+    inputsElement: HTMLElement | null | undefined = null;
+
     daysElement: HTMLElement | null | undefined = null;
     selectedDate: Date = new Date();
-    month: string = "";
     displayedMonthDate: Date = new Date();
 
     constructor(options: ICalendarOptions) {
@@ -51,9 +52,13 @@ class DateDreamerCalendar implements ICalendarOptions {
 
         this.headerElement = this.calendarElement?.querySelector(".datedreamer__calendar_header");
         this.daysElement = this.calendarElement?.querySelector(".datedreamer__calendar_days");
+        this.inputsElement = this.calendarElement?.querySelector(".datedreamer__calendar_inputs");
 
         // Generate the previous, title, next buttons.
         this.generateHeader();
+
+        // Generate the inputs section
+        this.generateInputs();
 
         // Generate the days buttons
         this.generateDays();
@@ -80,6 +85,8 @@ class DateDreamerCalendar implements ICalendarOptions {
     private renderCalendar():string {
         return `<div class="datedreamer__calendar">
             <div class="datedreamer__calendar_header"></div>
+
+            <div class="datedreamer__calendar_inputs"></div>
 
             <div class="datedreamer__calendar_days-wrap">
                 <div class="datedreamer__calendar_days-header">
@@ -124,14 +131,24 @@ class DateDreamerCalendar implements ICalendarOptions {
     }
 
     /**
+     * Generates the date field and today button
+     */
+    private generateInputs():void {
+        const dateField = document.createElement("input");
+        dateField.placeholder = "Enter a date";
+
+        const todayButton = document.createElement("button");
+        todayButton.innerText = "Today";
+
+        this.inputsElement?.append(dateField, todayButton);
+    }
+
+    /**
      * Generates the day buttons
      */
     private generateDays():void {        
         // Offset to use for going forward and backwards.
         let offset = 0;
-        
-        // Weekdays array
-        const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
         // Dates
         const month = this.displayedMonthDate.getMonth();
@@ -175,16 +192,25 @@ class DateDreamerCalendar implements ICalendarOptions {
         }
     }
 
+    /**
+     * Go to previous month
+     */
     goToPrevMonth = () => {
         this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() - 1);
         this.rebuildCalendar();
     }
 
+    /**
+     * Go to next month
+     */
     goToNextMonth = () => {
         this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() + 1);
         this.rebuildCalendar();
     }
 
+    /**
+     * Rebuild calendar
+     */
     rebuildCalendar() {
         if(this.daysElement) {
             this.daysElement.innerHTML = "";
