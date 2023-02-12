@@ -16,7 +16,7 @@
   "scripts": {
     "watch": "webpack --watch",
     "start": "webpack serve --open",
-    "build": "webpack"
+    "build": "webpack --config webpack.prod.config.js"
   },
   "license": "MIT",
   "devDependencies": {
