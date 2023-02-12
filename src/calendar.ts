@@ -151,6 +151,7 @@ class DateDreamerCalendar implements ICalendarOptions {
         let offset = 0;
 
         // Dates
+        const selectedDay = this.selectedDate.getDate();
         const month = this.displayedMonthDate.getMonth();
         const year = this.displayedMonthDate.getFullYear();
         const daysInMonth = new Date(year, month + 1,0).getDate();
@@ -168,6 +169,11 @@ class DateDreamerCalendar implements ICalendarOptions {
                 const button = document.createElement("button");
                 button.addEventListener("click", () => this.setSelectedDay(i - daysToSkipBefore))
                 button.innerText = (i - daysToSkipBefore).toString();
+                
+                if(i == daysToSkipBefore + selectedDay){
+                    day.classList.add("active");
+                }
+                
                 day.append(button);
                 this.daysElement?.append(day);
 
@@ -212,7 +218,7 @@ class DateDreamerCalendar implements ICalendarOptions {
     /**
      * Rebuild calendar
      */
-    rebuildCalendar() {
+    private rebuildCalendar() {
         if(this.daysElement) {
             this.daysElement.innerHTML = "";
         }
@@ -225,8 +231,21 @@ class DateDreamerCalendar implements ICalendarOptions {
         this.generateHeader();
     }
 
-    setSelectedDay = (day: number) => {
-        console.log(day)
+    private setSelectedDay = (day: number) => {
+        this.selectedDate.setDate(day);
+        this.rebuildCalendar();
+    }
+
+    setDate(date: string | Date) {
+        if(typeof date == "string") {
+            this.selectedDate = new Date(date);
+        } else if(typeof date == "object") {
+            this.selectedDate = date;
+        }
+
+        this.displayedMonthDate = this.selectedDate;
+
+        this.rebuildCalendar();
     }
 }
 

@@ -59,6 +59,13 @@ $black: #2d3436;
             height: 100%;
             display: block;
 
+            &.active {
+                button {
+                    background: blue;
+                    color: white;
+                }
+            }
+
             button {
                 display: block;
                 width: 100%;
