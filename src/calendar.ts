@@ -1,14 +1,20 @@
 import { ICalendarOptions } from "./calendar.interface";
+import {monthNames} from "./utils";
 
 class DateDreamerCalendar implements ICalendarOptions {
     element: HTMLElement | string;
-    selectedDate: string | Date | null;
+    selectedDate: Date = new Date();
     calendarElement: HTMLElement | null = null;
+    month: string = "";
 
     constructor(options: ICalendarOptions) {
         console.log(options);
         this.element = options.element;
-        this.selectedDate = options.selectedDate;
+        if(typeof options.selectedDate == "string") {
+            this.selectedDate = new Date(options.selectedDate);
+        } else if(typeof options.selectedDate == "object") {
+            this.selectedDate = options.selectedDate;
+        }
 
         this.init();
     }
@@ -38,6 +44,7 @@ class DateDreamerCalendar implements ICalendarOptions {
                     break;
         }
 
+        this.generateHeader();
         this.generateDays();
     }
 
@@ -61,15 +68,7 @@ class DateDreamerCalendar implements ICalendarOptions {
      */
     private renderCalendar():string {
         return `<div class="datedreamer__calendar">
-            <div class="datedreamer__calendar_header">
-                <button class="datedreamer__calendar_prev" aria-label="Previous">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <span class="datedreamer__calendar_title">January 2022</span>
-                <button class="datedreamer__calendar_next" aria-label="Next">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
+            <div class="datedreamer__calendar_header"></div>
 
             <div class="datedreamer__calendar_days">
                 <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Su</div>    
@@ -81,6 +80,24 @@ class DateDreamerCalendar implements ICalendarOptions {
                 <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Sat</div>
             </div>
         </div>`
+    }
+
+    private generateHeader():void {
+        const prevButton = document.createElement("button");
+        prevButton.classList.add("datedreamer__calendar_prev");
+        prevButton.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+        prevButton.setAttribute('aria-label', 'Previous');
+
+        const title = document.createElement("span");
+        title.classList.add("datedreamer__calendar_title");
+        title.innerText = `${monthNames[this.selectedDate.getMonth()]} ${this.selectedDate.getFullYear()}`;
+
+        const nextButton = document.createElement("button");
+        nextButton.classList.add("datedreamer__calendar_next");
+        nextButton.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        nextButton.setAttribute('aria-label', 'Next');
+
+        this.calendarElement?.querySelector(".datedreamer__calendar_header")?.append(prevButton,title,nextButton);
     }
 
     private generateDays():void {
@@ -96,21 +113,31 @@ class DateDreamerCalendar implements ICalendarOptions {
         const year = today.getFullYear();
         const daysInMonth = new Date(year, month + 1,0).getDate();
         const firstDayOfMonth = new Date(year,month,1);
-        const daysToSkip = weekdays.indexOf(firstDayOfMonth.toString().split(" ")[0]);
-        
-        for(let i = 1; i <= daysToSkip + daysInMonth; i++) {
-            if(i > daysToSkip) {
+        const lastDayOfMonth = new Date(year,month,daysInMonth);
+        const daysToSkipBefore = weekdays.indexOf(firstDayOfMonth.toString().split(" ")[0]);
+        const daysToSkipAfter = 6 - weekdays.indexOf(lastDayOfMonth.toString().split(" ")[0]);
+
+        for(let i = 1; i <= daysToSkipBefore + daysInMonth + daysToSkipAfter; i++) {
+            if(i > daysToSkipBefore && i <= daysToSkipBefore + daysInMonth) {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
                 const button = document.createElement("button");
-                button.innerText = (i - daysToSkip).toString();
+                button.innerText = (i - daysToSkipBefore).toString();
                 day.append(button);
                 daysElementContainer?.append(day);
-            } else {
+            } else if(i <= daysToSkipBefore) {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
                 const button = document.createElement("button");
-                button.innerText = new Date(year,month,0-(daysToSkip - i)).getDate().toString();
+                button.innerText = new Date(year,month,0-(daysToSkipBefore - i)).getDate().toString();
+                day.append(button);
+                daysElementContainer?.append(day);
+            } else if(i > daysToSkipBefore + daysInMonth) {
+                console.log()
+                const day = document.createElement("div");
+                day.classList.add("datedreamer__calendar_day");
+                const button = document.createElement("button");
+                button.innerText = new Date(year,month + 1,i).getDate().toString();
                 day.append(button);
                 daysElementContainer?.append(day);
             }
