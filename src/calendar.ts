@@ -102,12 +102,16 @@ class DateDreamerCalendar implements ICalendarOptions {
             if(i > daysToSkip) {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
-                day.innerText = (i - daysToSkip).toString();
+                const button = document.createElement("button");
+                button.innerText = (i - daysToSkip).toString();
+                day.append(button);
                 daysElementContainer?.append(day);
             } else {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
-                day.innerText = new Date(year,month,0-(daysToSkip - i)).getDate().toString();
+                const button = document.createElement("button");
+                button.innerText = new Date(year,month,0-(daysToSkip - i)).getDate().toString();
+                day.append(button);
                 daysElementContainer?.append(day);
             }
         }
