@@ -161,16 +161,17 @@ class DateDreamerCalendar implements ICalendarOptions {
 
         // Loop through the days and create a day element with button
         for(let i = 1; i <= daysToSkipBefore + daysInMonth + daysToSkipAfter; i++) {
-            // Days that should show before the first day of the current month.
+            // Days of the current month
             if(i > daysToSkipBefore && i <= daysToSkipBefore + daysInMonth) {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
                 const button = document.createElement("button");
+                button.addEventListener("click", () => this.setSelectedDay(i - daysToSkipBefore))
                 button.innerText = (i - daysToSkipBefore).toString();
                 day.append(button);
                 this.daysElement?.append(day);
 
-            // Days of the current month
+            // Days that should show before the first day of the current month.
             } else if(i <= daysToSkipBefore) {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
@@ -222,6 +223,10 @@ class DateDreamerCalendar implements ICalendarOptions {
 
         this.generateDays();
         this.generateHeader();
+    }
+
+    setSelectedDay = (day: number) => {
+        console.log(day)
     }
 }
 
