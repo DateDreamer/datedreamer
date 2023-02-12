@@ -38,8 +38,14 @@ class DateDreamerCalendar implements ICalendarOptions {
         }
     }
 
+    /**
+     * 
+     * @returns {string} The HTML for the calendar element.
+     */
     private renderCalendar():string {
-        return `<div class="datedreamer_calendar">Calendar</div>`
+        return `<div class="datedreamer__calendar">
+            Calendar goes here :)
+        </div>`
     }
 
     /**

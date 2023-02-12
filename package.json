@@ -1,7 +1,7 @@
 {
   "name": "datedreamer",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "dist/datedreamer.js",
   "repository": "git@github.com:DateDreamer/DateDreamer.git",
   "contributors": [
     {
@@ -14,10 +14,23 @@
     }
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc"
+    "watch": "webpack --watch",
+    "start": "webpack serve --open",
+    "build": "webpack"
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.9.5"
+    "html-webpack-plugin": "^5.5.0",
+    "sass": "^1.58.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.5",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
+  },
+  "dependencies": {
+    "css-loader": "^6.7.3",
+    "sass-loader": "^13.2.0",
+    "style-loader": "^3.3.1"
   }
 }
