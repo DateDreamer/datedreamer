@@ -42,7 +42,7 @@ $black: #2d3436;
             font-size: 0.875rem;
         }
 
-        &_days {
+        &_days, &_days-header {
             margin-top: 12px;
             display: grid;
             grid-template-columns: repeat(7,1fr);

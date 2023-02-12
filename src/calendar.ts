@@ -3,9 +3,12 @@ import {monthNames} from "./utils";
 
 class DateDreamerCalendar implements ICalendarOptions {
     element: HTMLElement | string;
-    selectedDate: Date = new Date();
     calendarElement: HTMLElement | null = null;
+    headerElement: HTMLElement | null | undefined = null;
+    daysElement: HTMLElement | null | undefined = null;
+    selectedDate: Date = new Date();
     month: string = "";
+    displayedMonthDate: Date = new Date();
 
     constructor(options: ICalendarOptions) {
         console.log(options);
@@ -15,6 +18,8 @@ class DateDreamerCalendar implements ICalendarOptions {
         } else if(typeof options.selectedDate == "object") {
             this.selectedDate = options.selectedDate;
         }
+
+        this.displayedMonthDate = this.selectedDate;
 
         this.init();
     }
@@ -43,6 +48,9 @@ class DateDreamerCalendar implements ICalendarOptions {
             case "undefined":
                     break;
         }
+
+        this.headerElement = this.calendarElement?.querySelector(".datedreamer__calendar_header");
+        this.daysElement = this.calendarElement?.querySelector(".datedreamer__calendar_days");
 
         // Generate the previous, title, next buttons.
         this.generateHeader();
@@ -73,14 +81,18 @@ class DateDreamerCalendar implements ICalendarOptions {
         return `<div class="datedreamer__calendar">
             <div class="datedreamer__calendar_header"></div>
 
-            <div class="datedreamer__calendar_days">
-                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Su</div>    
-                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Mo</div>
-                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Tu</div>
-                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">We</div>
-                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Th</div>
-                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Fr</div>
-                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Sat</div>
+            <div class="datedreamer__calendar_days-wrap">
+                <div class="datedreamer__calendar_days-header">
+                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Su</div>    
+                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Mo</div>
+                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Tu</div>
+                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">We</div>
+                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Th</div>
+                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Fr</div>
+                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Sat</div>
+                </div>
+
+                <div class="datedreamer__calendar_days"></div>
             </div>
         </div>`
     }
@@ -94,6 +106,7 @@ class DateDreamerCalendar implements ICalendarOptions {
         prevButton.classList.add("datedreamer__calendar_prev");
         prevButton.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
         prevButton.setAttribute('aria-label', 'Previous');
+        prevButton.addEventListener("click", this.goToPrevMonth);
 
         // Title
         const title = document.createElement("span");
@@ -105,17 +118,15 @@ class DateDreamerCalendar implements ICalendarOptions {
         nextButton.classList.add("datedreamer__calendar_next");
         nextButton.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
         nextButton.setAttribute('aria-label', 'Next');
+        nextButton.addEventListener("click", this.goToNextMonth);
 
-        this.calendarElement?.querySelector(".datedreamer__calendar_header")?.append(prevButton,title,nextButton);
+        this.headerElement?.append(prevButton,title,nextButton);
     }
 
     /**
      * Generates the day buttons
      */
-    private generateDays():void {
-        // The days html element
-        const daysElementContainer:HTMLElement | null | undefined = this.calendarElement?.querySelector(".datedreamer__calendar_days");
-        
+    private generateDays():void {        
         // Offset to use for going forward and backwards.
         let offset = 0;
         
@@ -123,10 +134,8 @@ class DateDreamerCalendar implements ICalendarOptions {
         const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
         // Dates
-        const today = this.selectedDate;
-        const month = today.getMonth();
-        const day = today.getDate();
-        const year = today.getFullYear();
+        const month = this.displayedMonthDate.getMonth();
+        const year = this.displayedMonthDate.getFullYear();
         const daysInMonth = new Date(year, month + 1,0).getDate();
         const firstDayOfMonth = new Date(year,month,1);
         const lastDayOfMonth = new Date(year,month,daysInMonth);
@@ -142,7 +151,7 @@ class DateDreamerCalendar implements ICalendarOptions {
                 const button = document.createElement("button");
                 button.innerText = (i - daysToSkipBefore).toString();
                 day.append(button);
-                daysElementContainer?.append(day);
+                this.daysElement?.append(day);
 
             // Days of the current month
             } else if(i <= daysToSkipBefore) {
@@ -151,7 +160,7 @@ class DateDreamerCalendar implements ICalendarOptions {
                 const button = document.createElement("button");
                 button.innerText = new Date(year,month,0-(daysToSkipBefore - i)).getDate().toString();
                 day.append(button);
-                daysElementContainer?.append(day);
+                this.daysElement?.append(day);
 
             // Days that should show of the next month
             } else if(i > daysToSkipBefore + daysInMonth) {
@@ -161,9 +170,32 @@ class DateDreamerCalendar implements ICalendarOptions {
                 const button = document.createElement("button");
                 button.innerText = new Date(year,month + 1,dayNumber).getDate().toString();
                 day.append(button);
-                daysElementContainer?.append(day);
+                this.daysElement?.append(day);
             }
         }
+    }
+
+    goToPrevMonth = () => {
+        this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() - 1);
+        this.rebuildCalendar();
+    }
+
+    goToNextMonth = () => {
+        this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() + 1);
+        this.rebuildCalendar();
+    }
+
+    rebuildCalendar() {
+        if(this.daysElement) {
+            this.daysElement.innerHTML = "";
+        }
+
+        if(this.headerElement) {
+            this.headerElement.innerHTML = "";
+        }
+
+        this.generateDays();
+        this.generateHeader();
     }
 }
 
