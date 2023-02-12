@@ -1,6 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+$primary: #0e74c3;
+$black: #2d3436;
+
 .datedreamer {
+
     &__calendar {
-        color: blue;
+        font-family: 'Roboto', sans-serif;
+        width: 100%;
+        max-width: 220px;
+        border-radius: 8px;
+        padding: 14px;
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+        &_header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        &_prev, &_next {
+            background: none;
+            border: none;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $black;
+        }
+
+        &_title {
+            width: 100%;
+            display: block;
+            flex-grow: 1;
+            text-align: center;
+            color: $black;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        &_days {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(7,1fr);
+            text-align: center;
+        }
     }
 
     &__calendar-range {
