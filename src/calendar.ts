@@ -44,7 +44,10 @@ class DateDreamerCalendar implements ICalendarOptions {
                     break;
         }
 
+        // Generate the previous, title, next buttons.
         this.generateHeader();
+
+        // Generate the days buttons
         this.generateDays();
     }
 
@@ -82,16 +85,22 @@ class DateDreamerCalendar implements ICalendarOptions {
         </div>`
     }
 
+    /**
+     * Generates the Previous, Title, and Next header elements.
+     */
     private generateHeader():void {
+        // Previous Button
         const prevButton = document.createElement("button");
         prevButton.classList.add("datedreamer__calendar_prev");
         prevButton.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
         prevButton.setAttribute('aria-label', 'Previous');
 
+        // Title
         const title = document.createElement("span");
         title.classList.add("datedreamer__calendar_title");
         title.innerText = `${monthNames[this.selectedDate.getMonth()]} ${this.selectedDate.getFullYear()}`;
 
+        // Next Button
         const nextButton = document.createElement("button");
         nextButton.classList.add("datedreamer__calendar_next");
         nextButton.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
@@ -100,14 +109,21 @@ class DateDreamerCalendar implements ICalendarOptions {
         this.calendarElement?.querySelector(".datedreamer__calendar_header")?.append(prevButton,title,nextButton);
     }
 
+    /**
+     * Generates the day buttons
+     */
     private generateDays():void {
+        // The days html element
         const daysElementContainer:HTMLElement | null | undefined = this.calendarElement?.querySelector(".datedreamer__calendar_days");
         
+        // Offset to use for going forward and backwards.
         let offset = 0;
         
+        // Weekdays array
         const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
-        const today = new Date();
+        // Dates
+        const today = this.selectedDate;
         const month = today.getMonth();
         const day = today.getDate();
         const year = today.getFullYear();
@@ -117,7 +133,9 @@ class DateDreamerCalendar implements ICalendarOptions {
         const daysToSkipBefore = weekdays.indexOf(firstDayOfMonth.toString().split(" ")[0]);
         const daysToSkipAfter = 6 - weekdays.indexOf(lastDayOfMonth.toString().split(" ")[0]);
 
+        // Loop through the days and create a day element with button
         for(let i = 1; i <= daysToSkipBefore + daysInMonth + daysToSkipAfter; i++) {
+            // Days that should show before the first day of the current month.
             if(i > daysToSkipBefore && i <= daysToSkipBefore + daysInMonth) {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
@@ -125,6 +143,8 @@ class DateDreamerCalendar implements ICalendarOptions {
                 button.innerText = (i - daysToSkipBefore).toString();
                 day.append(button);
                 daysElementContainer?.append(day);
+
+            // Days of the current month
             } else if(i <= daysToSkipBefore) {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
@@ -132,12 +152,14 @@ class DateDreamerCalendar implements ICalendarOptions {
                 button.innerText = new Date(year,month,0-(daysToSkipBefore - i)).getDate().toString();
                 day.append(button);
                 daysElementContainer?.append(day);
+
+            // Days that should show of the next month
             } else if(i > daysToSkipBefore + daysInMonth) {
-                console.log()
+                const dayNumber = i - (daysToSkipBefore + daysToSkipAfter + daysInMonth) + daysToSkipAfter;
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
                 const button = document.createElement("button");
-                button.innerText = new Date(year,month + 1,i).getDate().toString();
+                button.innerText = new Date(year,month + 1,dayNumber).getDate().toString();
                 day.append(button);
                 daysElementContainer?.append(day);
             }
