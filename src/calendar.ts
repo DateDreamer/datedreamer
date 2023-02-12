@@ -72,23 +72,23 @@ class DateDreamerCalendar implements ICalendarOptions {
             </div>
 
             <div class="datedreamer__calendar_days">
+                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Su</div>    
                 <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Mo</div>
                 <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Tu</div>
                 <div class="datedreamer__calendar_day datedreamer__calendar_day-header">We</div>
                 <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Th</div>
                 <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Fr</div>
                 <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Sat</div>
-                <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Su</div>
             </div>
         </div>`
     }
 
-    private generateDays():string {
+    private generateDays():void {
         const daysElementContainer:HTMLElement | null | undefined = this.calendarElement?.querySelector(".datedreamer__calendar_days");
         
         let offset = 0;
         
-        const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
         const today = new Date();
         const month = today.getMonth();
@@ -107,12 +107,10 @@ class DateDreamerCalendar implements ICalendarOptions {
             } else {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
-                day.innerText = "0";
+                day.innerText = new Date(year,month,0-(daysToSkip - i)).getDate().toString();
                 daysElementContainer?.append(day);
             }
         }
-
-        return "";
     }
 }
 
