@@ -1,5 +1,6 @@
 import { ICalendarOptions } from "./calendar.interface";
-import {monthNames, weekdays} from "./utils";
+import {leftChevron, monthNames, rightChevron, weekdays} from "./utils";
+
 
 class DateDreamerCalendar implements ICalendarOptions {
     element: HTMLElement | string;
@@ -112,7 +113,7 @@ class DateDreamerCalendar implements ICalendarOptions {
         // Previous Button
         const prevButton = document.createElement("button");
         prevButton.classList.add("datedreamer__calendar_prev");
-        prevButton.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+        prevButton.innerHTML = leftChevron;
         prevButton.setAttribute('aria-label', 'Previous');
         prevButton.addEventListener("click", this.goToPrevMonth);
 
@@ -124,7 +125,7 @@ class DateDreamerCalendar implements ICalendarOptions {
         // Next Button
         const nextButton = document.createElement("button");
         nextButton.classList.add("datedreamer__calendar_next");
-        nextButton.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        nextButton.innerHTML = rightChevron;
         nextButton.setAttribute('aria-label', 'Next');
         nextButton.addEventListener("click", this.goToNextMonth);
 

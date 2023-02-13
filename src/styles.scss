@@ -30,6 +30,10 @@ $black: #2d3436;
             align-items: center;
             justify-content: center;
             color: $black;
+
+            svg {
+                transform: scale(2.875);
+            }
         }
 
         &_title {
