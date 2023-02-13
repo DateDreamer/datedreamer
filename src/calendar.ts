@@ -137,9 +137,11 @@ class DateDreamerCalendar implements ICalendarOptions {
     private generateInputs():void {
         const dateField = document.createElement("input");
         dateField.placeholder = "Enter a date";
+        dateField.addEventListener('keyup', (e) => this.dateInputChanged(e));
 
         const todayButton = document.createElement("button");
         todayButton.innerText = "Today";
+        todayButton.addEventListener("click", () => this.setDateToToday());
 
         this.inputsElement?.append(dateField, todayButton);
     }
@@ -151,11 +153,8 @@ class DateDreamerCalendar implements ICalendarOptions {
 
         // Dates
         const selectedDay = this.selectedDate.getDate();
-        const selectedMonth = this.selectedDate.getMonth();
-        const selectedYear = this.selectedDate.getFullYear();
         const month = this.displayedMonthDate.getMonth();
         const year = this.displayedMonthDate.getFullYear();
-        console.log(month,year);
         const daysInMonth = new Date(year, month + 1,0).getDate();
         const firstDayOfMonth = new Date(year,month,1);
         const lastDayOfMonth = new Date(year,month,daysInMonth);
@@ -235,6 +234,10 @@ class DateDreamerCalendar implements ICalendarOptions {
         this.generateHeader();
     }
 
+    /**
+     * Sets the selected day of the viewable month.
+     * @param day The day of the month in number format.
+     */
     private setSelectedDay = (day: number) => {
         const newSelectedDate = new Date(this.displayedMonthDate);
         newSelectedDate.setDate(day);
@@ -242,6 +245,10 @@ class DateDreamerCalendar implements ICalendarOptions {
         this.rebuildCalendar();
     }
 
+    /**
+     * Sets the given date as selected in the calendar.
+     * @param date The new date to select in the calendar.
+     */
     setDate(date: string | Date) {
         if(typeof date == "string") {
             this.selectedDate = new Date(date);
@@ -252,6 +259,30 @@ class DateDreamerCalendar implements ICalendarOptions {
         this.displayedMonthDate = this.selectedDate;
 
         this.rebuildCalendar();
+    }
+
+    /**
+     * Sets the selected and viewable month to today.
+     */
+    setDateToToday() {
+        this.selectedDate = new Date();
+        this.displayedMonthDate = new Date();
+        this.rebuildCalendar();
+    }
+
+    /**
+     * Handles the KeyUp event in the date textbox.
+     * @param e KeyUp event
+     */
+    dateInputChanged(e: Event) {
+        const newDate = new Date((e.target as HTMLInputElement).value);
+        if(!isNaN(newDate.getUTCMilliseconds())) {
+            this.selectedDate = newDate;
+            this.displayedMonthDate = new Date(newDate);
+            this.rebuildCalendar();
+        } else {
+            // TODO: Date is invalid. Need to show err
+        }
     }
 }
 
