@@ -20,7 +20,8 @@ class DateDreamerCalendar implements ICalendarOptions {
             this.selectedDate = options.selectedDate;
         }
 
-        this.displayedMonthDate = this.selectedDate;
+        // Instanciate display date from initially selected date.
+        this.displayedMonthDate = new Date(this.selectedDate);
 
         this.init();
     }
@@ -29,7 +30,7 @@ class DateDreamerCalendar implements ICalendarOptions {
     private init() {
          // Check if element is defined
          // exits function and logs error if false
-        if(this.element == null){
+        if(this.element == null) {
             console.error("No element was provided to calendar. Initializing aborted");
             return;
         }
@@ -118,7 +119,7 @@ class DateDreamerCalendar implements ICalendarOptions {
         // Title
         const title = document.createElement("span");
         title.classList.add("datedreamer__calendar_title");
-        title.innerText = `${monthNames[this.selectedDate.getMonth()]} ${this.selectedDate.getFullYear()}`;
+        title.innerText = `${monthNames[this.displayedMonthDate.getMonth()]} ${this.displayedMonthDate.getFullYear()}`;
 
         // Next Button
         const nextButton = document.createElement("button");
@@ -146,14 +147,15 @@ class DateDreamerCalendar implements ICalendarOptions {
     /**
      * Generates the day buttons
      */
-    private generateDays():void {        
-        // Offset to use for going forward and backwards.
-        let offset = 0;
+    private generateDays():void {
 
         // Dates
         const selectedDay = this.selectedDate.getDate();
+        const selectedMonth = this.selectedDate.getMonth();
+        const selectedYear = this.selectedDate.getFullYear();
         const month = this.displayedMonthDate.getMonth();
         const year = this.displayedMonthDate.getFullYear();
+        console.log(month,year);
         const daysInMonth = new Date(year, month + 1,0).getDate();
         const firstDayOfMonth = new Date(year,month,1);
         const lastDayOfMonth = new Date(year,month,daysInMonth);
@@ -170,10 +172,12 @@ class DateDreamerCalendar implements ICalendarOptions {
                 button.addEventListener("click", () => this.setSelectedDay(i - daysToSkipBefore))
                 button.innerText = (i - daysToSkipBefore).toString();
                 
-                if(i == daysToSkipBefore + selectedDay){
+                if((i == daysToSkipBefore + selectedDay) &&
+                this.displayedMonthDate.getMonth() == this.selectedDate.getMonth() &&
+                this.displayedMonthDate.getFullYear() == this.selectedDate.getFullYear()) {
                     day.classList.add("active");
                 }
-                
+
                 day.append(button);
                 this.daysElement?.append(day);
 
@@ -232,7 +236,9 @@ class DateDreamerCalendar implements ICalendarOptions {
     }
 
     private setSelectedDay = (day: number) => {
-        this.selectedDate.setDate(day);
+        const newSelectedDate = new Date(this.displayedMonthDate);
+        newSelectedDate.setDate(day);
+        this.selectedDate = new Date(newSelectedDate);
         this.rebuildCalendar();
     }
 
