@@ -7,6 +7,8 @@ class DateDreamerCalendar implements ICalendarOptions {
     calendarElement: HTMLElement | null = null;
     headerElement: HTMLElement | null | undefined = null;
     inputsElement: HTMLElement | null | undefined = null;
+    onChange: ((event: CustomEvent) => CallableFunction) | undefined;
+    onRender: ((event: CustomEvent<any>) => CallableFunction) | undefined;
 
     daysElement: HTMLElement | null | undefined = null;
     selectedDate: Date = new Date();
@@ -21,13 +23,18 @@ class DateDreamerCalendar implements ICalendarOptions {
             this.selectedDate = options.selectedDate;
         }
 
+        // Get callbacks from options
+        this.onChange = options.onChange;
+        this.onRender = options.onRender;
+
         // Instanciate display date from initially selected date.
         this.displayedMonthDate = new Date(this.selectedDate);
 
         this.init();
     }
     
-
+    
+    
     private init() {
          // Check if element is defined
          // exits function and logs error if false
@@ -64,6 +71,9 @@ class DateDreamerCalendar implements ICalendarOptions {
 
         // Generate the days buttons
         this.generateDays();
+
+        // Trigger onRender callback
+        this.onRenderCallback();
     }
 
     /**
@@ -81,7 +91,7 @@ class DateDreamerCalendar implements ICalendarOptions {
     }
 
     /**
-     * 
+     * Render the calendar template
      * @returns {string} The HTML for the calendar element.
      */
     private renderCalendar():string {
@@ -136,10 +146,12 @@ class DateDreamerCalendar implements ICalendarOptions {
      * Generates the date field and today button
      */
     private generateInputs():void {
+        // Date input
         const dateField = document.createElement("input");
         dateField.placeholder = "Enter a date";
         dateField.addEventListener('keyup', (e) => this.dateInputChanged(e));
 
+        // Today button
         const todayButton = document.createElement("button");
         todayButton.innerText = "Today";
         todayButton.addEventListener("click", () => this.setDateToToday());
@@ -244,6 +256,7 @@ class DateDreamerCalendar implements ICalendarOptions {
         newSelectedDate.setDate(day);
         this.selectedDate = new Date(newSelectedDate);
         this.rebuildCalendar();
+        this.dateChangedCallback(this.selectedDate)
     }
 
     /**
@@ -260,6 +273,8 @@ class DateDreamerCalendar implements ICalendarOptions {
         this.displayedMonthDate = this.selectedDate;
 
         this.rebuildCalendar();
+
+        this.dateChangedCallback(this.selectedDate);
     }
 
     /**
@@ -269,6 +284,7 @@ class DateDreamerCalendar implements ICalendarOptions {
         this.selectedDate = new Date();
         this.displayedMonthDate = new Date();
         this.rebuildCalendar();
+        this.dateChangedCallback(this.selectedDate)
     }
 
     /**
@@ -281,8 +297,36 @@ class DateDreamerCalendar implements ICalendarOptions {
             this.selectedDate = newDate;
             this.displayedMonthDate = new Date(newDate);
             this.rebuildCalendar();
+            this.dateChangedCallback(this.selectedDate);
         } else {
             // TODO: Date is invalid. Need to show err
+        }
+    }
+
+    /**
+     * Triggers the onChange callback that was passed into the calendar options.
+     * @param date The new date that has been selected in the calendar.
+     */
+    private dateChangedCallback(date: Date) {
+        if(this.onChange) {
+            const customEvent = new CustomEvent("onChange",{
+                detail: date
+            })
+            this.onChange(customEvent);
+        }
+    }
+
+    /**
+     * Triggers the onRender callback that was passed into the calendar options.
+     */
+    private onRenderCallback() {
+        if(this.onRender) {
+            const customEvent = new CustomEvent("onRender",{
+                detail: {
+                    calendar: this.calendarElement
+                }
+            })
+            this.onRender(customEvent);
         }
     }
 }
