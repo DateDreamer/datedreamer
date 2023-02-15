@@ -13,10 +13,22 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     selectedDate: Date = new Date();
     displayedMonthDate: Date = new Date();
 
+    theme: "unstyled" = "unstyled";
+    styles: string = "";
+
     constructor(options: ICalendarOptions) {
         super();
         console.log(options);
         this.element = options.element;
+
+        if(options.theme) {
+            this.theme = options.theme;
+        }
+
+        if(options.styles) {
+            this.styles = options.styles;
+        }
+
         if(typeof options.selectedDate == "string") {
             this.selectedDate = new Date(options.selectedDate);
         } else if(typeof options.selectedDate == "object") {
@@ -34,9 +46,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
         this.init();
     }
-    
-    
-    
+        
     private init() {
          // Check if element is defined
          // exits function and logs error if false
@@ -47,7 +57,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
 
         // Generate calendar
-        const calendar:string = calendarRoot();
+        const calendar:string = calendarRoot(this.theme, this.styles);
 
         // Insert calendar DOM based on type of element provided.
         switch(typeof this.element) {
@@ -309,6 +319,6 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     }
 }
 
-customElements.define("dt-calendar", DateDreamerCalendar)
+customElements.define("datedreamer-calendar", DateDreamerCalendar)
 
 export {DateDreamerCalendar as calendar}

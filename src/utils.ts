@@ -85,10 +85,12 @@ export const unstyledTheme = `
 /**
  * The HTML for the calendar element.
  */
-export function calendarRoot(theme: "unstyled" = "unstyled"):string {
+export function calendarRoot(theme: "unstyled" = "unstyled", styles: string = ""):string {
   return `
   <style>
       ${theme == "unstyled" ? unstyledTheme : ""}
+      
+      ${styles}
   </style>
   <div class="datedreamer__calendar">
       <div class="datedreamer__calendar_header"></div>
