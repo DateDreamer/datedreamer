@@ -10,7 +10,7 @@
     window.onload = () => {
         new datedreamer.calendar({...options})
     }
-</script>s
+</script>
  ```
 
 OR
