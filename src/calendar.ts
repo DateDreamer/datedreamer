@@ -13,7 +13,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     selectedDate: Date = new Date();
     displayedMonthDate: Date = new Date();
 
-    theme: "unstyled" = "unstyled";
+    theme: "unstyled" | "lite-purple" = "unstyled";
     styles: string = "";
 
     constructor(options: ICalendarOptions) {
@@ -184,7 +184,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             // Days that should show before the first day of the current month.
             } else if(i <= daysToSkipBefore) {
                 const day = document.createElement("div");
-                day.classList.add("datedreamer__calendar_day");
+                day.classList.add("datedreamer__calendar_day", "disabled");
                 const button = document.createElement("button");
                 button.innerText = new Date(year,month,0-(daysToSkipBefore - i)).getDate().toString();
                 day.append(button);
@@ -194,7 +194,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             } else if(i > daysToSkipBefore + daysInMonth) {
                 const dayNumber = i - (daysToSkipBefore + daysToSkipAfter + daysInMonth) + daysToSkipAfter;
                 const day = document.createElement("div");
-                day.classList.add("datedreamer__calendar_day");
+                day.classList.add("datedreamer__calendar_day", "disabled");
                 const button = document.createElement("button");
                 button.innerText = new Date(year,month + 1,dayNumber).getDate().toString();
                 day.append(button);
