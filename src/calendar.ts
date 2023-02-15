@@ -1,10 +1,9 @@
 import { ICalendarOptions } from "./calendar.interface";
-import {leftChevron, monthNames, rightChevron, weekdays} from "./utils";
+import {calendarRoot, leftChevron, monthNames, rightChevron, weekdays} from "./utils";
 
-
-class DateDreamerCalendar implements ICalendarOptions {
+class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     element: HTMLElement | string;
-    calendarElement: HTMLElement | null = null;
+    calendarElement: HTMLElement | null | undefined = null;
     headerElement: HTMLElement | null | undefined = null;
     inputsElement: HTMLElement | null | undefined = null;
     onChange: ((event: CustomEvent) => CallableFunction) | undefined;
@@ -15,6 +14,7 @@ class DateDreamerCalendar implements ICalendarOptions {
     displayedMonthDate: Date = new Date();
 
     constructor(options: ICalendarOptions) {
+        super();
         console.log(options);
         this.element = options.element;
         if(typeof options.selectedDate == "string") {
@@ -22,6 +22,8 @@ class DateDreamerCalendar implements ICalendarOptions {
         } else if(typeof options.selectedDate == "object") {
             this.selectedDate = options.selectedDate;
         }
+
+        this.attachShadow({mode: "open"});
 
         // Get callbacks from options
         this.onChange = options.onChange;
@@ -45,7 +47,7 @@ class DateDreamerCalendar implements ICalendarOptions {
 
 
         // Generate calendar
-        const calendar:string = this.renderCalendar()||"";
+        const calendar:string = calendarRoot();
 
         // Insert calendar DOM based on type of element provided.
         switch(typeof this.element) {
@@ -59,9 +61,9 @@ class DateDreamerCalendar implements ICalendarOptions {
                     break;
         }
 
-        this.headerElement = this.calendarElement?.querySelector(".datedreamer__calendar_header");
-        this.daysElement = this.calendarElement?.querySelector(".datedreamer__calendar_days");
-        this.inputsElement = this.calendarElement?.querySelector(".datedreamer__calendar_inputs");
+        this.headerElement = this.shadowRoot?.querySelector(".datedreamer__calendar_header");
+        this.daysElement = this.shadowRoot?.querySelector(".datedreamer__calendar_days");
+        this.inputsElement = this.shadowRoot?.querySelector(".datedreamer__calendar_inputs");
 
         // Generate the previous, title, next buttons.
         this.generateHeader();
@@ -83,37 +85,13 @@ class DateDreamerCalendar implements ICalendarOptions {
     private insertCalendarBySelector(calendar:string) {
         const selectedElement = document.querySelector(this.element as string);
         if(selectedElement) {
-            selectedElement.innerHTML = calendar;
-            this.calendarElement = selectedElement.querySelector(".datedreamer__calendar");
+            if(this.shadowRoot){
+                this.shadowRoot.innerHTML = calendar;
+            }
+            selectedElement.append(this);
         } else {
             console.error(`Could not find ${this.element} in DOM.`);
         }
-    }
-
-    /**
-     * Render the calendar template
-     * @returns {string} The HTML for the calendar element.
-     */
-    private renderCalendar():string {
-        return `<div class="datedreamer__calendar">
-            <div class="datedreamer__calendar_header"></div>
-
-            <div class="datedreamer__calendar_inputs"></div>
-
-            <div class="datedreamer__calendar_days-wrap">
-                <div class="datedreamer__calendar_days-header">
-                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Su</div>    
-                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Mo</div>
-                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Tu</div>
-                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">We</div>
-                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Th</div>
-                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Fr</div>
-                    <div class="datedreamer__calendar_day datedreamer__calendar_day-header">Sat</div>
-                </div>
-
-                <div class="datedreamer__calendar_days"></div>
-            </div>
-        </div>`
     }
 
     /**
@@ -330,5 +308,7 @@ class DateDreamerCalendar implements ICalendarOptions {
         }
     }
 }
+
+customElements.define("dt-calendar", DateDreamerCalendar)
 
 export {DateDreamerCalendar as calendar}
