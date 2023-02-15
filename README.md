@@ -57,6 +57,18 @@ new calendar({...options});
         })
     ```
 
+* `styles`: Use this property to pass css styles that will be passed into the components style tag.
+    ```javascript
+        new datedreamer.calendar({
+            ...,
+            styles: `
+                button {
+                    color: blue
+                }
+            `
+        })
+    ```
+
 ## Development
 
 ### Install dependencies using yarn
