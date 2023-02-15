@@ -57,6 +57,11 @@ new calendar({...options});
         })
     ```
 
+* `theme`: Sets the style template to use. Options are `unstyled` and `lite-purple`.
+
+    * `unstyled`: ![Unstyled Calendar](readme-images/unstyled.png?raw=true "Title")
+    * `lite-purple`: ![Calendar using lite-purple theme](readme-images/lite-purple.png?raw=true "Title")
+
 * `styles`: Use this property to pass css styles that will be passed into the components style tag.
     ```javascript
         new datedreamer.calendar({
