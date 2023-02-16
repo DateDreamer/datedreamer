@@ -1,5 +1,8 @@
 name: Build & Test
 
+env:
+  GITHUB_TOKEN: ${{secret.GH_TOKEN}}
+
 on:
   push:
     branches: ["main", "develop"]
@@ -7,12 +10,13 @@ on:
     branches: "*"
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v3
@@ -33,4 +37,11 @@ jobs:
       with:
         # Yarn command
         cmd: build
+      
+    - name: Release
+      if: github.ref == 'refs/heads/main'
+      uses: Borales/actions-yarn@v4.2.0
+      with:
+        # Yarn command
+        cmd: release    
         
