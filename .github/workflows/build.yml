@@ -1,0 +1,36 @@
+name: Build & Test
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - name: Run Install
+      uses: Borales/actions-yarn@v4.2.0
+      with:
+        # Yarn command
+        cmd: install
+        
+    - name: Build
+      uses: Borales/actions-yarn@v4.2.0
+      with:
+        # Yarn command
+        cmd: build
+        
