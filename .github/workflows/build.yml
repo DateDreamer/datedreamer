@@ -1,7 +1,7 @@
 name: Build & Test
 
 env:
-  GITHUB_TOKEN: ${{secret.GH_TOKEN}}
+  GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
 
 on:
   push:
