@@ -16,12 +16,16 @@
   "scripts": {
     "watch": "webpack --watch",
     "start": "webpack serve --open",
-    "build": "webpack --config webpack.prod.config.js"
+    "build": "webpack --config webpack.prod.config.js",
+    "release": "release-it --ci"
   },
   "license": "MIT",
+  "files": ["dist"],
   "devDependencies": {
+    "@release-it/conventional-changelog": "^5.1.1",
     "css-loader": "^6.7.3",
     "html-webpack-plugin": "^5.5.0",
+    "release-it": "^15.6.0",
     "sass": "^1.58.0",
     "sass-loader": "^13.2.0",
     "style-loader": "^3.3.1",
