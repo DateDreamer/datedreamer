@@ -23,6 +23,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         
     - name: Build
+      uses: Borales/actions-yarn@v4.2.0
       with:
         # Yarn command
         cmd: |
