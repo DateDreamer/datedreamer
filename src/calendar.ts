@@ -22,7 +22,6 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
     constructor(options: ICalendarOptions) {
         super();
-        console.log(options);
         this.element = options.element;
         this.format = options.format;
         if(options.theme) {
@@ -35,8 +34,6 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
         if(typeof options.selectedDate == "string") {
             this.selectedDate = dayjs(options.selectedDate,options.format).toDate();
-            console.log(options.selectedDate,options.format, dayjs(options.selectedDate,options.format));
-            console.log(this.selectedDate);
         } else if(typeof options.selectedDate == "object") {
             this.selectedDate = options.selectedDate;
         }
@@ -65,17 +62,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         // Generate calendar
         const calendar:string = calendarRoot(this.theme, this.styles);
 
-        // Insert calendar DOM based on type of element provided.
-        switch(typeof this.element) {
-            case "string":
-                this.insertCalendarBySelector(calendar);
-                break;
-            case "object":
-                console.log("element");
-                break;
-            case "undefined":
-                    break;
-        }
+        // Insert calendar into DOM
+        this.insertCalendarIntoSelector(calendar);
 
         this.headerElement = this.shadowRoot?.querySelector(".datedreamer__calendar_header");
         this.daysElement = this.shadowRoot?.querySelector(".datedreamer__calendar_days");
@@ -98,8 +86,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
      * Inserts calendar HTML into the element via query selector.
      * @param calendar Calendar HTML
      */
-    private insertCalendarBySelector(calendar:string) {
-        const selectedElement = document.querySelector(this.element as string);
+    private insertCalendarIntoSelector(calendar:string) {
+        let selectedElement = undefined;
+        if(typeof this.element == "string"){
+            selectedElement = document.querySelector(this.element as string);
+        } else if(typeof this.element == "object"){
+            selectedElement = this.element;
+        }
+    
         if(selectedElement) {
             if(this.shadowRoot){
                 this.shadowRoot.innerHTML = calendar;
