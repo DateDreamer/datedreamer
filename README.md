@@ -33,7 +33,9 @@ new calendar({...options});
 
 * `element`: Sets where to insert the calendar to. Can be either a CSS selector string or an HTMLElement object.
 
-* `selectedDate`: Sets the starting date for the calendar. Can be set to a date string, Date object, or null. If null, todays date will be selected by default.
+* `selectedDate`: Sets the starting date for the calendar. Can be set to a date string, Date object, or null. If null, todays date will be selected by default. If a string is passed, the `format` option should also be passed in order for the calendar to know the format of the `selectedDate` that you are passing.
+
+* `format`: Use this to specify the input AND output format of the date. Please see the available formats from [DayJS](https://day.js.org/docs/en/display/format). <br>Example: `'DD/MM/YYYY'`
 
 * `onChange`: Use this to provide a callback function that the calendar will call when the date is changed. The callback function will receive a `CustomEvent` argument that will include the chosen date inside the detail property.
     ```javascript

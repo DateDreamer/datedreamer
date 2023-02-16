@@ -1,6 +1,8 @@
 import { ICalendarOptions } from "./calendar.interface";
 import {calendarRoot, leftChevron, monthNames, rightChevron, weekdays} from "./utils";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat)
 
 class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     element: HTMLElement | string;
@@ -32,7 +34,9 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         }
 
         if(typeof options.selectedDate == "string") {
-            this.selectedDate = new Date(options.selectedDate);
+            this.selectedDate = dayjs(options.selectedDate,options.format).toDate();
+            console.log(options.selectedDate,options.format, dayjs(options.selectedDate,options.format));
+            console.log(this.selectedDate);
         } else if(typeof options.selectedDate == "object") {
             this.selectedDate = options.selectedDate;
         }
@@ -174,6 +178,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
                 const button = document.createElement("button");
                 button.addEventListener("click", () => this.setSelectedDay(i - daysToSkipBefore))
                 button.innerText = (i - daysToSkipBefore).toString();
+                button.setAttribute('type', 'button');
                 
                 if((i == daysToSkipBefore + selectedDay) &&
                 this.displayedMonthDate.getMonth() == this.selectedDate.getMonth() &&
@@ -190,6 +195,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
                 day.classList.add("datedreamer__calendar_day", "disabled");
                 const button = document.createElement("button");
                 button.innerText = new Date(year,month,0-(daysToSkipBefore - i)).getDate().toString();
+                button.setAttribute("disabled", "true");
+                button.setAttribute('type', 'button');
                 day.append(button);
                 this.daysElement?.append(day);
 
@@ -200,6 +207,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
                 day.classList.add("datedreamer__calendar_day", "disabled");
                 const button = document.createElement("button");
                 button.innerText = new Date(year,month + 1,dayNumber).getDate().toString();
+                button.setAttribute("disabled", "true");
+                button.setAttribute('type', 'button');
                 day.append(button);
                 this.daysElement?.append(day);
             }
@@ -225,7 +234,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     /**
      * Rebuild calendar
      */
-    private rebuildCalendar() {
+    private rebuildCalendar(rebuildInput = true) {
         if(this.daysElement) {
             this.daysElement.innerHTML = "";
         }
@@ -234,13 +243,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             this.headerElement.innerHTML = "";
         }
 
-        if(this.inputsElement) {
-            this.inputsElement.innerHTML = "";
-        }
-
         this.generateDays();
         this.generateHeader();
-        this.generateInputs();
+        if(rebuildInput) {
+            if(this.inputsElement) {
+                this.inputsElement.innerHTML = "";
+            }
+            this.generateInputs();
+        }
     }   
 
     /**
@@ -288,11 +298,11 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
      * @param e KeyUp event
      */
     dateInputChanged(e: Event) {
-        const newDate = new Date((e.target as HTMLInputElement).value);
+        const newDate = dayjs((e.target as HTMLInputElement).value,this.format).toDate();
         if(!isNaN(newDate.getUTCMilliseconds())) {
             this.selectedDate = newDate;
             this.displayedMonthDate = new Date(newDate);
-            this.rebuildCalendar();
+            this.rebuildCalendar(false);
             this.dateChangedCallback(this.selectedDate);
         } else {
             // TODO: Date is invalid. Need to show err
@@ -306,7 +316,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     private dateChangedCallback(date: Date) {
         if(this.onChange) {
             const customEvent = new CustomEvent("onChange",{
-                detail: date
+                detail: dayjs(date).format(this.format)
             })
             this.onChange(customEvent);
         }

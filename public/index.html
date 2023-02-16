@@ -13,7 +13,7 @@
         window.onload = () => {
             window.cal = new datedreamer.calendar({
                 element: "#calendar",
-                selectedDate: "03/09/1990",
+                selectedDate: "03/09/90",
                 onChange: (e) => {
                     console.log(e.detail);
                 },
@@ -21,7 +21,7 @@
                     console.log(e.detail)
                 },
                 theme: "lite-purple",
-                format: "DD/MM/YY"
+                format: "MM/DD/YYYY"
             });
         }
     </script>
