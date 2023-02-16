@@ -1,13 +1,15 @@
 import { ICalendarOptions } from "./calendar.interface";
 import {calendarRoot, leftChevron, monthNames, rightChevron, weekdays} from "./utils";
+import dayjs from "dayjs";
 
 class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     element: HTMLElement | string;
     calendarElement: HTMLElement | null | undefined = null;
     headerElement: HTMLElement | null | undefined = null;
     inputsElement: HTMLElement | null | undefined = null;
+    format: string;
     onChange: ((event: CustomEvent) => CallableFunction) | undefined;
-    onRender: ((event: CustomEvent<any>) => CallableFunction) | undefined;
+    onRender: ((event: CustomEvent) => CallableFunction) | undefined;
 
     daysElement: HTMLElement | null | undefined = null;
     selectedDate: Date = new Date();
@@ -20,7 +22,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         super();
         console.log(options);
         this.element = options.element;
-
+        this.format = options.format;
         if(options.theme) {
             this.theme = options.theme;
         }
@@ -137,6 +139,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         // Date input
         const dateField = document.createElement("input");
         dateField.placeholder = "Enter a date";
+        dateField.value = dayjs(this.selectedDate).format(this.format);
         dateField.addEventListener('keyup', (e) => this.dateInputChanged(e));
 
         // Today button
@@ -231,9 +234,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             this.headerElement.innerHTML = "";
         }
 
+        if(this.inputsElement) {
+            this.inputsElement.innerHTML = "";
+        }
+
         this.generateDays();
         this.generateHeader();
-    }
+        this.generateInputs();
+    }   
 
     /**
      * Sets the selected day of the viewable month.
