@@ -41,18 +41,11 @@ jobs:
       with:
         # Yarn command
         cmd: build
-        
-    - name: Set up for publish
-      if: github.ref == 'refs/heads/main'
-      uses: Borales/actions-yarn@v4.2.0
-      with:
-        # Yarn command
-        cmd: config set _authToken ${{ secrets.NPM_TOKEN }}
       
     - name: Release
       if: github.ref == 'refs/heads/main'
       uses: Borales/actions-yarn@v4.2.0
       with:
         # Yarn command
-        cmd: release
+        cmd: config set _authToken ${{ secrets.NPM_TOKEN }} && yarn config set npmRegistryServer "https://npm.pkg.github.com" && yarn config set npmAuthToken ${{ secrets.NPM_TOKEN }} && release
 
