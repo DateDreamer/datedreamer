@@ -39,6 +39,10 @@ new calendar({...options});
 
 * `format`: Use this to specify the input AND output format of the date. Please see the available formats from [DayJS](https://day.js.org/docs/en/display/format). <br>Example: `'DD/MM/YYYY'`
 
+* `iconNext`: Sets the next arrow icon. You can pass it either text or an svg.
+
+* `iconPrev`: Sets the previous arrow icon. You can pass it either text or an svg.
+
 * `onChange`: Use this to provide a callback function that the calendar will call when the date is changed. The callback function will receive a `CustomEvent` argument that will include the chosen date inside the detail property.
     ```javascript
     new datedreamer.calendar({
