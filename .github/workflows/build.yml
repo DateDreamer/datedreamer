@@ -27,9 +27,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-
-    - name: Setup Git
-      run: git config --global user.email "jorgefelico@gmail.com" && git config --global user.name "Jorge Felico"
         
     - name: Run Install
       uses: Borales/actions-yarn@v4.2.0
