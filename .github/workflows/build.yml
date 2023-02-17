@@ -4,6 +4,7 @@ env:
   GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
   NPM_TOKEN: ${{secrets.NPM_TOKEN}}
 
+
 on:
   push:
     branches: ["main"]
@@ -26,9 +27,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-
-    - name: Setup npm registry
-      run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > ~/.npmrc
+        
+    - name: Set Up Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
         
     - name: Run Install
       uses: Borales/actions-yarn@v4.2.0
@@ -41,18 +44,21 @@ jobs:
       with:
         # Yarn command
         cmd: build
-        
-    - name: Set up for publish
-      if: github.ref == 'refs/heads/main'
-      uses: Borales/actions-yarn@v4.2.0
-      with:
-        # Yarn command
-        cmd: config set _authToken ${{ secrets.NPM_TOKEN }}
       
-    - name: Release
+    - name: Semantic Versioning
       if: github.ref == 'refs/heads/main'
       uses: Borales/actions-yarn@v4.2.0
       with:
         # Yarn command
         cmd: release
-
+    
+    - name: Publish
+      if: github.ref == 'refs/heads/main'
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        registry-url: 'https://registry.npmjs.org'
+    - run: yarn
+    - run: yarn publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
