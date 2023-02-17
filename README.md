@@ -1,4 +1,6 @@
 # DateDreamer
+An easy to use lightweight javascript calendar plugin.
+
 ## Usage
  
  ```html
