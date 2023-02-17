@@ -10,6 +10,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     headerElement: HTMLElement | null | undefined = null;
     inputsElement: HTMLElement | null | undefined = null;
     format: string;
+    iconNext: string | undefined;
+    iconPrev: string | undefined;
     onChange: ((event: CustomEvent) => CallableFunction) | undefined;
     onRender: ((event: CustomEvent) => CallableFunction) | undefined;
 
@@ -30,6 +32,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
         if(options.styles) {
             this.styles = options.styles;
+        }
+
+        if(options.iconNext) {
+            this.iconNext = options.iconNext;
+        }
+
+        if(options.iconPrev) {
+            this.iconPrev = options.iconPrev;
         }
 
         if(typeof options.selectedDate == "string") {
@@ -111,7 +121,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         // Previous Button
         const prevButton = document.createElement("button");
         prevButton.classList.add("datedreamer__calendar_prev");
-        prevButton.innerHTML = leftChevron;
+        prevButton.innerHTML = this.iconPrev ? this.iconPrev : leftChevron;
         prevButton.setAttribute('aria-label', 'Previous');
         prevButton.addEventListener("click", this.goToPrevMonth);
 
@@ -123,7 +133,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         // Next Button
         const nextButton = document.createElement("button");
         nextButton.classList.add("datedreamer__calendar_next");
-        nextButton.innerHTML = rightChevron;
+        nextButton.innerHTML = this.iconNext ? this.iconNext : rightChevron;
         nextButton.setAttribute('aria-label', 'Next');
         nextButton.addEventListener("click", this.goToNextMonth);
 
