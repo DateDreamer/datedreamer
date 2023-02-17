@@ -28,7 +28,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Setup npm registry
-      run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > .npmrc && echo "registry https://registry.npmjs.org/" >> .yarnrc
+      run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > ~/.npmrc
         
     - name: Run Install
       uses: Borales/actions-yarn@v4.2.0
@@ -41,6 +41,13 @@ jobs:
       with:
         # Yarn command
         cmd: build
+        
+    - name: Set up for publish
+      if: github.ref == 'refs/heads/main'
+      uses: Borales/actions-yarn@v4.2.0
+      with:
+        # Yarn command
+        cmd: config set _authToken ${{ secrets.NPM_TOKEN }}
       
     - name: Release
       if: github.ref == 'refs/heads/main'
