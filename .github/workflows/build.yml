@@ -28,7 +28,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Setup npm registry
-      run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > .npmrc
+      run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > ~/.npmrc
         
     - name: Run Install
       uses: Borales/actions-yarn@v4.2.0
