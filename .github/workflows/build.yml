@@ -42,10 +42,21 @@ jobs:
         # Yarn command
         cmd: build
       
-    - name: Release
+    - name: Semantic Versioning
       if: github.ref == 'refs/heads/main'
       uses: Borales/actions-yarn@v4.2.0
       with:
         # Yarn command
-        cmd: config set _authToken ${{ secrets.NPM_TOKEN }} && yarn config set npmRegistryServer "https://npm.pkg.github.com" && yarn config set npmAuthToken ${{ secrets.NPM_TOKEN }} && release
+        cmd: release
+    
+    - name: Publish
+      if: github.ref == 'refs/heads/main'
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        registry-url: 'https://registry.npmjs.org'
+    - run: yarn
+    - run: yarn publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
