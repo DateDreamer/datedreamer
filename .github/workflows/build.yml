@@ -5,6 +5,8 @@ env:
   NPM_TOKEN: ${{secrets.NPM_TOKEN}}
 
 on:
+  push:
+    branches: ["main"]
   pull_request:
     branches: "*"
 
