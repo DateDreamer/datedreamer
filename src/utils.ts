@@ -53,7 +53,7 @@ export const unstyledTheme = `
     padding: 14px;
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     background: #fff;
-    z-index: -5;
+    z-index: 0;
     position: relative;
 }
 
@@ -102,6 +102,10 @@ export const unstyledTheme = `
     text-align: center;
 }
 
+.datedreamer__calendar_days-header {
+  color: #2d3436;
+  font-size: 1rem
+}
 .datedreamer__calendar_day {
     width: 100%;
     height: 100%;
