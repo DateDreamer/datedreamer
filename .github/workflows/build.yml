@@ -26,6 +26,8 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Setup npm registry
       run: "npm config set //registry.npmjs.org/:_authToken ${{NPM_TOKEN}}"
         
     - name: Run Install
