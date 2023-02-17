@@ -1,6 +1,6 @@
 {
   "name": "datedreamer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "dist/datedreamer.js",
   "repository": "git@github.com:DateDreamer/DateDreamer.git",
   "contributors": [
@@ -20,7 +20,9 @@
     "release": "release-it --ci"
   },
   "license": "MIT",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@release-it/conventional-changelog": "^5.1.1",
     "css-loader": "^6.7.3",
