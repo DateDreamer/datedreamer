@@ -28,6 +28,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         
+    - name: Set Up Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
     - name: Run Install
       uses: Borales/actions-yarn@v4.2.0
       with:
