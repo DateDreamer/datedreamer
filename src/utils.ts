@@ -22,6 +22,7 @@ export function calendarRoot(theme: string, styles: string = ""):string {
       <div class="datedreamer__calendar_header"></div>
   
       <div class="datedreamer__calendar_inputs"></div>
+      <div class="datedreamer__calendar_errors"></div>
   
       <div class="datedreamer__calendar_days-wrap">
           <div class="datedreamer__calendar_days-header">
@@ -91,8 +92,28 @@ export const unstyledTheme = `
 }
 
 .datedreamer__calendar_inputs {
-    display: flex;
     margin-top: 12px;
+}
+
+.datedreamer__calendar_inputs label {
+  width: 100%;
+}
+
+.datedreamer__calendar__inputs-wrap {
+  display: flex;
+}
+
+.datedreamer__calendar_inputs input {
+  width: 100%;
+}
+
+.datedreamer__calendar_inputs input.error {
+   border: 2px solid #d63031;
+}
+
+.datedreamer__calendar_errors {
+  margin: 8px 0;
+  color: #d63031;
 }
 
 .datedreamer__calendar_days, .datedreamer__calendar_days-header {
@@ -146,6 +167,10 @@ export const litePurple = `
   background: white;
 }
 
+.datedreamer__calendar_inputs label {
+  font-size: 12px;
+}
+
 .datedreamer__calendar_inputs input {
   flex-grow: 1;
   width: calc(100% - 8px);
@@ -158,6 +183,11 @@ export const litePurple = `
   padding: 6px 12px;
   display: inline-block;
   cursor: pointer;
+}
+
+.datedreamer__calendar_errors {
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .datedreamer__calendar_day-header.datedreamer__calendar_day {
