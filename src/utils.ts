@@ -91,8 +91,19 @@ export const unstyledTheme = `
 }
 
 .datedreamer__calendar_inputs {
-    display: flex;
     margin-top: 12px;
+}
+
+.datedreamer__calendar_inputs label {
+  width: 100%;
+}
+
+.datedreamer__calendar__inputs-wrap {
+  display: flex;
+}
+
+.datedreamer__calendar_inputs input {
+  width: 100%;
 }
 
 .datedreamer__calendar_days, .datedreamer__calendar_days-header {
@@ -144,6 +155,10 @@ export const litePurple = `
   border: 1px solid #e9e8ec;
   font-size: 12px;
   background: white;
+}
+
+.datedreamer__calendar_inputs label {
+  font-size: 12px;
 }
 
 .datedreamer__calendar_inputs input {
