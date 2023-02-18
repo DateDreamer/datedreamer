@@ -1,7 +1,20 @@
 # DateDreamer
 An easy to use lightweight javascript calendar plugin.
 
-## Usage
+## Install & Usage
+
+### Install
+Install DateDreamer with either yarn or npm.
+
+```bash
+npm install datedreamer
+```
+
+```bash
+yarn install datedreamer
+```
+ 
+ ### Use
  
  ```html
 <script src="node_modules/datedreamer/datedreamer.js">
