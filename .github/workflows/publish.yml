@@ -1,0 +1,59 @@
+name: Build & Test
+
+env:
+  GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+  NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+ 
+  publish:
+      runs-on: ubuntu-latest
+
+      strategy:
+        matrix:
+          node-version: [18.x]
+
+      steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Set Up Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Run Install
+        uses: Borales/actions-yarn@v4.2.0
+        with:
+          # Yarn command
+          cmd: install
+
+      - name: Build
+        uses: Borales/actions-yarn@v4.2.0
+        with:
+          # Yarn command
+          cmd: build
+
+      - name: Semantic Versioning
+        uses: Borales/actions-yarn@v4.2.0
+        with:
+          # Yarn command
+          cmd: release
+
+      - name: Publish
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn
+      - run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
