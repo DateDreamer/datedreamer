@@ -13,6 +13,9 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     format: string;
     iconNext: string | undefined;
     iconPrev: string | undefined;
+    inputLabel: string = "Set a date";
+    inputPlaceholder: string = "Enter a date"
+
     onChange: ((event: CustomEvent) => CallableFunction) | undefined;
     onRender: ((event: CustomEvent) => CallableFunction) | undefined;
 
@@ -42,6 +45,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
         if(options.iconPrev) {
             this.iconPrev = options.iconPrev;
+        }
+
+        if(options.inputLabel) {
+            this.inputLabel = options.inputLabel;
+        }
+
+        if(options.inputPlaceholder) {
+            this.inputPlaceholder = options.inputPlaceholder;
         }
 
         if(typeof options.selectedDate == "string") {
@@ -147,9 +158,18 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
      * Generates the date field and today button
      */
     private generateInputs():void {
+        // Date input label
+        const dateInputLabel = document.createElement("label");
+        dateInputLabel.setAttribute("for","date-input");
+        dateInputLabel.textContent = this.inputLabel;
+
+        const inputButtonWrap = document.createElement("div");
+        inputButtonWrap.classList.add("datedreamer__calendar__inputs-wrap")
+
         // Date input
         const dateField = document.createElement("input");
-        dateField.placeholder = "Enter a date";
+        dateField.id = "date-input";
+        dateField.placeholder = this.inputPlaceholder
         dateField.value = dayjs(this.selectedDate).format(this.format);
         dateField.addEventListener('keyup', (e) => this.dateInputChanged(e));
         dateField.setAttribute("title", "Set a date");
@@ -159,7 +179,9 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         todayButton.innerText = "Today";
         todayButton.addEventListener("click", () => this.setDateToToday());
 
-        this.inputsElement?.append(dateField, todayButton);
+        inputButtonWrap.append(dateField, todayButton);
+
+        this.inputsElement?.append(dateInputLabel, inputButtonWrap);
     }
 
     /**

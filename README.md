@@ -43,6 +43,10 @@ new calendar({...options});
 
 * `iconPrev`: Sets the previous arrow icon. You can pass it either text or an svg.
 
+* `inputLabel`: Sets the label of the date input element.
+
+* `inputPlaceholder`: Sets the placeholder of the date input element.
+
 * `onChange`: Use this to provide a callback function that the calendar will call when the date is changed. The callback function will receive a `CustomEvent` argument that will include the chosen date inside the detail property.
     ```javascript
     new datedreamer.calendar({
