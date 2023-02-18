@@ -149,7 +149,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         dateField.placeholder = "Enter a date";
         dateField.value = dayjs(this.selectedDate).format(this.format);
         dateField.addEventListener('keyup', (e) => this.dateInputChanged(e));
-
+        dateField.setAttribute("title", "Set a date");
+        
         // Today button
         const todayButton = document.createElement("button");
         todayButton.innerText = "Today";
