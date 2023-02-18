@@ -9,12 +9,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     calendarElement: HTMLElement | null | undefined = null;
     headerElement: HTMLElement | null | undefined = null;
     inputsElement: HTMLElement | null | undefined = null;
+    errorsElement: HTMLElement | null | undefined = null;
     format: string;
     iconNext: string | undefined;
     iconPrev: string | undefined;
     onChange: ((event: CustomEvent) => CallableFunction) | undefined;
     onRender: ((event: CustomEvent) => CallableFunction) | undefined;
 
+    errors: Array<any> = [];
     daysElement: HTMLElement | null | undefined = null;
     selectedDate: Date = new Date();
     displayedMonthDate: Date = new Date();
@@ -78,6 +80,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         this.headerElement = this.shadowRoot?.querySelector(".datedreamer__calendar_header");
         this.daysElement = this.shadowRoot?.querySelector(".datedreamer__calendar_days");
         this.inputsElement = this.shadowRoot?.querySelector(".datedreamer__calendar_inputs");
+        this.errorsElement = this.shadowRoot?.querySelector(".datedreamer__calendar_errors");
 
         // Generate the previous, title, next buttons.
         this.generateHeader();
@@ -157,6 +160,35 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         todayButton.addEventListener("click", () => this.setDateToToday());
 
         this.inputsElement?.append(dateField, todayButton);
+    }
+
+    /**
+     *  Generates errors pushed to the errors array.
+     */
+    private generateErrors():void {
+        const dateInput = this.inputsElement?.querySelector("input");
+        if(dateInput){
+            dateInput.classList.remove("error");
+        }
+
+        if(this.errorsElement)
+            this.errorsElement.innerHTML = "";
+
+        this.errors.forEach(({type, message}) => {
+            const errEl = document.createElement("span");
+            errEl.innerText = message;
+
+            if(type == "input-error")
+            {
+                if(dateInput){
+                    dateInput.classList.add("error");
+                }
+            }
+
+            this.errorsElement?.append(errEl);
+        });
+
+        this.errors = []
     }
 
     /**
@@ -248,6 +280,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             this.headerElement.innerHTML = "";
         }
 
+        this.generateErrors();
+
         this.generateDays();
         this.generateHeader();
         if(rebuildInput) {
@@ -310,7 +344,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             this.rebuildCalendar(false);
             this.dateChangedCallback(this.selectedDate);
         } else {
-            // TODO: Date is invalid. Need to show err
+            this.errors.push({type: "input-error", message: "The entered date is invalid"});
+            this.generateErrors();
         }
     }
 
