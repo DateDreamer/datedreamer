@@ -44,7 +44,8 @@ import {calendar} from "datedreamer";
 new calendar({...options});
 ```
 
-### Options
+## Standalone Calendar
+Use this if you want a standalone calendar that comes with an input filled and a Today button.
 
 * `element`: Sets where to insert the calendar to. Can be either a CSS selector string or an HTMLElement object.
 
@@ -88,11 +89,11 @@ new calendar({...options});
 
     * `unstyled`:
     
-        ![Unstyled Calendar](readme-images/unstyled.png?raw=true "Title")
+        ![Unstyled Calendar](readme-images/unstyled.png?raw=true)
     
     * `lite-purple`: 
     
-        ![Calendar using lite-purple theme](readme-images/lite-purple.png?raw=true "Title")
+        ![Calendar using lite-purple theme](readme-images/lite-purple.png?raw=true)
 
 * `styles`: Use this property to pass css styles that will be passed into the components style tag.
     ```javascript
@@ -105,6 +106,19 @@ new calendar({...options});
             `
         })
     ```
+
+## Toggle Calendar
+The toggle calendar has the same options as the Standalone Calendar, however the input is a standalone input element which when clicked, triggers the calendar to show.
+
+![Toggle Calendar Input](readme-images/toggleCalendarInput.png?raw=true)
+
+![Toggle Calendar](readme-images/toggleCalendar.png?raw=true)
+
+```javascript
+new datedreamer.calendarToggle({
+    ...options
+});
+```
 
 ## Development
 
