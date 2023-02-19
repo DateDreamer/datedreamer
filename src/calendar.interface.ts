@@ -9,6 +9,7 @@ export interface ICalendarOptions {
     inputLabel?: string | undefined,
     inputPlaceholder?: string | undefined,
     hideInputs?: boolean | undefined,
+    darkMode?: boolean | undefined,
     onChange?: ((event: CustomEvent) => void) | undefined
     onRender?: ((event: CustomEvent) => void) | undefined
 }

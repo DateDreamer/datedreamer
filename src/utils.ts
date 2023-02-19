@@ -10,7 +10,7 @@ export const rightChevron = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
 /**
  * The HTML for the calendar element.
  */
-export function calendarRoot(theme: string, styles: string = ""):string {
+export function calendarRoot(theme: string, styles: string = "", darkMode: boolean | undefined):string {
   return `
   <style>
       ${unstyledTheme}
@@ -18,7 +18,7 @@ export function calendarRoot(theme: string, styles: string = ""):string {
       
       ${styles}
   </style>
-  <div class="datedreamer__calendar">
+  <div class="datedreamer__calendar ${darkMode ? "dark": ""}">
       <div class="datedreamer__calendar_header"></div>
   
       <div class="datedreamer__calendar_inputs"></div>
@@ -99,6 +99,10 @@ export const unstyledTheme = `
     position: relative;
 }
 
+.datedreamer__calendar.dark {
+  background: #2c3e50;
+}
+
 .datedreamer__calendar_header {
     width: 100%;
     display: flex;
@@ -118,8 +122,16 @@ export const unstyledTheme = `
     color:#2d3436;
 }
 
+.dark .datedreamer__calendar_prev, .dark .datedreamer__calendar_next {
+  color: #fff;
+}
+
 .datedreamer__calendar_prev svg, .datedreamer__calendar_next svg {
     transform: scale(2.875);
+}
+
+.dark .datedreamer__calendar_prev svg, .dark .datedreamer__calendar_next svg {
+  fill: #fff;
 }
 
 .datedreamer__calendar_title {
@@ -132,12 +144,20 @@ export const unstyledTheme = `
     font-size: 0.875rem;
 }
 
+.dark .datedreamer__calendar_title {
+  color: #fff;
+}
+
 .datedreamer__calendar_inputs {
     margin-top: 12px;
 }
 
 .datedreamer__calendar_inputs label {
   width: 100%;
+}
+
+.dark .datedreamer__calendar_inputs label {
+  color: #fff;
 }
 
 .datedreamer__calendar__inputs-wrap {
@@ -166,8 +186,13 @@ export const unstyledTheme = `
 
 .datedreamer__calendar_days-header {
   color: #2d3436;
-  font-size: 1rem
+  font-size: 1rem;
 }
+
+.dark .datedreamer__calendar_days-header {
+  color: #fff;
+}
+
 .datedreamer__calendar_day {
     width: 100%;
     height: 100%;
@@ -220,10 +245,22 @@ export const litePurple = `
   margin-right: 8px;
 }
 
+.dark .datedreamer__calendar_inputs input {
+  background: #4b6584;
+  border: #4b6584;
+  color: #fff;
+}
+
 .datedreamer__calendar_inputs button {
   padding: 6px 12px;
   display: inline-block;
   cursor: pointer;
+}
+
+.dark .datedreamer__calendar_inputs button {
+  background: #4b6584;
+  border: #4b6584;
+  color: #fff;
 }
 
 .datedreamer__calendar_errors {
@@ -276,5 +313,9 @@ export const litePurple = `
   align-items: center;
   font-size: 12px;
   font-weight: bold;
+}
+
+.dark .datedreamer__calendar_days .datedreamer__calendar_day button {
+  color: #ecf0f1;
 }
 `
