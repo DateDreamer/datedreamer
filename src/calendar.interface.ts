@@ -1,14 +1,14 @@
 export interface ICalendarOptions {
-    element: HTMLElement | string,
-    selectedDate: string | Date,
-    theme: "unstyled" | "lite-purple",
-    styles: string,
-    format: string,
-    iconPrev: string | undefined,
-    iconNext: string | undefined,
-    inputLabel: string,
-    inputPlaceholder: string,
-    hideInputs: boolean,
-    onChange: ((event: CustomEvent) => CallableFunction) | undefined
-    onRender: ((event: CustomEvent) => CallableFunction) | undefined
+    element: Element | string,
+    selectedDate?: string | Date | undefined,
+    theme?: "unstyled" | "lite-purple" | undefined,
+    styles?: string | undefined,
+    format?: string | undefined,
+    iconPrev?: string | undefined,
+    iconNext?: string | undefined,
+    inputLabel?: string | undefined,
+    inputPlaceholder?: string | undefined,
+    hideInputs?: boolean | undefined,
+    onChange?: ((event: CustomEvent) => void) | undefined
+    onRender?: ((event: CustomEvent) => void) | undefined
 }
