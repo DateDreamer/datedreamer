@@ -60,6 +60,8 @@ new calendar({...options});
 
 * `inputPlaceholder`: Sets the placeholder of the date input element.
 
+* `hideInputs`: Hides the input and today button from the UI.
+
 * `onChange`: Use this to provide a callback function that the calendar will call when the date is changed. The callback function will receive a `CustomEvent` argument that will include the chosen date inside the detail property.
     ```javascript
     new datedreamer.calendar({
