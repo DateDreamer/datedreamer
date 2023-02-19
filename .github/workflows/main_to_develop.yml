@@ -1,0 +1,27 @@
+name: Push Main to Develop
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  merge-main-back-to-dev:
+    if: github.event.pull_request.merged == true
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set Git config
+      run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+    
+    - name: Merge main back to develop
+      run: |
+          git fetch --unshallow
+          git checkout develop
+          git pull
+          git merge --no-ff main -m "chore: Auto-merge master back to develop"
+          git push
