@@ -16,6 +16,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     inputLabel: string = "Set a date";
     inputPlaceholder: string = "Enter a date";
     hideInputs: boolean = false;
+    darkMode: boolean | undefined = false;
 
     onChange: ((event: CustomEvent) => void) | undefined;
     onRender: ((event: CustomEvent) => void) | undefined;
@@ -64,6 +65,11 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             this.hideInputs = options.hideInputs;
         }
 
+        if(options.darkMode) {
+            this.darkMode = options.darkMode;
+        }
+
+
         if(typeof options.selectedDate == "string") {
             this.selectedDate = dayjs(options.selectedDate,options.format).toDate();
         } else if(typeof options.selectedDate == "object") {
@@ -92,7 +98,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
 
         // Generate calendar
-        const calendar:string = calendarRoot(this.theme, this.styles);
+        const calendar:string = calendarRoot(this.theme, this.styles, this.darkMode);
 
         // Insert calendar into DOM
         this.insertCalendarIntoSelector(calendar);
