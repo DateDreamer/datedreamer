@@ -39,7 +39,48 @@ export function calendarRoot(theme: string, styles: string = ""):string {
       </div>
   </div>
   `
+}
 
+export function calendarToggleRoot(theme: string | undefined, styles: string = "", inputPlaceholder: string | undefined, selectedDate: string | Date | undefined):string {
+  return `
+    <style>
+        .datedreamer__calendar-toggle {
+            position: relative;
+        }
+        .datedreamer__calendar-toggle__calendar {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+        }
+
+        .datedreamer__calendar-toggle__calendar.active {
+            display: block;
+        }
+
+        ${theme == "lite-purple" ? `
+        .datedreamer__calendar-toggle__input input {
+            font-weight: 500;
+            border-radius: 4px;
+            border: 1px solid #e9e8ec;
+            font-size: 12px;
+            background: white;
+            display: block;
+            padding: 4px 4px 4px 8px;
+            margin-right: 8px;
+        }
+        ` : ""}
+
+        ${styles}
+    </style>
+    <div class="datedreamer__calendar-toggle">
+        <div class="datedreamer__calendar-toggle__input">
+            <input id="date-input" placeholder="${inputPlaceholder}" value="${selectedDate}" readonly/>
+        </div>
+
+        <div class="datedreamer__calendar-toggle__calendar"></div>
+    </div>
+  `
 }
 
 export const unstyledTheme = `

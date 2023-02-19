@@ -5,20 +5,20 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat)
 
 class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
-    element: HTMLElement | string;
+    element: Element | string;
     calendarElement: HTMLElement | null | undefined = null;
     headerElement: HTMLElement | null | undefined = null;
     inputsElement: HTMLElement | null | undefined = null;
     errorsElement: HTMLElement | null | undefined = null;
-    format: string;
+    format: string | undefined;
     iconNext: string | undefined;
     iconPrev: string | undefined;
     inputLabel: string = "Set a date";
     inputPlaceholder: string = "Enter a date";
     hideInputs: boolean = false;
 
-    onChange: ((event: CustomEvent) => CallableFunction) | undefined;
-    onRender: ((event: CustomEvent) => CallableFunction) | undefined;
+    onChange: ((event: CustomEvent) => void) | undefined;
+    onRender: ((event: CustomEvent) => void) | undefined;
 
     errors: Array<any> = [];
     daysElement: HTMLElement | null | undefined = null;
@@ -31,7 +31,11 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     constructor(options: ICalendarOptions) {
         super();
         this.element = options.element;
-        this.format = options.format;
+
+        if(options.format) {
+            this.format = options.format;
+        }
+
         if(options.theme) {
             this.theme = options.theme;
         }
@@ -165,7 +169,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     private generateInputs():void {
         if(this.hideInputs)
             return;
-            
+
         // Date input label
         const dateInputLabel = document.createElement("label");
         dateInputLabel.setAttribute("for","date-input");

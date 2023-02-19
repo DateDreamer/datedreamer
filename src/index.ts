@@ -1,4 +1,4 @@
-
+import { calendarToggle } from "./calendar-toggle";
 import { calendar } from "./calendar";
 
-export {calendar};
+export {calendar, calendarToggle};
