@@ -8,6 +8,7 @@ export interface ICalendarOptions {
     iconNext: string | undefined,
     inputLabel: string,
     inputPlaceholder: string,
+    hideInputs: boolean,
     onChange: ((event: CustomEvent) => CallableFunction) | undefined
     onRender: ((event: CustomEvent) => CallableFunction) | undefined
 }

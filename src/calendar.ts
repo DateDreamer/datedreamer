@@ -14,7 +14,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     iconNext: string | undefined;
     iconPrev: string | undefined;
     inputLabel: string = "Set a date";
-    inputPlaceholder: string = "Enter a date"
+    inputPlaceholder: string = "Enter a date";
+    hideInputs: boolean = false;
 
     onChange: ((event: CustomEvent) => CallableFunction) | undefined;
     onRender: ((event: CustomEvent) => CallableFunction) | undefined;
@@ -53,6 +54,10 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
         if(options.inputPlaceholder) {
             this.inputPlaceholder = options.inputPlaceholder;
+        }
+
+        if(options.hideInputs) {
+            this.hideInputs = options.hideInputs;
         }
 
         if(typeof options.selectedDate == "string") {
@@ -158,6 +163,9 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
      * Generates the date field and today button
      */
     private generateInputs():void {
+        if(this.hideInputs)
+            return;
+            
         // Date input label
         const dateInputLabel = document.createElement("label");
         dateInputLabel.setAttribute("for","date-input");
@@ -306,6 +314,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
         this.generateDays();
         this.generateHeader();
+
         if(rebuildInput) {
             if(this.inputsElement) {
                 this.inputsElement.innerHTML = "";
