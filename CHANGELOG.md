@@ -1,5 +1,12 @@
 
 
+# [0.1.0](https://github.com/DateDreamer/DateDreamer/compare/0.0.11...0.1.0) (2023-02-19)
+
+
+### Features
+
+* **calendar:** added dark mode to calendar ([68b61f0](https://github.com/DateDreamer/DateDreamer/commit/68b61f00a5d49b31979bac4d841762829ed2553a)), closes [#30](https://github.com/DateDreamer/DateDreamer/issues/30)
+
 ## 0.0.11 (2023-02-19)
 
 ## 0.0.10 (2023-02-18)
