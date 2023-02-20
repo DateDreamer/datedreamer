@@ -1,5 +1,5 @@
 # DateDreamer
-An easy to use lightweight javascript calendar plugin.
+An easy to use lightweight javascript calendar library.
 
 ## Install & Usage
 
