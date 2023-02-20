@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "dist/datedreamer.js",
   "repository": "git@github.com:DateDreamer/DateDreamer.git",
+  "homepage": "https://datedreamer.github.io/docs/",
   "contributors": [
     {
       "name": "Jorge Felico",
