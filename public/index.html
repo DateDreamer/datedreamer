@@ -9,19 +9,16 @@
 <body>
     <div id="calendar"></div>
 
+    <div id="calendar2"></div>
+
     <script>
         window.onload = () => {
-            window.cal = new datedreamer.calendar({
-                element: "#calendar",
-                selectedDate: "03/09/1990",
-                onChange: (e) => { 
-                    console.log(e.detail);
-                },
-                onRender: (e) => {
-                    console.log("rendered")
-                },
-                theme: "lite-purple",
-                format: "MM/DD/YYYY",
+            window.cal = new datedreamer.range({
+                element: "#calendar"
+            });
+
+            window.cal2 = new datedreamer.calendar({
+                element: "#calendar2"
             });
         }
     </script>

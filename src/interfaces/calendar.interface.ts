@@ -1,3 +1,5 @@
+import CalendarConnector from "../components/connector";
+
 export interface ICalendarOptions {
     element: Element | string,
     selectedDate?: string | Date | undefined,
@@ -12,6 +14,9 @@ export interface ICalendarOptions {
     inputPlaceholder?: string | undefined,
     hideInputs?: boolean | undefined,
     darkMode?: boolean | undefined,
+    hideOtherMonthDays?: boolean | undefined,
+    rangeMode?: boolean | undefined,
+    connector?: CalendarConnector | undefined;
     onChange?: ((event: CustomEvent) => void) | undefined,
     onRender?: ((event: CustomEvent) => void) | undefined,
     onNextNav?: ((event: CustomEvent) => void) | undefined,

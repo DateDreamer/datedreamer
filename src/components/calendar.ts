@@ -2,6 +2,7 @@ import { ICalendarOptions } from "../interfaces/calendar.interface";
 import {calendarRoot, leftChevron, monthNames, rightChevron, weekdays} from "../utils/calendar-utils";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import CalendarConnector from "./connector";
 dayjs.extend(customParseFormat)
 
 class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
@@ -19,6 +20,10 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     inputPlaceholder: string = "Enter a date";
     hideInputs: boolean = false;
     darkMode: boolean | undefined = false;
+    hideOtherMonthDays: boolean | undefined = false;
+    rangeMode: boolean | undefined;
+    
+    connector: CalendarConnector | undefined;
 
     onChange: ((event: CustomEvent) => void) | undefined;
     onRender: ((event: CustomEvent) => void) | undefined;
@@ -35,6 +40,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
     constructor(options: ICalendarOptions) {
         super();
+        
         this.element = options.element;
 
         if(options.format) {
@@ -79,6 +85,19 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
         if(options.darkMode) {
             this.darkMode = options.darkMode;
+        }
+
+        if(options.rangeMode) {
+            this.rangeMode = options.rangeMode;
+        }
+
+        if(options.connector) {
+            this.connector = options.connector;
+            this.connector.calendars.push(this);
+        }
+
+        if(options.hideOtherMonthDays) {
+            this.hideOtherMonthDays = options.hideOtherMonthDays
         }
 
 
@@ -276,10 +295,35 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
                 button.innerText = (i - daysToSkipBefore).toString();
                 button.setAttribute('type', 'button');
                 
-                if((i == daysToSkipBefore + selectedDay) &&
-                this.displayedMonthDate.getMonth() == this.selectedDate.getMonth() &&
-                this.displayedMonthDate.getFullYear() == this.selectedDate.getFullYear()) {
-                    day.classList.add("active");
+                if(this.rangeMode) {
+                 
+                    if(this.displayedMonthDate.getMonth() == this.connector?.startDate?.getMonth() &&
+                    this.displayedMonthDate.getFullYear() == this.connector.startDate.getFullYear() &&
+                    i - daysToSkipBefore == this.connector.startDate.getDate()){
+                        day.classList.add("active");
+                    }
+
+                    if(this.displayedMonthDate.getMonth() == this.connector?.endDate?.getMonth() &&
+                    this.displayedMonthDate.getFullYear() == this.connector.endDate.getFullYear() &&
+                    i - daysToSkipBefore == this.connector.endDate.getDate()){
+                        day.classList.add("active");
+                    }
+
+                    const selectedDate = new Date(this.displayedMonthDate);
+                    selectedDate.setDate(i - daysToSkipBefore);
+
+                    if(this.connector?.startDate && this.connector.endDate){
+                        if(this.connector?.startDate < selectedDate && this.connector?.endDate > selectedDate) {
+                            day.classList.add("highlight");
+                        }
+                    }
+
+                } else {
+                    if((i == daysToSkipBefore + selectedDay) &&
+                    this.displayedMonthDate.getMonth() == this.selectedDate.getMonth() &&
+                    this.displayedMonthDate.getFullYear() == this.selectedDate.getFullYear()) {
+                        day.classList.add("active");
+                    }
                 }
 
                 day.append(button);
@@ -289,11 +333,13 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             } else if(i <= daysToSkipBefore) {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day", "disabled");
-                const button = document.createElement("button");
-                button.innerText = new Date(year,month,0-(daysToSkipBefore - i)).getDate().toString();
-                button.setAttribute("disabled", "true");
-                button.setAttribute('type', 'button');
-                day.append(button);
+                if(!this.hideOtherMonthDays) {
+                    const button = document.createElement("button");
+                    button.innerText = new Date(year,month,0-(daysToSkipBefore - i)).getDate().toString();
+                    button.setAttribute("disabled", "true");
+                    button.setAttribute('type', 'button');
+                    day.append(button);
+                }
                 this.daysElement?.append(day);
 
             // Days that should show of the next month
@@ -301,11 +347,13 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
                 const dayNumber = i - (daysToSkipBefore + daysToSkipAfter + daysInMonth) + daysToSkipAfter;
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day", "disabled");
-                const button = document.createElement("button");
-                button.innerText = new Date(year,month + 1,dayNumber).getDate().toString();
-                button.setAttribute("disabled", "true");
-                button.setAttribute('type', 'button');
-                day.append(button);
+                if(!this.hideOtherMonthDays) {
+                    const button = document.createElement("button");
+                    button.innerText = new Date(year,month + 1,dayNumber).getDate().toString();
+                    button.setAttribute("disabled", "true");
+                    button.setAttribute('type', 'button');
+                    day.append(button);
+                }
                 this.daysElement?.append(day);
             }
         }
@@ -336,7 +384,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     /**
      * Rebuild calendar
      */
-    private rebuildCalendar(rebuildInput = true) {
+    rebuildCalendar(rebuildInput = true) {
         if(this.daysElement) {
             this.daysElement.innerHTML = "";
         }
@@ -365,9 +413,40 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     private setSelectedDay = (day: number) => {
         const newSelectedDate = new Date(this.displayedMonthDate);
         newSelectedDate.setDate(day);
-        this.selectedDate = new Date(newSelectedDate);
-        this.rebuildCalendar();
-        this.dateChangedCallback(this.selectedDate)
+        
+        if(this.rangeMode) {
+            if(this.connector) {
+                if(this.connector.startDate !== null && this.connector.endDate !== null) {
+                    this.connector.startDate = null;
+                    this.connector.endDate = null;
+                    this.connector.rebuildAllCalendars();
+                }
+
+                if(this.connector.startDate == null) {
+                    this.connector.startDate = new Date(newSelectedDate);
+                } else if(this.connector.endDate == null) {
+                    this.connector.endDate = new Date(newSelectedDate);
+                    if(this.connector.dateChangedCallback){
+                        this.connector.dateChangedCallback(new CustomEvent("dateChanged"));
+                    }
+                }
+
+                if(this.connector.startDate !== null && this.connector.endDate !== null) {
+                    if(this.connector.startDate > this.connector.endDate) {
+                        const oldEndDate = new Date(this.connector.endDate);
+                        const oldStartDate = new Date(this.connector.startDate);
+                        this.connector.startDate = oldEndDate;
+                        this.connector.endDate = oldStartDate;
+                    }
+                }
+
+                this.connector.rebuildAllCalendars();
+            }
+        } else {
+            this.selectedDate = new Date(newSelectedDate);
+            this.rebuildCalendar();
+            this.dateChangedCallback(this.selectedDate)
+        }
     }
 
     /**

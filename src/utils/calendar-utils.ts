@@ -210,6 +210,11 @@ export const unstyledTheme = `
     background: blue;
     color: white;
 }
+
+.datedreamer__calendar_day.highlight button {
+  background: orange;
+  color: white;
+}
 `;
 
 export const litePurple = `
