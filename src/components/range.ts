@@ -44,7 +44,7 @@ class DateDreamerRange extends HTMLElement {
 
         this.calendar1 = new calendar({
             element: calendar1WrapElement,
-            // theme: "lite-purple",
+            theme: "lite-purple",
             format: "MM/DD/YYYY",
             hideInputs: true,
             hideNextNav: true,
@@ -58,7 +58,7 @@ class DateDreamerRange extends HTMLElement {
         
         this.calendar2 = new calendar({
             element: calendar2WrapElement,
-            // theme: "lite-purple",
+            theme: "lite-purple",
             format: "MM/DD/YYYY",
             hideInputs: true,
             hidePrevNav: true,

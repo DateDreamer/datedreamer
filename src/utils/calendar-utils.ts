@@ -91,12 +91,13 @@ export const unstyledTheme = `
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Roboto', sans-serif;
     width: 100%;
-    max-width: 220px;
+    max-width: 240px;
     padding: 14px;
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     background: #fff;
     z-index: 0;
     position: relative;
+    box-sizing: border-box;
 }
 
 .datedreamer__calendar.dark {
@@ -212,7 +213,7 @@ export const unstyledTheme = `
 }
 
 .datedreamer__calendar_day.highlight button {
-  background: orange;
+  background: #236bb9;
   color: white;
 }
 `;
@@ -291,22 +292,38 @@ export const litePurple = `
   font-weight: normal;
 }
 
-.datedreamer__calendar_days .datedreamer__calendar_day.active {
+.datedreamer__calendar_days .datedreamer__calendar_day.active, .datedreamer__calendar_days .datedreamer__calendar_day.highlight {
   position: relative;
 }
 
-.datedreamer__calendar_days .datedreamer__calendar_day.active:before {
+.datedreamer__calendar_day.highlight:before{
   content: "";
-  width: 25px;
-  height: 25px;
-  background: #7d56da;
-  border-radius: 100%;
+  width: 100%;
+  height: 100%;
+  background: #BFA9F3;
   position: absolute;
   display: block;
   z-index: -1;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%);
+  top: 50%;
+  right: 0;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+
+.datedreamer__calendar_days .datedreamer__calendar_day.active:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #7d56da;
+  border-radius: 2px;
+  position: absolute;
+  display: block;
+  z-index: -1;
+  top: 50%;
+  right: 0;
+  left: 0;
+  transform: translateY(-50%);
 }
 
 .datedreamer__calendar_days .datedreamer__calendar_day button {
