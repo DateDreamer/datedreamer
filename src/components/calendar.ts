@@ -1,5 +1,5 @@
-import { ICalendarOptions } from "./calendar.interface";
-import {calendarRoot, leftChevron, monthNames, rightChevron, weekdays} from "./utils";
+import { ICalendarOptions } from "../interfaces/calendar.interface";
+import {calendarRoot, leftChevron, monthNames, rightChevron, weekdays} from "../utils/calendar-utils";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat)
@@ -13,6 +13,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     format: string | undefined;
     iconNext: string | undefined;
     iconPrev: string | undefined;
+    hidePrevNav?: boolean | undefined;
+    hideNextNav?: boolean | undefined;
     inputLabel: string = "Set a date";
     inputPlaceholder: string = "Enter a date";
     hideInputs: boolean = false;
@@ -20,6 +22,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
     onChange: ((event: CustomEvent) => void) | undefined;
     onRender: ((event: CustomEvent) => void) | undefined;
+    onNextNav: ((event: CustomEvent) => void) | undefined;
+    onPrevNav: ((event: CustomEvent) => void) | undefined;
 
     errors: Array<any> = [];
     daysElement: HTMLElement | null | undefined = null;
@@ -61,6 +65,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             this.inputPlaceholder = options.inputPlaceholder;
         }
 
+        if(options.hidePrevNav) {
+            this.hidePrevNav = options.hidePrevNav;
+        }
+
+        if(options.hideNextNav) {
+            this.hideNextNav = options.hideNextNav;
+        }
+
         if(options.hideInputs) {
             this.hideInputs = options.hideInputs;
         }
@@ -81,6 +93,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         // Get callbacks from options
         this.onChange = options.onChange;
         this.onRender = options.onRender;
+        this.onNextNav = options.onNextNav;
+        this.onPrevNav = options.onPrevNav;
 
         // Instanciate display date from initially selected date.
         this.displayedMonthDate = new Date(this.selectedDate);
@@ -148,25 +162,30 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
      */
     private generateHeader():void {
         // Previous Button
-        const prevButton = document.createElement("button");
-        prevButton.classList.add("datedreamer__calendar_prev");
-        prevButton.innerHTML = this.iconPrev ? this.iconPrev : leftChevron;
-        prevButton.setAttribute('aria-label', 'Previous');
-        prevButton.addEventListener("click", this.goToPrevMonth);
+        if(!this.hidePrevNav) {
+            const prevButton = document.createElement("button");
+            prevButton.classList.add("datedreamer__calendar_prev");
+            prevButton.innerHTML = this.iconPrev ? this.iconPrev : leftChevron;
+            prevButton.setAttribute('aria-label', 'Previous');
+            prevButton.addEventListener("click", this.goToPrevMonth);
+            this.headerElement?.append(prevButton);
+        }
 
         // Title
         const title = document.createElement("span");
         title.classList.add("datedreamer__calendar_title");
         title.innerText = `${monthNames[this.displayedMonthDate.getMonth()]} ${this.displayedMonthDate.getFullYear()}`;
+        this.headerElement?.append(title);
 
         // Next Button
-        const nextButton = document.createElement("button");
-        nextButton.classList.add("datedreamer__calendar_next");
-        nextButton.innerHTML = this.iconNext ? this.iconNext : rightChevron;
-        nextButton.setAttribute('aria-label', 'Next');
-        nextButton.addEventListener("click", this.goToNextMonth);
-
-        this.headerElement?.append(prevButton,title,nextButton);
+        if(!this.hideNextNav) {
+            const nextButton = document.createElement("button");
+            nextButton.classList.add("datedreamer__calendar_next");
+            nextButton.innerHTML = this.iconNext ? this.iconNext : rightChevron;
+            nextButton.setAttribute('aria-label', 'Next');
+            nextButton.addEventListener("click", this.goToNextMonth);
+            this.headerElement?.append(nextButton);
+        }        
     }
 
     /**
@@ -295,17 +314,23 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     /**
      * Go to previous month
      */
-    goToPrevMonth = () => {
+    goToPrevMonth = (e:Event) => {
         this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() - 1);
         this.rebuildCalendar();
+        if(this.onPrevNav){
+            this.onPrevNav(new CustomEvent("prevNav",{detail: this.displayedMonthDate}));
+        }
     }
 
     /**
      * Go to next month
      */
-    goToNextMonth = () => {
+    goToNextMonth = (e:Event) => {
         this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() + 1);
         this.rebuildCalendar();
+        if(this.onNextNav){
+            this.onNextNav(new CustomEvent("prevNav",{detail: this.displayedMonthDate}));
+        }
     }
 
     /**
@@ -415,6 +440,11 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
             })
             this.onRender(customEvent);
         }
+    }
+
+    setDisplayedMonthDate(date: Date) {
+        this.displayedMonthDate = date;
+        this.rebuildCalendar();
     }
 }
 

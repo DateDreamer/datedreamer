@@ -6,10 +6,14 @@ export interface ICalendarOptions {
     format?: string | undefined,
     iconPrev?: string | undefined,
     iconNext?: string | undefined,
+    hidePrevNav?: boolean | undefined,
+    hideNextNav?: boolean | undefined,
     inputLabel?: string | undefined,
     inputPlaceholder?: string | undefined,
     hideInputs?: boolean | undefined,
     darkMode?: boolean | undefined,
-    onChange?: ((event: CustomEvent) => void) | undefined
-    onRender?: ((event: CustomEvent) => void) | undefined
+    onChange?: ((event: CustomEvent) => void) | undefined,
+    onRender?: ((event: CustomEvent) => void) | undefined,
+    onNextNav?: ((event: CustomEvent) => void) | undefined,
+    onPrevNav?: ((event: CustomEvent) => void) | undefined
 }
