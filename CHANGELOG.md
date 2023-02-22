@@ -1,5 +1,12 @@
 
 
+# [0.2.0](https://github.com/DateDreamer/DateDreamer/compare/0.1.0...0.2.0) (2023-02-22)
+
+
+### Features
+
+* **range:** Added Calendar Range ([#36](https://github.com/DateDreamer/DateDreamer/issues/36)) ([0ed9292](https://github.com/DateDreamer/DateDreamer/commit/0ed92926c470b7077ebe58028a67035d525b2e1b)), closes [#31](https://github.com/DateDreamer/DateDreamer/issues/31)
+
 # [0.1.0](https://github.com/DateDreamer/DateDreamer/compare/0.0.11...0.1.0) (2023-02-19)
 
 
