@@ -426,17 +426,20 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
                     this.connector.startDate = new Date(newSelectedDate);
                 } else if(this.connector.endDate == null) {
                     this.connector.endDate = new Date(newSelectedDate);
-                    if(this.connector.dateChangedCallback){
-                        this.connector.dateChangedCallback(new CustomEvent("dateChanged"));
-                    }
                 }
 
                 if(this.connector.startDate !== null && this.connector.endDate !== null) {
                     if(this.connector.startDate > this.connector.endDate) {
+                         console.log("start date is larger than end date");
                         const oldEndDate = new Date(this.connector.endDate);
                         const oldStartDate = new Date(this.connector.startDate);
                         this.connector.startDate = oldEndDate;
                         this.connector.endDate = oldStartDate;
+                        console.log(this.connector.startDate,this.connector.endDate)
+                    }
+
+                    if(this.connector.dateChangedCallback){
+                        this.connector.dateChangedCallback(new CustomEvent("dateChanged"));
                     }
                 }
 

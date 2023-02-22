@@ -9,16 +9,13 @@
 <body>
     <div id="calendar"></div>
 
-    <div id="calendar2"></div>
-
     <script>
         window.onload = () => {
             window.cal = new datedreamer.range({
-                element: "#calendar"
-            });
-
-            window.cal2 = new datedreamer.calendar({
-                element: "#calendar2", theme: "lite-purple"
+                element: "#calendar",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log(e.detail)},
+                theme: "lite-purple"
             });
         }
     </script>
