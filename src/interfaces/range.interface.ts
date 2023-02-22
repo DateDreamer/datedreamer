@@ -1,4 +1,4 @@
-export interface ICalendarOptions {
+export interface IRangeOptions {
     element: Element | string,
     selectedDate?: string | Date | undefined,
     theme?: "unstyled" | "lite-purple" | undefined,
@@ -10,6 +10,7 @@ export interface ICalendarOptions {
     inputPlaceholder?: string | undefined,
     hideInputs?: boolean | undefined,
     darkMode?: boolean | undefined,
-    onChange?: ((event: CustomEvent) => void) | undefined
+    onChange?: ((event: CustomEvent) => void) | undefined,
     onRender?: ((event: CustomEvent) => void) | undefined
+    
 }

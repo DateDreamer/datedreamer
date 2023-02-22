@@ -1,6 +1,6 @@
-import { ICalendarOptions } from "./calendar.interface";
+import { ICalendarOptions } from "../interfaces/calendar.interface";
 import { calendar } from "./calendar";
-import { calendarToggleRoot } from "./utils";
+import { calendarToggleRoot } from "../utils/calendar-utils";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat)
