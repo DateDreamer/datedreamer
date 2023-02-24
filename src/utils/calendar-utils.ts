@@ -261,6 +261,7 @@ export const litePurple = `
   padding: 6px 12px;
   display: inline-block;
   cursor: pointer;
+  color: black;
 }
 
 .dark .datedreamer__calendar_inputs button {
@@ -335,6 +336,11 @@ export const litePurple = `
   align-items: center;
   font-size: 12px;
   font-weight: bold;
+  color: black;
+}
+
+.datedreamer__calendar_days .datedreamer__calendar_day.active button {
+  color: #fff;
 }
 
 .dark .datedreamer__calendar_days .datedreamer__calendar_day button {
