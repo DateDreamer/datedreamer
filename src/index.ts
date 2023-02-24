@@ -1,4 +1,5 @@
-import { calendarToggle } from "./calendar-toggle";
-import { calendar } from "./calendar";
+import { calendarToggle } from "./components/calendar-toggle";
+import { calendar } from "./components/calendar";
+import {range} from "./components/range"; 
 
-export {calendar, calendarToggle};
+export {calendar, calendarToggle, range};
