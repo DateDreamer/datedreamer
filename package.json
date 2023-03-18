@@ -1,6 +1,6 @@
 {
   "name": "datedreamer",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "dist/datedreamer.js",
   "repository": "git@github.com:DateDreamer/DateDreamer.git",
   "homepage": "https://datedreamer.github.io/docs/",
