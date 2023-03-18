@@ -1,5 +1,12 @@
 
 
+## [0.2.1](https://github.com/DateDreamer/DateDreamer/compare/0.2.0...0.2.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* **calendar:** fixed issue with buttons showing blue in ios ([8123f65](https://github.com/DateDreamer/DateDreamer/commit/8123f654e31862d49a02b54d94f7548eae9f507f)), closes [#35](https://github.com/DateDreamer/DateDreamer/issues/35)
+
 # [0.2.0](https://github.com/DateDreamer/DateDreamer/compare/0.1.0...0.2.0) (2023-02-22)
 
 
