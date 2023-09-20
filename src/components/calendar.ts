@@ -272,7 +272,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     /**
      * Generates the day buttons
      */
-    private generateDays():void {
+    private generateDays(focusFirstorLastDay:false|"first"|"last" = false):void {
 
         // Dates
         const selectedDay = this.selectedDate.getDate();
@@ -291,7 +291,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
                 const day = document.createElement("div");
                 day.classList.add("datedreamer__calendar_day");
                 const button = document.createElement("button");
-                button.addEventListener("click", () => this.setSelectedDay(i - daysToSkipBefore))
+                button.addEventListener("click", () => this.setSelectedDay(i - daysToSkipBefore));
+                button.addEventListener("keydown", this.handleDayKeyDown);
                 button.innerText = (i - daysToSkipBefore).toString();
                 button.setAttribute('type', 'button');
                 
@@ -329,6 +330,21 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
                 day.append(button);
                 this.daysElement?.append(day);
 
+                // Focus on active
+                if(focusFirstorLastDay) {
+                    if(focusFirstorLastDay === "first" && i === daysToSkipBefore + 1) {
+                        button.focus();
+                    } else if(focusFirstorLastDay === "last" && i === daysToSkipBefore + daysInMonth) {
+                        button.focus();
+                    }
+                } else if((i == daysToSkipBefore + selectedDay) &&
+                this.displayedMonthDate.getMonth() == this.selectedDate.getMonth() &&
+                this.displayedMonthDate.getFullYear() == this.selectedDate.getFullYear()) {
+                    button.focus();
+                }
+
+                
+
             // Days that should show before the first day of the current month.
             } else if(i <= daysToSkipBefore) {
                 const day = document.createElement("div");
@@ -359,12 +375,71 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         }
     }
 
+    handleDayKeyDown = (e:KeyboardEvent) => {
+        if(e.key === "ArrowLeft") {
+            let sibling = null;
+            if(sibling = (e.target as HTMLElement).parentElement?.previousSibling) {
+                (sibling.firstChild as HTMLButtonElement)?.focus();
+            }
+        }
+
+        if(e.key === "ArrowRight") {
+            let sibling = null;
+            if(sibling = (e.target as HTMLElement).parentElement?.nextSibling) {
+                (sibling.firstChild as HTMLButtonElement)?.focus();
+            }
+        }
+
+        if(e.key === "ArrowUp") {
+            let sibling = null;
+            if(sibling = (e.target as HTMLElement).parentElement
+            ?.previousSibling
+            ?.previousSibling
+            ?.previousSibling
+            ?.previousSibling
+            ?.previousSibling
+            ?.previousSibling
+            ?.previousSibling
+            ) {
+                (sibling.firstChild as HTMLButtonElement)?.focus();
+            } else {
+                // Reached bottom, go to next month
+                this.goToPrevMonth(e,true);
+            }
+        }
+
+        if(e.key === "ArrowDown") {
+            let sibling = null;
+            if(sibling = (e.target as HTMLElement).parentElement
+            ?.nextSibling
+            ?.nextSibling
+            ?.nextSibling
+            ?.nextSibling
+            ?.nextSibling
+            ?.nextSibling
+            ?.nextSibling
+            ) {
+                (sibling.firstChild as HTMLButtonElement)?.focus();
+            } else {
+                // Reached bottom, go to next month
+                this.goToNextMonth(e, true);
+            }
+        }
+    }
+
     /**
      * Go to previous month
+     * @param e Event
+     * @param focusLastDay Sets active focus on last day of previous month
      */
-    goToPrevMonth = (e:Event) => {
+    goToPrevMonth = (e:Event, focusLastDay:boolean = false) => {
         this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() - 1);
-        this.rebuildCalendar();
+        
+        if(focusLastDay) {
+            this.rebuildCalendar(false, "last");
+        } else {
+            this.rebuildCalendar();
+        }
         if(this.onPrevNav){
             this.onPrevNav(new CustomEvent("prevNav",{detail: this.displayedMonthDate}));
         }
@@ -372,19 +447,27 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
     /**
      * Go to next month
+     * @param e Event
+     * @param focusFirstDay Sets active focus on first day of next month
      */
-    goToNextMonth = (e:Event) => {
+    goToNextMonth = (e:Event, focusFirstDay:boolean = false) => {
         this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() + 1);
-        this.rebuildCalendar();
+        if(focusFirstDay) {
+            this.rebuildCalendar(false,"first");
+        } else {
+            this.rebuildCalendar();
+        }
         if(this.onNextNav){
             this.onNextNav(new CustomEvent("prevNav",{detail: this.displayedMonthDate}));
         }
     }
 
     /**
-     * Rebuild calendar
+     * 
+     * @param rebuildInput Rebuilds the input elements
+     * @param focusFirstorLastDay Focuses the first or last day when the calendar is rebuilt.
      */
-    rebuildCalendar(rebuildInput = true) {
+    rebuildCalendar(rebuildInput = true, focusFirstorLastDay: false|"first"|"last" = false) {
         if(this.daysElement) {
             this.daysElement.innerHTML = "";
         }
@@ -395,7 +478,12 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
         this.generateErrors();
 
-        this.generateDays();
+        if(focusFirstorLastDay) {
+            this.generateDays(focusFirstorLastDay);
+        } else {
+            this.generateDays();
+        }
+
         this.generateHeader();
 
         if(rebuildInput) {
