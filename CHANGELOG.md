@@ -1,5 +1,12 @@
 
 
+## [0.3.1](https://github.com/DateDreamer/DateDreamer/compare/0.3.0...0.3.1) (2023-09-20)
+
+
+### Bug Fixes
+
+* **calendar:** fixed issue with page scrolling while using arrows to change focus date ([785c1b7](https://github.com/DateDreamer/DateDreamer/commit/785c1b72bc772b49b4a12f4fbcc774cd7a358d2d))
+
 # [0.3.0](https://github.com/DateDreamer/DateDreamer/compare/0.2.8...0.3.0) (2023-09-20)
 
 
