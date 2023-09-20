@@ -377,6 +377,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
     handleDayKeyDown = (e:KeyboardEvent) => {
         if(e.key === "ArrowLeft") {
+            e.preventDefault()
             let sibling = null;
             if(sibling = (e.target as HTMLElement).parentElement?.previousSibling) {
                 (sibling.firstChild as HTMLButtonElement)?.focus();
@@ -384,6 +385,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         }
 
         if(e.key === "ArrowRight") {
+            e.preventDefault()
             let sibling = null;
             if(sibling = (e.target as HTMLElement).parentElement?.nextSibling) {
                 (sibling.firstChild as HTMLButtonElement)?.focus();
@@ -391,6 +393,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         }
 
         if(e.key === "ArrowUp") {
+            e.preventDefault()
             let sibling = null;
             if(sibling = (e.target as HTMLElement).parentElement
             ?.previousSibling
@@ -409,6 +412,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
         }
 
         if(e.key === "ArrowDown") {
+            e.preventDefault()
             let sibling = null;
             if(sibling = (e.target as HTMLElement).parentElement
             ?.nextSibling
