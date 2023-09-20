@@ -1,5 +1,12 @@
 
 
+# [0.3.0](https://github.com/DateDreamer/DateDreamer/compare/0.2.8...0.3.0) (2023-09-20)
+
+
+### Features
+
+* **calendar:** added keyboard arrow navigation to calendar. Resolves [#96](https://github.com/DateDreamer/DateDreamer/issues/96) ([a2ebc44](https://github.com/DateDreamer/DateDreamer/commit/a2ebc44e21358c7fc532914974beb90c24bf63a4))
+
 ## [0.2.8](https://github.com/DateDreamer/DateDreamer/compare/0.2.6...0.2.8) (2023-09-20)
 
 ## [0.2.6](https://github.com/DateDreamer/DateDreamer/compare/0.2.5...0.2.6) (2023-05-19)
