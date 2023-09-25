@@ -26,7 +26,7 @@
     "dist"
   ],
   "devDependencies": {
-    "@release-it/conventional-changelog": "^7.0.1",
+    "@release-it/conventional-changelog": "^7.0.2",
     "commitizen": "^4.3.0",
     "css-loader": "^6.8.1",
     "cz-conventional-changelog": "^3.3.0",
