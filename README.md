@@ -127,3 +127,6 @@ new datedreamer.calendarToggle({
 
 ### Run development server
 ```yarn start```
+
+<br /><br />
+[Developed with love by Jorge Felico](https://jorgefelico.com)
