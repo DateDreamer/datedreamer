@@ -1,5 +1,12 @@
 
 
+## [0.3.5](https://github.com/DateDreamer/DateDreamer/compare/0.3.4...0.3.5) (2024-04-15)
+
+
+### Bug Fixes
+
+* **range:** added fix for onRender not firing ([469e421](https://github.com/DateDreamer/DateDreamer/commit/469e421381a2ee59c8c394a197704bfe40dc962a)), closes [#118](https://github.com/DateDreamer/DateDreamer/issues/118)
+
 ## [0.3.4](https://github.com/DateDreamer/DateDreamer/compare/0.3.3...0.3.4) (2023-11-17)
 
 ## [0.3.3](https://github.com/DateDreamer/DateDreamer/compare/0.3.2...0.3.3) (2023-10-24)
