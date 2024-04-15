@@ -111,6 +111,11 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
         } else if(typeof this.element == "object"){
             this.element.append(this);
         }
+
+        if(this.onRender) {
+            const customEvent = new CustomEvent("onRender")
+            this.onRender(customEvent);
+        }
     }
 
     addStyles():void {
