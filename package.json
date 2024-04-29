@@ -42,7 +42,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
-    "dayjs": "^1.11.10"
+    "dayjs": "^1.11.11"
   },
   "config": {
     "commitizen": {
