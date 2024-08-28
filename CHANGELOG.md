@@ -1,5 +1,7 @@
 
 
+## [0.3.6](https://github.com/DateDreamer/DateDreamer/compare/0.3.5...0.3.6) (2024-08-28)
+
 ## [0.3.5](https://github.com/DateDreamer/DateDreamer/compare/0.3.4...0.3.5) (2024-04-15)
 
 
