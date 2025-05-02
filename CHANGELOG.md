@@ -1,5 +1,12 @@
 
 
+## [0.3.7](https://github.com/DateDreamer/DateDreamer/compare/0.3.6...0.3.7) (2025-05-02)
+
+
+### Bug Fixes
+
+* **calendar:** fixed keyboard navigation issue where focus was lost when tabbing to date input box ([9e58344](https://github.com/DateDreamer/DateDreamer/commit/9e58344b71674ab8bdac33a564cbaaede4642899)), closes [#155](https://github.com/DateDreamer/DateDreamer/issues/155)
+
 ## [0.3.6](https://github.com/DateDreamer/DateDreamer/compare/0.3.5...0.3.6) (2024-08-28)
 
 ## [0.3.5](https://github.com/DateDreamer/DateDreamer/compare/0.3.4...0.3.5) (2024-04-15)
