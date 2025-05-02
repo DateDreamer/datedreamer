@@ -576,7 +576,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
      * Handles the KeyUp event in the date textbox.
      * @param e KeyUp event
      */
-    dateInputChanged(e: Event) {
+    dateInputChanged(e: Event|KeyboardEvent) {
+        if(e instanceof KeyboardEvent && e.code  === "Tab") return;
         const newDate = dayjs((e.target as HTMLInputElement).value,this.format).toDate();
         if(!isNaN(newDate.getUTCMilliseconds())) {
             this.selectedDate = newDate;
