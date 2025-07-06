@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DateDreamer - Basic Calendar Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .example-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+        }
+        .example-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .calendar-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .output {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DateDreamer Calendar Examples</h1>
+        
+        <div class="example-section">
+            <div class="example-title">Basic Calendar</div>
+            <div class="calendar-container">
+                <div id="basic-calendar"></div>
+            </div>
+            <div class="output" id="basic-output">Selected date will appear here</div>
+        </div>
+
+        <div class="example-section">
+            <div class="example-title">Calendar with Custom Theme</div>
+            <div class="calendar-container">
+                <div id="themed-calendar"></div>
+            </div>
+            <div class="output" id="themed-output">Selected date will appear here</div>
+        </div>
+
+        <div class="example-section">
+            <div class="example-title">Dark Mode Calendar</div>
+            <div class="calendar-container">
+                <div id="dark-calendar"></div>
+            </div>
+            <div class="output" id="dark-output">Selected date will appear here</div>
+        </div>
+
+        <div class="example-section">
+            <div class="example-title">Calendar without Input</div>
+            <div class="calendar-container">
+                <div id="no-input-calendar"></div>
+            </div>
+            <div class="output" id="no-input-output">Selected date will appear here</div>
+        </div>
+    </div>
+
+    <script src="../dist/datedreamer.js"></script>
+    <script>
+        // Basic Calendar
+        const basicCalendar = new datedreamer.calendar({
+            element: '#basic-calendar',
+            selectedDate: new Date(),
+            onChange: (event) => {
+                document.getElementById('basic-output').textContent = 
+                    `Selected date: ${event.detail}`;
+            }
+        });
+
+        // Themed Calendar
+        const themedCalendar = new datedreamer.calendar({
+            element: '#themed-calendar',
+            selectedDate: new Date(),
+            theme: 'lite-purple',
+            onChange: (event) => {
+                document.getElementById('themed-output').textContent = 
+                    `Selected date: ${event.detail}`;
+            }
+        });
+
+        // Dark Mode Calendar
+        const darkCalendar = new datedreamer.calendar({
+            element: '#dark-calendar',
+            selectedDate: new Date(),
+            theme: 'lite-purple',
+            darkMode: true,
+            onChange: (event) => {
+                document.getElementById('dark-output').textContent = 
+                    `Selected date: ${event.detail}`;
+            }
+        });
+
+        // Calendar without Input
+        const noInputCalendar = new datedreamer.calendar({
+            element: '#no-input-calendar',
+            selectedDate: new Date(),
+            hideInputs: true,
+            onChange: (event) => {
+                document.getElementById('no-input-output').textContent = 
+                    `Selected date: ${event.detail}`;
+            }
+        });
+    </script>
+</body>
+</html> 

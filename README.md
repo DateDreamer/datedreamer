@@ -130,11 +130,74 @@ new datedreamer.calendarToggle({
 
 ## Development
 
-### Install dependencies using yarn
-```yarn install```
+### Quick Start
 
-### Run development server
-```yarn start```
+```bash
+# Clone the repository
+git clone https://github.com/DateDreamer/DateDreamer.git
+cd DateDreamer
+
+# Run the setup script (macOS/Linux)
+chmod +x scripts/setup-dev.sh
+./scripts/setup-dev.sh
+
+# Or manually:
+yarn install
+npx husky install
+yarn format
+```
+
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `yarn start` | Start development server |
+| `yarn build` | Build for production |
+| `yarn test` | Run tests |
+| `yarn test:watch` | Run tests in watch mode |
+| `yarn test:coverage` | Run tests with coverage report |
+| `yarn lint` | Run ESLint |
+| `yarn lint:fix` | Fix ESLint errors automatically |
+| `yarn format` | Format code with Prettier |
+| `yarn type-check` | Run TypeScript type checking |
+
+### Code Quality
+
+This project uses several tools to maintain code quality:
+
+- **ESLint** - Code linting and style enforcement
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for pre-commit checks
+- **Jest** - Unit testing framework
+- **TypeScript** - Type checking
+
+### Testing
+
+```bash
+# Run all tests
+yarn test
+
+# Run tests in watch mode
+yarn test:watch
+
+# Run tests with coverage
+yarn test:coverage
+```
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and linting (`yarn test && yarn lint`)
+5. Commit your changes (`yarn commit`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+## Documentation
+
+- [API Documentation](./docs/API.md) - Complete API reference
+- [Examples](./examples/) - Usage examples and demos
 
 <br /><br />
 [Developed with love by Jorge Felico](https://jorgefelico.com)

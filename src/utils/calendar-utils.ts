@@ -1,8 +1,19 @@
-export const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+export const monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
-export const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export const leftChevron = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>`;
 export const rightChevron = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>`;
@@ -10,15 +21,19 @@ export const rightChevron = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
 /**
  * The HTML for the calendar element.
  */
-export function calendarRoot(theme: string, styles: string = "", darkMode: boolean | undefined):string {
+export function calendarRoot(
+  theme: string,
+  styles: string = '',
+  darkMode: boolean | undefined
+): string {
   return `
   <style>
       ${unstyledTheme}
-      ${theme == "lite-purple" ? litePurple : ""}
+      ${theme == 'lite-purple' ? litePurple : ''}
       
       ${styles}
   </style>
-  <div class="datedreamer__calendar ${darkMode ? "dark": ""}">
+  <div class="datedreamer__calendar ${darkMode ? 'dark' : ''}">
       <div class="datedreamer__calendar_header"></div>
   
       <div class="datedreamer__calendar_inputs"></div>
@@ -38,10 +53,16 @@ export function calendarRoot(theme: string, styles: string = "", darkMode: boole
           <div class="datedreamer__calendar_days"></div>
       </div>
   </div>
-  `
+  `;
 }
 
-export function calendarToggleRoot(theme: string | undefined, styles: string = "", inputPlaceholder: string | undefined, selectedDate: string | Date | undefined, darkMode: boolean | undefined):string {
+export function calendarToggleRoot(
+  theme: string | undefined,
+  styles: string = '',
+  inputPlaceholder: string | undefined,
+  selectedDate: string | Date | undefined,
+  darkMode: boolean | undefined
+): string {
   return `
     <style>
         .datedreamer__calendar-toggle {
@@ -58,7 +79,9 @@ export function calendarToggleRoot(theme: string | undefined, styles: string = "
             display: block;
         }
 
-        ${theme == "lite-purple" ? `
+        ${
+          theme == 'lite-purple'
+            ? `
         .datedreamer__calendar-toggle__input input {
             font-weight: 500;
             border-radius: 4px;
@@ -76,18 +99,20 @@ export function calendarToggleRoot(theme: string | undefined, styles: string = "
             border: 1px solid #4a5568;
             color: #fff;
         }
-        ` : ""}
+        `
+            : ''
+        }
 
         ${styles}
     </style>
-    <div class="datedreamer__calendar-toggle ${darkMode ? "dark": ""}">
+    <div class="datedreamer__calendar-toggle ${darkMode ? 'dark' : ''}">
         <div class="datedreamer__calendar-toggle__input">
             <input id="date-input" placeholder="${inputPlaceholder}" value="${selectedDate}" readonly/>
         </div>
 
         <div class="datedreamer__calendar-toggle__calendar"></div>
     </div>
-  `
+  `;
 }
 
 export const unstyledTheme = `
@@ -394,4 +419,4 @@ export const litePurple = `
 .dark .datedreamer__calendar_days .datedreamer__calendar_day.highlight button:hover {
   background-color: #BFA9F3;
 }
-`
+`;
