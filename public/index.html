@@ -206,7 +206,45 @@
                 format: "MM-DD-YYYY",
                 onChange: (e) => {console.log('Light range:', e.detail)},
                 theme: "lite-purple",
-                darkMode: isDarkMode
+                darkMode: isDarkMode,
+                predefinedRanges: [
+                    {
+                        label: 'Last 7 Days',
+                        getRange: () => {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setDate(start.getDate() - 6);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'Last 30 Days',
+                        getRange: () => {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setDate(start.getDate() - 29);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'This Month',
+                        getRange: () => {
+                            const now = new Date();
+                            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+                            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'Last Month',
+                        getRange: () => {
+                            const now = new Date();
+                            const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                            const end = new Date(now.getFullYear(), now.getMonth(), 0);
+                            return { start, end };
+                        }
+                    }
+                ]
             });
             
             window.rangeDark = new datedreamer.range({
@@ -214,7 +252,45 @@
                 format: "MM-DD-YYYY",
                 onChange: (e) => {console.log('Dark range:', e.detail)},
                 theme: "lite-purple",
-                darkMode: !isDarkMode
+                darkMode: !isDarkMode,
+                predefinedRanges: [
+                    {
+                        label: 'Last 7 Days',
+                        getRange: () => {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setDate(start.getDate() - 6);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'Last 30 Days',
+                        getRange: () => {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setDate(start.getDate() - 29);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'This Month',
+                        getRange: () => {
+                            const now = new Date();
+                            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+                            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'Last Month',
+                        getRange: () => {
+                            const now = new Date();
+                            const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                            const end = new Date(now.getFullYear(), now.getMonth(), 0);
+                            return { start, end };
+                        }
+                    }
+                ]
             });
         }
         
@@ -259,7 +335,45 @@
                 format: "MM-DD-YYYY",
                 onChange: (e) => {console.log('Light range:', e.detail)},
                 theme: "lite-purple",
-                darkMode: false
+                darkMode: false,
+                predefinedRanges: [
+                    {
+                        label: 'Last 7 Days',
+                        getRange: () => {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setDate(start.getDate() - 6);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'Last 30 Days',
+                        getRange: () => {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setDate(start.getDate() - 29);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'This Month',
+                        getRange: () => {
+                            const now = new Date();
+                            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+                            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'Last Month',
+                        getRange: () => {
+                            const now = new Date();
+                            const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                            const end = new Date(now.getFullYear(), now.getMonth(), 0);
+                            return { start, end };
+                        }
+                    }
+                ]
             });
             
             window.rangeDark = new datedreamer.range({
@@ -267,7 +381,45 @@
                 format: "MM-DD-YYYY",
                 onChange: (e) => {console.log('Dark range:', e.detail)},
                 theme: "lite-purple",
-                darkMode: true
+                darkMode: true,
+                predefinedRanges: [
+                    {
+                        label: 'Last 7 Days',
+                        getRange: () => {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setDate(start.getDate() - 6);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'Last 30 Days',
+                        getRange: () => {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setDate(start.getDate() - 29);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'This Month',
+                        getRange: () => {
+                            const now = new Date();
+                            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+                            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                            return { start, end };
+                        }
+                    },
+                    {
+                        label: 'Last Month',
+                        getRange: () => {
+                            const now = new Date();
+                            const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                            const end = new Date(now.getFullYear(), now.getMonth(), 0);
+                            return { start, end };
+                        }
+                    }
+                ]
             });
         }
     </script>

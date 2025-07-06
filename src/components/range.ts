@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { IRangeOptions } from '../interfaces/range.interface';
+import { IRangeOptions, IPredefinedRange } from '../interfaces/range.interface';
 import { calendarStyles } from '../utils/range-utils';
 import { calendar } from './calendar';
 import CalendarConnector from './connector';
@@ -18,6 +18,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
   iconNext?: string | undefined;
   darkMode?: boolean | undefined;
   darkModeAuto?: boolean | undefined;
+  predefinedRanges?: IPredefinedRange[] | undefined;
   onChange?:
     | ((event: CustomEvent<{ startDate: string; endDate: string }>) => void)
     | undefined;
@@ -43,12 +44,55 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
     this.theme = options.theme;
     this.darkMode = options.darkMode;
     this.darkModeAuto = options.darkModeAuto;
+    this.predefinedRanges = options.predefinedRanges;
 
     if (this.connector) {
       this.connector.dateChangedCallback = this.handleDateChange;
     }
 
     this.init();
+  }
+
+  /**
+   * Handles click events on predefined range buttons
+   * @param range - The predefined range that was clicked
+   */
+  private handlePredefinedRangeClick(range: IPredefinedRange): void {
+    const { start, end } = range.getRange();
+
+    if (this.connector) {
+      this.connector.startDate = new Date(start);
+      this.connector.endDate = new Date(end);
+
+      // Update display dates to show the selected range
+      this.calendar1DisplayedDate = new Date(start);
+      this.calendar1DisplayedDate.setDate(1);
+      this.calendar2DisplayedDate = new Date(end);
+      this.calendar2DisplayedDate.setDate(1);
+
+      // If the range spans multiple months, show start and end months
+      if (
+        start.getMonth() !== end.getMonth() ||
+        start.getFullYear() !== end.getFullYear()
+      ) {
+        this.calendar2DisplayedDate = new Date(end);
+        this.calendar2DisplayedDate.setDate(1);
+      } else {
+        // If same month, show current and next month
+        this.calendar2DisplayedDate = new Date(start);
+        this.calendar2DisplayedDate.setMonth(
+          this.calendar2DisplayedDate.getMonth() + 1
+        );
+        this.calendar2DisplayedDate.setDate(1);
+      }
+
+      this.resetViewedDated();
+      this.connector.rebuildAllCalendars();
+
+      if (this.connector.dateChangedCallback) {
+        this.connector.dateChangedCallback(new CustomEvent('dateChanged'));
+      }
+    }
   }
 
   /**
@@ -113,10 +157,33 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
     // Set up dark mode listener if auto mode is enabled
     this.setupDarkModeListener(rangeElement);
 
+    // Create predefined ranges sidebar if ranges are provided
+    if (this.predefinedRanges && this.predefinedRanges.length > 0) {
+      const sidebarElement = document.createElement('div');
+      sidebarElement.classList.add('datedreamer-range-sidebar');
+
+      this.predefinedRanges.forEach(range => {
+        const rangeButton = document.createElement('button');
+        rangeButton.classList.add('datedreamer-range-button');
+        rangeButton.textContent = range.label;
+        rangeButton.type = 'button';
+        rangeButton.addEventListener('click', () =>
+          this.handlePredefinedRangeClick(range)
+        );
+        sidebarElement.appendChild(rangeButton);
+      });
+
+      rangeElement.appendChild(sidebarElement);
+    }
+
+    const calendarsContainer = document.createElement('div');
+    calendarsContainer.classList.add('datedreamer-range-calendars');
+
     const calendar1WrapElement = document.createElement('div');
     const calendar2WrapElement = document.createElement('div');
 
-    rangeElement.append(calendar1WrapElement, calendar2WrapElement);
+    calendarsContainer.append(calendar1WrapElement, calendar2WrapElement);
+    rangeElement.append(calendarsContainer);
 
     this.calendar1 = new calendar({
       element: calendar1WrapElement,
@@ -180,6 +247,63 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
             .datedreamer-range.dark {
                 background: #1a1a1a;
                 box-shadow: 0 10px 15px -3px rgb(0 0 0 / 30%), 0 4px 6px -4px rgb(0 0 0 / 30%);
+            }
+
+            .datedreamer-range-sidebar {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                padding: 12px;
+                background: #f9f9f9;
+                border-right: 1px solid #e5e5e5;
+                min-width: 130px;
+            }
+
+            .datedreamer-range.dark .datedreamer-range-sidebar {
+                background: #2a2a2a;
+                border-right: 1px solid #404040;
+            }
+
+            .datedreamer-range-button {
+                padding: 6px 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
+                background: white;
+                color: #374151;
+                font-size: 12px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-align: left;
+            }
+
+            .datedreamer-range-button:hover {
+                background: #f3f4f6;
+                border-color: #9ca3af;
+            }
+
+            .datedreamer-range-button:active {
+                background: #e5e7eb;
+                transform: translateY(1px);
+            }
+
+            .datedreamer-range.dark .datedreamer-range-button {
+                background: #374151;
+                color: #f9fafb;
+                border-color: #4b5563;
+            }
+
+            .datedreamer-range.dark .datedreamer-range-button:hover {
+                background: #4b5563;
+                border-color: #6b7280;
+            }
+
+            .datedreamer-range.dark .datedreamer-range-button:active {
+                background: #374151;
+            }
+
+            .datedreamer-range-calendars {
+                display: flex;
             }
             ${this.styles ? this.styles : ''}
         `;

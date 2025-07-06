@@ -164,8 +164,59 @@ const rangeCalendar = new range({
 | `hideInputs` | `boolean` | `false` | Whether to hide the input field and today button |
 | `darkMode` | `boolean` | `false` | Whether to enable dark mode styling |
 | `darkModeAuto` | `boolean` | `false` | Whether to automatically detect user's system preference for dark mode |
+| `predefinedRanges` | `IPredefinedRange[]` | `undefined` | Array of predefined range buttons to display |
 | `onChange` | `function` | `undefined` | Callback function triggered when date range changes |
 | `onRender` | `function` | `undefined` | Callback function triggered when calendar renders |
+
+#### Predefined Ranges
+
+The range calendar supports predefined range buttons that provide quick access to common date ranges. These appear as buttons on the left side of the calendar.
+
+##### IPredefinedRange Interface
+
+```typescript
+interface IPredefinedRange {
+  label: string;
+  getRange: () => { start: Date; end: Date };
+}
+```
+
+##### Example Usage
+
+```javascript
+const rangeCalendar = new range({
+  element: '#range-container',
+  predefinedRanges: [
+    {
+      label: 'Last 7 Days',
+      getRange: () => {
+        const end = new Date();
+        const start = new Date();
+        start.setDate(start.getDate() - 6);
+        return { start, end };
+      }
+    },
+    {
+      label: 'This Month',
+      getRange: () => {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth(), 1);
+        const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        return { start, end };
+      }
+    },
+    {
+      label: 'Last Month',
+      getRange: () => {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const end = new Date(now.getFullYear(), now.getMonth(), 0);
+        return { start, end };
+      }
+    }
+  ]
+});
+```
 
 ## Date Formats
 

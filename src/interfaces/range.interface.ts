@@ -1,3 +1,8 @@
+export interface IPredefinedRange {
+  label: string;
+  getRange: () => { start: Date; end: Date };
+}
+
 export interface IRangeOptions {
   element: Element | string;
   selectedDate?: string | Date | undefined;
@@ -11,6 +16,7 @@ export interface IRangeOptions {
   hideInputs?: boolean | undefined;
   darkMode?: boolean | undefined;
   darkModeAuto?: boolean | undefined;
+  predefinedRanges?: IPredefinedRange[] | undefined;
   onChange?: ((event: CustomEvent) => void) | undefined;
   onRender?: ((event: CustomEvent) => void) | undefined;
 }
