@@ -96,11 +96,11 @@ describe('Calendar Component', () => {
       selectedDate: new Date('2024-01-15'),
     });
     const initialMonth = calendarInstance.displayedMonthDate.getMonth();
-    calendarInstance.goToNextMonth(new Event('click'));
+    calendarInstance.goToNextMonth();
     expect(calendarInstance.displayedMonthDate.getMonth()).toBe(
       (initialMonth + 1) % 12
     );
-    calendarInstance.goToPrevMonth(new Event('click'));
+    calendarInstance.goToPrevMonth();
     expect(calendarInstance.displayedMonthDate.getMonth()).toBe(initialMonth);
   });
 
@@ -225,9 +225,9 @@ describe('Calendar Component', () => {
       onNextNav,
       onPrevNav,
     });
-    calendarInstance.goToNextMonth(new Event('click'));
+    calendarInstance.goToNextMonth();
     expect(onNextNav).toHaveBeenCalled();
-    calendarInstance.goToPrevMonth(new Event('click'));
+    calendarInstance.goToPrevMonth();
     expect(onPrevNav).toHaveBeenCalled();
   });
 });

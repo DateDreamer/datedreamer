@@ -1,14 +1,24 @@
 import { ICalendarOptions } from '../interfaces/calendar.interface';
-import {
-  calendarRoot,
-  leftChevron,
-  monthNames,
-  rightChevron,
-  weekdays,
-} from '../utils/calendar-utils';
+import { calendarRoot } from '../utils/calendar-utils';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import CalendarConnector from './connector';
+import {
+  generateHeader,
+  generateInputs,
+  generateErrors,
+  generateDays,
+} from './calendar-render';
+import {
+  goToPrevMonth,
+  goToNextMonth,
+  handleDayKeyDown,
+  setSelectedDay,
+  dateInputChanged,
+  setDateToToday,
+  dateChangedCallback,
+  onRenderCallback,
+} from './calendar-events';
 dayjs.extend(customParseFormat);
 
 /**
@@ -209,13 +219,13 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     );
 
     // Generate the previous, title, next buttons.
-    this.generateHeader();
+    generateHeader(this);
 
     // Generate the inputs section
-    this.generateInputs();
+    generateInputs(this);
 
     // Generate the days buttons
-    this.generateDays();
+    generateDays(this);
 
     // Set up dark mode listener if auto mode is enabled
     this.setupDarkModeListener();
@@ -294,329 +304,38 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
   }
 
   /**
-   * Generates the Previous, Title, and Next header elements.
+   * Navigates to the previous month
    */
-  private generateHeader(): void {
-    // Previous Button
-    if (!this.hidePrevNav) {
-      const prevButton = document.createElement('button');
-      prevButton.classList.add('datedreamer__calendar_prev');
-      prevButton.innerHTML = this.iconPrev ? this.iconPrev : leftChevron;
-      prevButton.setAttribute('aria-label', 'Previous');
-      prevButton.addEventListener('click', this.goToPrevMonth);
-      this.headerElement?.append(prevButton);
-    }
-
-    // Title
-    const title = document.createElement('span');
-    title.classList.add('datedreamer__calendar_title');
-    title.innerText = `${monthNames[this.displayedMonthDate.getMonth()]} ${this.displayedMonthDate.getFullYear()}`;
-    this.headerElement?.append(title);
-
-    // Next Button
-    if (!this.hideNextNav) {
-      const nextButton = document.createElement('button');
-      nextButton.classList.add('datedreamer__calendar_next');
-      nextButton.innerHTML = this.iconNext ? this.iconNext : rightChevron;
-      nextButton.setAttribute('aria-label', 'Next');
-      nextButton.addEventListener('click', this.goToNextMonth);
-      this.headerElement?.append(nextButton);
-    }
-  }
-
-  /**
-   * Generates the date field and today button
-   */
-  private generateInputs(): void {
-    if (this.hideInputs) return;
-
-    // Date input label
-    const dateInputLabel = document.createElement('label');
-    dateInputLabel.setAttribute('for', 'date-input');
-    dateInputLabel.textContent = this.inputLabel;
-
-    const inputButtonWrap = document.createElement('div');
-    inputButtonWrap.classList.add('datedreamer__calendar__inputs-wrap');
-
-    // Date input
-    const dateField = document.createElement('input');
-    dateField.id = 'date-input';
-    dateField.placeholder = this.inputPlaceholder;
-    dateField.value = dayjs(this.selectedDate).format(this.format);
-    dateField.addEventListener('keyup', e => this.dateInputChanged(e));
-    dateField.setAttribute('title', 'Set a date');
-
-    // Today button
-    const todayButton = document.createElement('button');
-    todayButton.innerText = 'Today';
-    todayButton.addEventListener('click', () => this.setDateToToday());
-
-    inputButtonWrap.append(dateField, todayButton);
-
-    this.inputsElement?.append(dateInputLabel, inputButtonWrap);
-  }
-
-  /**
-   *  Generates errors pushed to the errors array.
-   */
-  private generateErrors(): void {
-    const dateInput = this.inputsElement?.querySelector('input');
-    if (dateInput) {
-      dateInput.classList.remove('error');
-    }
-
-    if (this.errorsElement) this.errorsElement.innerHTML = '';
-
-    this.errors.forEach(({ type, message }) => {
-      const errEl = document.createElement('span');
-      errEl.innerText = message;
-
-      if (type == 'input-error') {
-        if (dateInput) {
-          dateInput.classList.add('error');
-        }
-      }
-
-      this.errorsElement?.append(errEl);
-    });
-
-    this.errors = [];
-  }
-
-  /**
-   * Generates the day buttons
-   */
-  private generateDays(
-    focusFirstorLastDay: false | 'first' | 'last' = false
-  ): void {
-    // Dates
-    const selectedDay = this.selectedDate.getDate();
-    const month = this.displayedMonthDate.getMonth();
-    const year = this.displayedMonthDate.getFullYear();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const firstDayOfMonth = new Date(year, month, 1);
-    const lastDayOfMonth = new Date(year, month, daysInMonth);
-    const daysToSkipBefore = weekdays.indexOf(
-      firstDayOfMonth.toString().split(' ')[0]
-    );
-    const daysToSkipAfter =
-      6 - weekdays.indexOf(lastDayOfMonth.toString().split(' ')[0]);
-
-    // Loop through the days and create a day element with button
-    for (
-      let i = 1;
-      i <= daysToSkipBefore + daysInMonth + daysToSkipAfter;
-      i++
-    ) {
-      // Days of the current month
-      if (i > daysToSkipBefore && i <= daysToSkipBefore + daysInMonth) {
-        const day = document.createElement('div');
-        day.classList.add('datedreamer__calendar_day');
-        const button = document.createElement('button');
-        button.addEventListener('click', () =>
-          this.setSelectedDay(i - daysToSkipBefore)
-        );
-        button.addEventListener('keydown', this.handleDayKeyDown);
-        button.innerText = (i - daysToSkipBefore).toString();
-        button.setAttribute('type', 'button');
-
-        if (this.rangeMode) {
-          if (
-            this.displayedMonthDate.getMonth() ==
-              this.connector?.startDate?.getMonth() &&
-            this.displayedMonthDate.getFullYear() ==
-              this.connector.startDate.getFullYear() &&
-            i - daysToSkipBefore == this.connector.startDate.getDate()
-          ) {
-            day.classList.add('active');
-          }
-
-          if (
-            this.displayedMonthDate.getMonth() ==
-              this.connector?.endDate?.getMonth() &&
-            this.displayedMonthDate.getFullYear() ==
-              this.connector.endDate.getFullYear() &&
-            i - daysToSkipBefore == this.connector.endDate.getDate()
-          ) {
-            day.classList.add('active');
-          }
-
-          const selectedDate = new Date(this.displayedMonthDate);
-          selectedDate.setDate(i - daysToSkipBefore);
-
-          if (this.connector?.startDate && this.connector.endDate) {
-            if (
-              this.connector?.startDate < selectedDate &&
-              this.connector?.endDate > selectedDate
-            ) {
-              day.classList.add('highlight');
-            }
-          }
-        } else {
-          if (
-            i == daysToSkipBefore + selectedDay &&
-            this.displayedMonthDate.getMonth() ==
-              this.selectedDate.getMonth() &&
-            this.displayedMonthDate.getFullYear() ==
-              this.selectedDate.getFullYear()
-          ) {
-            day.classList.add('active');
-          }
-        }
-
-        day.append(button);
-        this.daysElement?.append(day);
-
-        // Focus on active
-        if (focusFirstorLastDay) {
-          if (focusFirstorLastDay === 'first' && i === daysToSkipBefore + 1) {
-            button.focus();
-          } else if (
-            focusFirstorLastDay === 'last' &&
-            i === daysToSkipBefore + daysInMonth
-          ) {
-            button.focus();
-          }
-        } else if (
-          i == daysToSkipBefore + selectedDay &&
-          this.displayedMonthDate.getMonth() == this.selectedDate.getMonth() &&
-          this.displayedMonthDate.getFullYear() ==
-            this.selectedDate.getFullYear()
-        ) {
-          button.focus();
-        }
-
-        // Days that should show before the first day of the current month.
-      } else if (i <= daysToSkipBefore) {
-        const day = document.createElement('div');
-        day.classList.add('datedreamer__calendar_day', 'disabled');
-        if (!this.hideOtherMonthDays) {
-          const button = document.createElement('button');
-          button.innerText = new Date(year, month, 0 - (daysToSkipBefore - i))
-            .getDate()
-            .toString();
-          button.setAttribute('disabled', 'true');
-          button.setAttribute('type', 'button');
-          day.append(button);
-        }
-        this.daysElement?.append(day);
-
-        // Days that should show of the next month
-      } else if (i > daysToSkipBefore + daysInMonth) {
-        const dayNumber =
-          i -
-          (daysToSkipBefore + daysToSkipAfter + daysInMonth) +
-          daysToSkipAfter;
-        const day = document.createElement('div');
-        day.classList.add('datedreamer__calendar_day', 'disabled');
-        if (!this.hideOtherMonthDays) {
-          const button = document.createElement('button');
-          button.innerText = new Date(year, month + 1, dayNumber)
-            .getDate()
-            .toString();
-          button.setAttribute('disabled', 'true');
-          button.setAttribute('type', 'button');
-          day.append(button);
-        }
-        this.daysElement?.append(day);
-      }
-    }
-  }
-
-  handleDayKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      let sibling = null;
-      if (
-        (sibling = (e.target as HTMLElement).parentElement?.previousSibling)
-      ) {
-        (sibling.firstChild as HTMLButtonElement)?.focus();
-      }
-    }
-
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      let sibling = null;
-      if ((sibling = (e.target as HTMLElement).parentElement?.nextSibling)) {
-        (sibling.firstChild as HTMLButtonElement)?.focus();
-      }
-    }
-
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      let sibling = null;
-      if (
-        (sibling = (e.target as HTMLElement).parentElement?.previousSibling
-          ?.previousSibling?.previousSibling?.previousSibling?.previousSibling
-          ?.previousSibling?.previousSibling)
-      ) {
-        (sibling.firstChild as HTMLButtonElement)?.focus();
-      } else {
-        // Reached bottom, go to next month
-        this.goToPrevMonth(e, true);
-      }
-    }
-
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      let sibling = null;
-      if (
-        (sibling = (e.target as HTMLElement).parentElement?.nextSibling
-          ?.nextSibling?.nextSibling?.nextSibling?.nextSibling?.nextSibling
-          ?.nextSibling)
-      ) {
-        (sibling.firstChild as HTMLButtonElement)?.focus();
-      } else {
-        // Reached bottom, go to next month
-        this.goToNextMonth(e, true);
-      }
-    }
+  goToPrevMonth = () => {
+    goToPrevMonth(this);
   };
 
   /**
-   * Go to previous month
-   * @param e Event
-   * @param focusLastDay Sets active focus on last day of previous month
+   * Navigates to the next month
    */
-  goToPrevMonth = (e: Event, focusLastDay: boolean = false) => {
-    this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() - 1);
-
-    if (focusLastDay) {
-      this.rebuildCalendar(false, 'last');
-    } else {
-      this.rebuildCalendar();
-    }
-    if (this.onPrevNav) {
-      this.onPrevNav(
-        new CustomEvent('prevNav', { detail: this.displayedMonthDate })
-      );
-    }
+  goToNextMonth = () => {
+    goToNextMonth(this);
   };
 
   /**
-   * Go to next month
-   * @param e Event
-   * @param focusFirstDay Sets active focus on first day of next month
+   * Handles keyboard navigation within calendar days
    */
-  goToNextMonth = (e: Event, focusFirstDay: boolean = false) => {
-    this.displayedMonthDate.setMonth(this.displayedMonthDate.getMonth() + 1);
-    if (focusFirstDay) {
-      this.rebuildCalendar(false, 'first');
-    } else {
-      this.rebuildCalendar();
-    }
-    if (this.onNextNav) {
-      this.onNextNav(
-        new CustomEvent('prevNav', { detail: this.displayedMonthDate })
-      );
-    }
+  handleDayKeyDown = (event: KeyboardEvent) => {
+    handleDayKeyDown(this, event);
   };
 
   /**
-   *
-   * @param rebuildInput Rebuilds the input elements
-   * @param focusFirstorLastDay Focuses the first or last day when the calendar is rebuilt.
+   * Triggers the onRender callback that was passed into the calendar options.
    */
+  private onRenderCallback() {
+    onRenderCallback(this);
+  }
+
+  setDisplayedMonthDate(date: Date) {
+    this.displayedMonthDate = date;
+    this.rebuildCalendar();
+  }
+
   rebuildCalendar(
     rebuildInput = true,
     focusFirstorLastDay: false | 'first' | 'last' = false
@@ -629,21 +348,21 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
       this.headerElement.innerHTML = '';
     }
 
-    this.generateErrors();
+    generateErrors(this);
 
     if (focusFirstorLastDay) {
-      this.generateDays(focusFirstorLastDay);
+      generateDays(this, focusFirstorLastDay);
     } else {
-      this.generateDays();
+      generateDays(this);
     }
 
-    this.generateHeader();
+    generateHeader(this);
 
     if (rebuildInput) {
       if (this.inputsElement) {
         this.inputsElement.innerHTML = '';
       }
-      this.generateInputs();
+      generateInputs(this);
     }
   }
 
@@ -651,48 +370,8 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
    * Sets the selected day of the viewable month.
    * @param day The day of the month in number format.
    */
-  private setSelectedDay = (day: number) => {
-    const newSelectedDate = new Date(this.displayedMonthDate);
-    newSelectedDate.setDate(day);
-
-    if (this.rangeMode) {
-      if (this.connector) {
-        if (
-          this.connector.startDate !== null &&
-          this.connector.endDate !== null
-        ) {
-          this.connector.startDate = null;
-          this.connector.endDate = null;
-          this.connector.rebuildAllCalendars();
-        }
-
-        if (this.connector.startDate == null) {
-          this.connector.startDate = new Date(newSelectedDate);
-        } else if (this.connector.endDate == null) {
-          this.connector.endDate = new Date(newSelectedDate);
-        }
-
-        if (
-          this.connector.startDate !== null &&
-          this.connector.endDate !== null
-        ) {
-          // Swapped start and end date because start date was larger than end date
-          // Optionally, handle swapped dates here
-          const oldEndDate = new Date(this.connector.endDate);
-          const oldStartDate = new Date(this.connector.startDate);
-          this.connector.startDate = oldEndDate;
-          this.connector.endDate = oldStartDate;
-        }
-
-        if (this.connector.dateChangedCallback) {
-          this.connector.dateChangedCallback(new CustomEvent('dateChanged'));
-        }
-      }
-    } else {
-      this.selectedDate = new Date(newSelectedDate);
-      this.rebuildCalendar();
-      this.dateChangedCallback(this.selectedDate);
-    }
+  setSelectedDay = (day: number) => {
+    setSelectedDay(this, day);
   };
 
   /**
@@ -727,67 +406,24 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
    * calendar.setDateToToday();
    * ```
    */
-  setDateToToday() {
-    this.selectedDate = new Date();
-    this.displayedMonthDate = new Date();
-    this.rebuildCalendar();
-    this.dateChangedCallback(this.selectedDate);
-  }
+  setDateToToday = () => {
+    setDateToToday(this);
+  };
 
   /**
    * Handles the KeyUp event in the date textbox.
    * @param e KeyUp event
    */
-  dateInputChanged(e: Event | KeyboardEvent) {
-    if (e instanceof KeyboardEvent && e.code === 'Tab') return;
-    const newDate = dayjs(
-      (e.target as HTMLInputElement).value,
-      this.format
-    ).toDate();
-    if (!isNaN(newDate.getUTCMilliseconds())) {
-      this.selectedDate = newDate;
-      this.displayedMonthDate = new Date(newDate);
-      this.rebuildCalendar(false);
-      this.dateChangedCallback(this.selectedDate);
-    } else {
-      this.errors.push({
-        type: 'input-error',
-        message: 'The entered date is invalid',
-      });
-      this.generateErrors();
-    }
-  }
+  dateInputChanged = (e: Event | KeyboardEvent) => {
+    dateInputChanged(this, e);
+  };
 
   /**
    * Triggers the onChange callback that was passed into the calendar options.
    * @param date The new date that has been selected in the calendar.
    */
   private dateChangedCallback(date: Date) {
-    if (this.onChange) {
-      const customEvent = new CustomEvent('onChange', {
-        detail: dayjs(date).format(this.format),
-      });
-      this.onChange(customEvent);
-    }
-  }
-
-  /**
-   * Triggers the onRender callback that was passed into the calendar options.
-   */
-  private onRenderCallback() {
-    if (this.onRender) {
-      const customEvent = new CustomEvent('onRender', {
-        detail: {
-          calendar: this.calendarElement,
-        },
-      });
-      this.onRender(customEvent);
-    }
-  }
-
-  setDisplayedMonthDate(date: Date) {
-    this.displayedMonthDate = date;
-    this.rebuildCalendar();
+    dateChangedCallback(this, date);
   }
 }
 
