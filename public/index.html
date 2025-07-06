@@ -4,18 +4,270 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DateDreamer Development</title>
+    <title>DateDreamer Development - Dark Mode Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            transition: background-color 0.3s ease;
+        }
+        
+        body.dark {
+            background: #121212;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: #0056b3;
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        body.dark .demo-section {
+            background: #1e1e1e;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .demo-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+        
+        body.dark .demo-title {
+            color: #fff;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .calendar-item {
+            text-align: center;
+        }
+        
+        .calendar-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        
+        body.dark .calendar-label {
+            color: #ccc;
+        }
+    </style>
 </head>
 <body>
-    <div id="calendar"></div>
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
+    
+    <div class="container">
+        <div class="header">
+            <h1>DateDreamer - Dark Mode Demo</h1>
+            <p>Click the toggle button to switch between light and dark themes</p>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Standalone Calendar</h2>
+            <div class="calendar-grid">
+                <div class="calendar-item">
+                    <div class="calendar-label">Light Mode</div>
+                    <div id="calendar-light"></div>
+                </div>
+                <div class="calendar-item">
+                    <div class="calendar-label">Dark Mode</div>
+                    <div id="calendar-dark"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Toggle Calendar</h2>
+            <div class="calendar-grid">
+                <div class="calendar-item">
+                    <div class="calendar-label">Light Mode</div>
+                    <div id="toggle-light"></div>
+                </div>
+                <div class="calendar-item">
+                    <div class="calendar-label">Dark Mode</div>
+                    <div id="toggle-dark"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="demo-title">Date Range</h2>
+            <div class="calendar-grid">
+                <div class="calendar-item">
+                    <div class="calendar-label">Light Mode</div>
+                    <div id="range-light"></div>
+                </div>
+                <div class="calendar-item">
+                    <div class="calendar-label">Dark Mode</div>
+                    <div id="range-dark"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        window.onload = () => {
-            window.cal = new datedreamer.calendar({
-                element: "#calendar",
+        let isDarkMode = false;
+        
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark', isDarkMode);
+            
+            // Update all calendars with new theme
+            updateCalendars();
+        }
+        
+        function updateCalendars() {
+            // Clear existing calendars
+            document.getElementById('calendar-light').innerHTML = '';
+            document.getElementById('calendar-dark').innerHTML = '';
+            document.getElementById('toggle-light').innerHTML = '';
+            document.getElementById('toggle-dark').innerHTML = '';
+            document.getElementById('range-light').innerHTML = '';
+            document.getElementById('range-dark').innerHTML = '';
+            
+            // Recreate calendars with updated dark mode
+            window.calLight = new datedreamer.calendar({
+                element: "#calendar-light",
                 format: "MM-DD-YYYY",
-                onChange: (e) => {console.log(e.detail)},
-                theme: "lite-purple"
+                onChange: (e) => {console.log('Light calendar:', e.detail)},
+                theme: "lite-purple",
+                darkMode: isDarkMode
+            });
+            
+            window.calDark = new datedreamer.calendar({
+                element: "#calendar-dark",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Dark calendar:', e.detail)},
+                theme: "lite-purple",
+                darkMode: !isDarkMode
+            });
+            
+            window.toggleLight = new datedreamer.calendarToggle({
+                element: "#toggle-light",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Light toggle:', e.detail)},
+                theme: "lite-purple",
+                darkMode: isDarkMode
+            });
+            
+            window.toggleDark = new datedreamer.calendarToggle({
+                element: "#toggle-dark",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Dark toggle:', e.detail)},
+                theme: "lite-purple",
+                darkMode: !isDarkMode
+            });
+            
+            window.rangeLight = new datedreamer.range({
+                element: "#range-light",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Light range:', e.detail)},
+                theme: "lite-purple",
+                darkMode: isDarkMode
+            });
+            
+            window.rangeDark = new datedreamer.range({
+                element: "#range-dark",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Dark range:', e.detail)},
+                theme: "lite-purple",
+                darkMode: !isDarkMode
+            });
+        }
+        
+        window.onload = () => {
+            // Standalone calendars
+            window.calLight = new datedreamer.calendar({
+                element: "#calendar-light",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Light calendar:', e.detail)},
+                theme: "lite-purple",
+                darkMode: false
+            });
+            
+            window.calDark = new datedreamer.calendar({
+                element: "#calendar-dark",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Dark calendar:', e.detail)},
+                theme: "lite-purple",
+                darkMode: true
+            });
+            
+            // Toggle calendars
+            window.toggleLight = new datedreamer.calendarToggle({
+                element: "#toggle-light",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Light toggle:', e.detail)},
+                theme: "lite-purple",
+                darkMode: false
+            });
+            
+            window.toggleDark = new datedreamer.calendarToggle({
+                element: "#toggle-dark",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Dark toggle:', e.detail)},
+                theme: "lite-purple",
+                darkMode: true
+            });
+            
+            // Range calendars
+            window.rangeLight = new datedreamer.range({
+                element: "#range-light",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Light range:', e.detail)},
+                theme: "lite-purple",
+                darkMode: false
+            });
+            
+            window.rangeDark = new datedreamer.range({
+                element: "#range-dark",
+                format: "MM-DD-YYYY",
+                onChange: (e) => {console.log('Dark range:', e.detail)},
+                theme: "lite-purple",
+                darkMode: true
             });
         }
     </script>

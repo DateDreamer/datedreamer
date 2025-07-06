@@ -123,10 +123,12 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
             .datedreamer-range {
                 display: inline-flex;
                 box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%);
+                transition: background-color 0.3s ease;
             }
 
             .datedreamer-range.dark {
-                background: #2c3e50;
+                background: #1a1a1a;
+                box-shadow: 0 10px 15px -3px rgb(0 0 0 / 30%), 0 4px 6px -4px rgb(0 0 0 / 30%);
             }
             ${this.styles ? this.styles : ""}
         `

@@ -51,7 +51,7 @@ class DateDreamerCalendarToggle extends HTMLElement {
             selectedDate = dayjs().format(this.options.format);
         }
 
-        const template = calendarToggleRoot(this.options.theme, this.options.styles,this.inputPlaceholder, selectedDate);
+        const template = calendarToggleRoot(this.options.theme, this.options.styles,this.inputPlaceholder, selectedDate, this.options.darkMode);
 
         let selectedElement = undefined;
         if(typeof this.element == "string"){

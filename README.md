@@ -95,6 +95,14 @@ Use this if you want a standalone calendar that comes with an input filled and a
     
         ![Calendar using lite-purple theme](readme-images/lite-purple.png?raw=true)
 
+* `darkMode`: Enable dark mode styling for the calendar. Works with both `unstyled` and `lite-purple` themes.
+    ```javascript
+        new datedreamer.calendar({
+            ...,
+            darkMode: true
+        })
+    ```
+
 * `styles`: Use this property to pass css styles that will be passed into the components style tag.
     ```javascript
         new datedreamer.calendar({

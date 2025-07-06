@@ -41,7 +41,7 @@ export function calendarRoot(theme: string, styles: string = "", darkMode: boole
   `
 }
 
-export function calendarToggleRoot(theme: string | undefined, styles: string = "", inputPlaceholder: string | undefined, selectedDate: string | Date | undefined):string {
+export function calendarToggleRoot(theme: string | undefined, styles: string = "", inputPlaceholder: string | undefined, selectedDate: string | Date | undefined, darkMode: boolean | undefined):string {
   return `
     <style>
         .datedreamer__calendar-toggle {
@@ -68,12 +68,19 @@ export function calendarToggleRoot(theme: string | undefined, styles: string = "
             display: block;
             padding: 4px 4px 4px 8px;
             margin-right: 8px;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .datedreamer__calendar-toggle.dark .datedreamer__calendar-toggle__input input {
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            color: #fff;
         }
         ` : ""}
 
         ${styles}
     </style>
-    <div class="datedreamer__calendar-toggle">
+    <div class="datedreamer__calendar-toggle ${darkMode ? "dark": ""}">
         <div class="datedreamer__calendar-toggle__input">
             <input id="date-input" placeholder="${inputPlaceholder}" value="${selectedDate}" readonly/>
         </div>
@@ -98,10 +105,12 @@ export const unstyledTheme = `
     z-index: 0;
     position: relative;
     box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .datedreamer__calendar.dark {
-  background: #2c3e50;
+  background: #1a1a1a;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
 }
 
 .datedreamer__calendar_header {
@@ -121,6 +130,15 @@ export const unstyledTheme = `
     align-items: center;
     justify-content: center;
     color:#2d3436;
+    transition: color 0.2s ease;
+}
+
+.datedreamer__calendar_prev:hover,.datedreamer__calendar_next:hover {
+    color: #007bff;
+}
+
+.dark .datedreamer__calendar_prev:hover,.dark .datedreamer__calendar_next:hover {
+    color: #60a5fa;
 }
 
 .dark .datedreamer__calendar_prev, .dark .datedreamer__calendar_next {
@@ -205,6 +223,15 @@ export const unstyledTheme = `
     width: 100%;
     height: 100%;
     cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.datedreamer__calendar_day button:hover:not(:disabled) {
+    background-color: #f0f0f0;
+}
+
+.dark .datedreamer__calendar_day button:hover:not(:disabled) {
+    background-color: #2d3748;
 }
 
 .datedreamer__calendar_day.active button {
@@ -252,8 +279,8 @@ export const litePurple = `
 }
 
 .dark .datedreamer__calendar_inputs input {
-  background: #4b6584;
-  border: #4b6584;
+  background: #2d3748;
+  border: 1px solid #4a5568;
   color: #fff;
 }
 
@@ -265,9 +292,13 @@ export const litePurple = `
 }
 
 .dark .datedreamer__calendar_inputs button {
-  background: #4b6584;
-  border: #4b6584;
+  background: #2d3748;
+  border: 1px solid #4a5568;
   color: #fff;
+}
+
+.dark .datedreamer__calendar_inputs button:hover {
+  background: #4a5568;
 }
 
 .datedreamer__calendar_errors {
@@ -291,6 +322,10 @@ export const litePurple = `
   color: #767676;
   cursor: default;
   font-weight: normal;
+}
+
+.dark .datedreamer__calendar_days .datedreamer__calendar_day.disabled button {
+  color: #555;
 }
 
 .datedreamer__calendar_days .datedreamer__calendar_day.active, .datedreamer__calendar_days .datedreamer__calendar_day.highlight {
@@ -345,5 +380,18 @@ export const litePurple = `
 
 .dark .datedreamer__calendar_days .datedreamer__calendar_day button {
   color: #ecf0f1;
+}
+
+.dark .datedreamer__calendar_days .datedreamer__calendar_day button:hover:not(:disabled) {
+  background-color: #4a5568;
+  border-radius: 4px;
+}
+
+.dark .datedreamer__calendar_days .datedreamer__calendar_day.active button:hover {
+  background-color: #7d56da;
+}
+
+.dark .datedreamer__calendar_days .datedreamer__calendar_day.highlight button:hover {
+  background-color: #BFA9F3;
 }
 `
