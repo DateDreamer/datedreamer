@@ -135,7 +135,7 @@ export const unstyledTheme = `
 
 .datedreamer__calendar.dark {
   background: #1a1a1a;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  box-shadow: none;
 }
 
 .datedreamer__calendar_header {
