@@ -315,7 +315,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
   }
 
   prevHandler(e: CustomEvent) {
-    this.calendar1DisplayedDate = e.detail;
+    this.calendar1DisplayedDate = e.detail.displayedMonthDate;
     this.calendar2DisplayedDate.setMonth(
       this.calendar2DisplayedDate.getMonth() - 1
     );
@@ -323,7 +323,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
   }
 
   nextHandler(e: CustomEvent) {
-    this.calendar2DisplayedDate = e.detail;
+    this.calendar2DisplayedDate = e.detail.displayedMonthDate;
     this.calendar1DisplayedDate.setMonth(
       this.calendar1DisplayedDate.getMonth() + 1
     );
