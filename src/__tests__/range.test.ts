@@ -344,4 +344,138 @@ describe('Range Component', () => {
       (rangeInstance as RangeTestInstance).connector.endDate
     ).not.toBeNull();
   });
+
+  describe('Range Mode Calendar Integration', () => {
+    test('should create range with connector', () => {
+      const rangeInstance = new range({
+        element: '#test-range',
+      });
+
+      const connector = (rangeInstance as RangeTestInstance).connector;
+      expect(connector).toBeDefined();
+      expect(typeof connector.rebuildAllCalendars).toBe('function');
+    });
+
+    test('should handle range mode date selection without connector', () => {
+      const testContainer = document.createElement('div');
+      testContainer.id = 'test-range-no-connector';
+      container.appendChild(testContainer);
+
+      const testCalendar = new calendar({
+        element: testContainer,
+        rangeMode: true,
+        // No connector provided
+      });
+
+      // This should not throw an error
+      expect(() => {
+        testCalendar.setSelectedDay(15);
+      }).not.toThrow();
+
+      container.removeChild(testContainer);
+    });
+  });
+
+  describe('Range Dark Mode', () => {
+    let originalMatchMedia: typeof window.matchMedia;
+
+    beforeEach(() => {
+      originalMatchMedia = window.matchMedia;
+    });
+
+    afterEach(() => {
+      window.matchMedia = originalMatchMedia;
+    });
+
+    test('should support dark mode via darkMode option', () => {
+      const rangeInstance = new range({
+        element: '#test-range',
+        darkMode: true,
+      });
+
+      expect(rangeInstance.darkMode).toBe(true);
+    });
+
+    test('should support automatic dark mode detection', () => {
+      // Mock matchMedia to simulate dark mode preference
+      window.matchMedia = jest.fn().mockImplementation(query => ({
+        matches: query === '(prefers-color-scheme: dark)',
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      }));
+
+      const rangeInstance = new range({
+        element: '#test-range',
+        darkModeAuto: true,
+      });
+
+      expect(rangeInstance.darkModeAuto).toBe(true);
+
+      // Verify dark mode class is applied to the range element
+      const rangeEl = container.querySelector('datedreamer-range');
+      const rangeDiv = rangeEl?.querySelector('.datedreamer-range');
+      expect(rangeDiv?.classList.contains('dark')).toBe(true);
+    });
+  });
+
+  describe('Range Custom Styling', () => {
+    test('should support custom styles', () => {
+      const customStyles = '.custom { color: red; }';
+      const rangeInstance = new range({
+        element: '#test-range',
+        styles: customStyles,
+      });
+
+      expect(rangeInstance.styles).toBe(customStyles);
+    });
+
+    test('should support custom icons', () => {
+      const rangeInstance = new range({
+        element: '#test-range',
+        iconPrev: '<custom-prev>',
+        iconNext: '<custom-next>',
+      });
+
+      expect(rangeInstance.iconPrev).toBe('<custom-prev>');
+      expect(rangeInstance.iconNext).toBe('<custom-next>');
+    });
+
+    test('should support custom date format', () => {
+      const rangeInstance = new range({
+        element: '#test-range',
+        format: 'DD/MM/YYYY',
+      });
+
+      expect(rangeInstance.format).toBe('DD/MM/YYYY');
+    });
+  });
+
+  describe('Range Error Handling', () => {
+    test('should handle range creation with element object instead of string', () => {
+      const elementDiv = document.createElement('div');
+      document.body.appendChild(elementDiv);
+
+      expect(() => {
+        new range({
+          element: elementDiv,
+        });
+      }).not.toThrow();
+
+      document.body.removeChild(elementDiv);
+    });
+
+    test('should handle missing target element gracefully', () => {
+      // This should not throw during construction
+      expect(() => {
+        new range({
+          element: '#non-existent-range-element',
+        });
+      }).not.toThrow();
+    });
+  });
 });

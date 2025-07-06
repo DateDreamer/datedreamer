@@ -97,11 +97,7 @@ export function handleDayKeyDown(
       if (currentDay > 7) {
         const weekUp = currentDay - 7;
         const upButton = context.daysElement?.children[
-          weekUp +
-            context.daysElement.children.length -
-            context.daysElement.children.length +
-            weekUp -
-            1
+          weekUp - 1
         ]?.querySelector('button') as HTMLButtonElement;
         if (upButton && !upButton.disabled) {
           upButton.focus();
@@ -121,11 +117,7 @@ export function handleDayKeyDown(
       if (currentDay + 7 <= daysInCurrentMonth) {
         const weekDown = currentDay + 7;
         const downButton = context.daysElement?.children[
-          weekDown +
-            context.daysElement.children.length -
-            context.daysElement.children.length +
-            weekDown -
-            1
+          weekDown - 1
         ]?.querySelector('button') as HTMLButtonElement;
         if (downButton && !downButton.disabled) {
           downButton.focus();
@@ -177,25 +169,18 @@ export function setSelectedDay(context: calendar, day: number): void {
 
   if (context.rangeMode) {
     if (context.connector) {
+      // If both dates are already set, reset and start new range
       if (
         context.connector.startDate !== null &&
         context.connector.endDate !== null
       ) {
-        context.connector.startDate = null;
+        context.connector.startDate = new Date(newSelectedDate);
         context.connector.endDate = null;
-        context.connector.rebuildAllCalendars();
-      }
-
-      if (context.connector.startDate == null) {
+      } else if (context.connector.startDate == null) {
         context.connector.startDate = new Date(newSelectedDate);
       } else if (context.connector.endDate == null) {
         context.connector.endDate = new Date(newSelectedDate);
-      }
 
-      if (
-        context.connector.startDate !== null &&
-        context.connector.endDate !== null
-      ) {
         // Swap start and end date if start date is larger than end date
         if (context.connector.startDate > context.connector.endDate) {
           const temp = context.connector.startDate;

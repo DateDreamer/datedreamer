@@ -80,4 +80,190 @@ describe('CalendarToggle Component', () => {
     ).dateChangedHandler(event);
     expect(input.value).toBe('2024-02-01');
   });
+
+  describe('Error Handling', () => {
+    test('should throw error when no element provided', () => {
+      expect(() => {
+        new calendarToggle({ element: null as unknown as Element });
+      }).toThrow(
+        'No element was provided to calendarToggle. Initializing aborted'
+      );
+    });
+
+    test('should throw error when element not found in DOM', () => {
+      expect(() => {
+        new calendarToggle({ element: '#non-existent-toggle-element' });
+      }).toThrow('Could not find #non-existent-toggle-element in DOM.');
+    });
+  });
+
+  describe('Outside Click Handling', () => {
+    test('should close calendar on outside click', () => {
+      const toggleInstance = new calendarToggle({
+        element: '#test-toggle',
+        selectedDate: new Date('2024-01-15'),
+      });
+
+      const shadow = toggleInstance.shadowRoot;
+      const input = shadow?.querySelector('#date-input') as HTMLInputElement;
+      const calendarWrap = shadow?.querySelector(
+        '.datedreamer__calendar-toggle__calendar'
+      );
+
+      // Open the calendar
+      input?.dispatchEvent(new Event('focus'));
+      expect(calendarWrap?.classList.contains('active')).toBe(true);
+
+      // Simulate outside click
+      const outsideClickEvent = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      });
+      Object.defineProperty(outsideClickEvent, 'target', {
+        value: document.body,
+      });
+
+      document.dispatchEvent(outsideClickEvent);
+
+      // Calendar should be closed
+      expect(calendarWrap?.classList.contains('active')).toBe(false);
+    });
+
+    test('should not close calendar on inside click', () => {
+      const toggleInstance = new calendarToggle({
+        element: '#test-toggle',
+        selectedDate: new Date('2024-01-15'),
+      });
+
+      const shadow = toggleInstance.shadowRoot;
+      const input = shadow?.querySelector('#date-input') as HTMLInputElement;
+      const calendarWrap = shadow?.querySelector(
+        '.datedreamer__calendar-toggle__calendar'
+      );
+
+      // Open the calendar
+      input?.dispatchEvent(new Event('focus'));
+      expect(calendarWrap?.classList.contains('active')).toBe(true);
+
+      // Simulate inside click
+      const insideClickEvent = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      });
+      Object.defineProperty(insideClickEvent, 'target', {
+        value: toggleInstance,
+      });
+
+      document.dispatchEvent(insideClickEvent);
+
+      // Calendar should remain open
+      expect(calendarWrap?.classList.contains('active')).toBe(true);
+    });
+  });
+
+  describe('Dark Mode Support', () => {
+    let originalMatchMedia: typeof window.matchMedia;
+
+    beforeEach(() => {
+      originalMatchMedia = window.matchMedia;
+    });
+
+    afterEach(() => {
+      window.matchMedia = originalMatchMedia;
+    });
+
+    test('should detect system dark mode preference when darkModeAuto is enabled', () => {
+      // Mock matchMedia to return dark mode preference
+      window.matchMedia = jest.fn().mockImplementation(query => ({
+        matches: query === '(prefers-color-scheme: dark)',
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      }));
+
+      const toggleInstance = new calendarToggle({
+        element: '#test-toggle',
+        darkModeAuto: true,
+      });
+
+      // Access private method for testing
+      const shouldUseDarkMode = (
+        toggleInstance as unknown as { getDarkModeSetting: () => boolean }
+      ).getDarkModeSetting();
+      expect(shouldUseDarkMode).toBe(true);
+    });
+
+    test('should use manual dark mode setting when darkModeAuto is disabled', () => {
+      const toggleInstance = new calendarToggle({
+        element: '#test-toggle',
+        darkMode: true,
+        darkModeAuto: false,
+      });
+
+      // Access private method for testing
+      const shouldUseDarkMode = (
+        toggleInstance as unknown as { getDarkModeSetting: () => boolean }
+      ).getDarkModeSetting();
+      expect(shouldUseDarkMode).toBe(true);
+    });
+
+    test('should handle missing window.matchMedia gracefully', () => {
+      // Remove matchMedia to test fallback
+      delete (window as unknown as { matchMedia: undefined }).matchMedia;
+
+      expect(() => {
+        new calendarToggle({
+          element: '#test-toggle',
+          darkModeAuto: true,
+        });
+      }).not.toThrow();
+
+      // Restore
+      window.matchMedia = originalMatchMedia;
+    });
+  });
+
+  describe('Element Type Handling', () => {
+    test('should work with Element object instead of string selector', () => {
+      const elementDiv = document.createElement('div');
+      elementDiv.id = 'element-toggle';
+      document.body.appendChild(elementDiv);
+
+      expect(() => {
+        new calendarToggle({
+          element: elementDiv,
+          selectedDate: new Date('2024-01-15'),
+        });
+      }).not.toThrow();
+
+      document.body.removeChild(elementDiv);
+    });
+  });
+
+  describe('Date Format Handling', () => {
+    test('should handle undefined selectedDate', () => {
+      expect(() => {
+        new calendarToggle({
+          element: '#test-toggle',
+          // selectedDate is undefined
+        });
+      }).not.toThrow();
+    });
+
+    test('should handle custom date format', () => {
+      const toggleInstance = new calendarToggle({
+        element: '#test-toggle',
+        selectedDate: '15/01/2024',
+        format: 'DD/MM/YYYY',
+      });
+
+      const shadow = toggleInstance.shadowRoot;
+      const input = shadow?.querySelector('#date-input') as HTMLInputElement;
+      expect(input.value).toBe('15/01/2024');
+    });
+  });
 });

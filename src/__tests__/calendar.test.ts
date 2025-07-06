@@ -232,4 +232,124 @@ describe('Calendar Component', () => {
     calendarInstance.goToPrevMonth();
     expect(onPrevNav).toHaveBeenCalled();
   });
+
+  describe('Keyboard Navigation Functions', () => {
+    test('should expose handleDayKeyDown method', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date('2024-01-15'),
+      });
+
+      expect(typeof calendarInstance.handleDayKeyDown).toBe('function');
+    });
+
+    test('should not throw error when handleDayKeyDown is called with valid parameters', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date('2024-01-15'),
+      });
+
+      const mockEvent = {
+        key: 'Enter',
+        target: { innerText: '15' },
+        preventDefault: jest.fn(),
+      } as unknown as KeyboardEvent;
+
+      expect(() => {
+        calendarInstance.handleDayKeyDown(mockEvent);
+      }).not.toThrow();
+    });
+  });
+
+  describe('Dark Mode Functionality', () => {
+    let originalMatchMedia: typeof window.matchMedia;
+
+    beforeEach(() => {
+      originalMatchMedia = window.matchMedia;
+    });
+
+    afterEach(() => {
+      window.matchMedia = originalMatchMedia;
+    });
+
+    test('should detect dark mode from system preference when darkModeAuto is enabled', () => {
+      // Mock matchMedia to return dark mode preference
+      window.matchMedia = jest.fn().mockImplementation(query => ({
+        matches: query === '(prefers-color-scheme: dark)',
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      }));
+
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        darkModeAuto: true,
+      });
+
+      // Access private method for testing
+      const shouldUseDarkMode = (
+        calendarInstance as unknown as { getDarkModeSetting: () => boolean }
+      ).getDarkModeSetting();
+      expect(shouldUseDarkMode).toBe(true);
+    });
+
+    test('should use manual dark mode setting when darkModeAuto is disabled', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        darkMode: true,
+        darkModeAuto: false,
+      });
+
+      // Access private method for testing
+      const shouldUseDarkMode = (
+        calendarInstance as unknown as { getDarkModeSetting: () => boolean }
+      ).getDarkModeSetting();
+      expect(shouldUseDarkMode).toBe(true);
+    });
+
+    test('should set up dark mode listener when darkModeAuto is enabled', () => {
+      const mockAddEventListener = jest.fn();
+      window.matchMedia = jest.fn().mockImplementation(() => ({
+        matches: false,
+        media: '',
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: mockAddEventListener,
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      }));
+
+      new calendar({
+        element: '#test-calendar',
+        darkModeAuto: true,
+      });
+
+      expect(mockAddEventListener).toHaveBeenCalledWith(
+        'change',
+        expect.any(Function)
+      );
+    });
+  });
+
+  describe('Error Handling', () => {
+    test('should handle element not found error', () => {
+      expect(() => {
+        new calendar({ element: '#non-existent-element' });
+      }).toThrow('Could not find #non-existent-element in DOM.');
+    });
+
+    test('should have dateInputChanged method available', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        format: 'YYYY-MM-DD',
+      });
+
+      expect(typeof calendarInstance.dateInputChanged).toBe('function');
+    });
+  });
 });
