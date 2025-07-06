@@ -198,6 +198,8 @@ export const unstyledTheme = `
 
 .datedreamer__calendar_inputs label {
   width: 100%;
+  text-align: left !important;
+  display: block;
 }
 
 .dark .datedreamer__calendar_inputs label {
@@ -293,6 +295,8 @@ export const litePurple = `
 
 .datedreamer__calendar_inputs label {
   font-size: 12px;
+  text-align: left !important;
+  display: block;
 }
 
 .datedreamer__calendar_inputs input {
