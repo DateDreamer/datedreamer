@@ -1,4 +1,18 @@
+# Changelog
 
+# [0.4.0](https://github.com/DateDreamer/DateDreamer/compare/0.3.8...0.4.0) (2025-07-06)
+
+
+### Bug Fixes
+
+* fixed issue with calendars having a weird shadow in dark mode ([0adebd2](https://github.com/DateDreamer/DateDreamer/commit/0adebd21d6169c328f24e47b1f636f05629047ca))
+* fixed issue with label not being left aligned ([b05424b](https://github.com/DateDreamer/DateDreamer/commit/b05424b206c265f53bc55415a0428d065b4a96cb))
+
+
+### Features
+
+* added the ability to provide a list of date ranges that the user can click on ([f62ebe0](https://github.com/DateDreamer/DateDreamer/commit/f62ebe03e5b81e4c80eaf594614ef672048b0d18)), closes [#39](https://github.com/DateDreamer/DateDreamer/issues/39)
+* auto dark mode ([47dae03](https://github.com/DateDreamer/DateDreamer/commit/47dae037c31493d1bb3610da6a174dc6f57feeca))
 
 ## [0.3.8](https://github.com/DateDreamer/DateDreamer/compare/0.3.7...0.3.8) (2025-05-02)
 
