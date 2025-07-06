@@ -42,6 +42,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
   inputPlaceholder: string = 'Enter a date';
   hideInputs: boolean = false;
   darkMode: boolean | undefined = false;
+  darkModeAuto: boolean | undefined = false;
   hideOtherMonthDays: boolean | undefined = false;
   rangeMode: boolean | undefined;
 
@@ -77,6 +78,7 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
    * @param options.inputPlaceholder - Placeholder text for the date input field
    * @param options.hideInputs - Whether to hide the input field and today button
    * @param options.darkMode - Whether to enable dark mode styling
+   * @param options.darkModeAuto - Whether to automatically detect user's system preference for dark mode
    * @param options.hideOtherMonthDays - Whether to hide days from other months
    * @param options.rangeMode - Whether to enable range selection mode
    * @param options.connector - Calendar connector for linking multiple calendars
@@ -130,8 +132,12 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
       this.hideInputs = options.hideInputs;
     }
 
-    if (options.darkMode) {
+    if (options.darkMode !== undefined) {
       this.darkMode = options.darkMode;
+    }
+
+    if (options.darkModeAuto) {
+      this.darkModeAuto = options.darkModeAuto;
     }
 
     if (options.rangeMode) {
@@ -176,11 +182,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
       );
     }
 
+    // Determine dark mode setting
+    const shouldUseDarkMode = this.getDarkModeSetting();
+
     // Generate calendar
     const calendar: string = calendarRoot(
       this.theme,
       this.styles,
-      this.darkMode
+      shouldUseDarkMode
     );
 
     // Insert calendar into DOM
@@ -208,8 +217,58 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     // Generate the days buttons
     this.generateDays();
 
+    // Set up dark mode listener if auto mode is enabled
+    this.setupDarkModeListener();
+
     // Trigger onRender callback
     this.onRenderCallback();
+  }
+
+  /**
+   * Determines whether dark mode should be enabled based on user preferences
+   * @returns boolean indicating if dark mode should be active
+   */
+  private getDarkModeSetting(): boolean {
+    // If darkModeAuto is enabled, check system preference
+    if (this.darkModeAuto) {
+      return (
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      );
+    }
+
+    // Otherwise, use the manual darkMode setting
+    return this.darkMode || false;
+  }
+
+  /**
+   * Sets up a listener for system preference changes when darkModeAuto is enabled
+   */
+  private setupDarkModeListener(): void {
+    if (this.darkModeAuto && window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaQuery.addEventListener('change', () => {
+        this.updateDarkMode();
+      });
+    }
+  }
+
+  /**
+   * Updates the dark mode styling based on current preferences
+   */
+  private updateDarkMode(): void {
+    const shouldUseDarkMode = this.getDarkModeSetting();
+    const calendarElement = this.shadowRoot?.querySelector(
+      '.datedreamer__calendar'
+    );
+
+    if (calendarElement) {
+      if (shouldUseDarkMode) {
+        calendarElement.classList.add('dark');
+      } else {
+        calendarElement.classList.remove('dark');
+      }
+    }
   }
 
   /**

@@ -17,6 +17,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
   iconPrev?: string | undefined;
   iconNext?: string | undefined;
   darkMode?: boolean | undefined;
+  darkModeAuto?: boolean | undefined;
   onChange?:
     | ((event: CustomEvent<{ startDate: string; endDate: string }>) => void)
     | undefined;
@@ -41,12 +42,51 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
     this.onRender = options.onRender;
     this.theme = options.theme;
     this.darkMode = options.darkMode;
+    this.darkModeAuto = options.darkModeAuto;
 
     if (this.connector) {
       this.connector.dateChangedCallback = this.handleDateChange;
     }
 
     this.init();
+  }
+
+  /**
+   * Determines whether dark mode should be enabled based on user preferences
+   * @returns boolean indicating if dark mode should be active
+   */
+  private getDarkModeSetting(): boolean {
+    if (this.darkModeAuto) {
+      return (
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      );
+    }
+    return this.darkMode || false;
+  }
+
+  /**
+   * Sets up a listener for system preference changes when darkModeAuto is enabled
+   */
+  private setupDarkModeListener(rangeElement: HTMLElement): void {
+    if (this.darkModeAuto && window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaQuery.addEventListener('change', () => {
+        this.updateDarkMode(rangeElement);
+      });
+    }
+  }
+
+  /**
+   * Updates the dark mode styling based on current preferences
+   */
+  private updateDarkMode(rangeElement: HTMLElement): void {
+    const shouldUseDarkMode = this.getDarkModeSetting();
+    if (shouldUseDarkMode) {
+      rangeElement.classList.add('dark');
+    } else {
+      rangeElement.classList.remove('dark');
+    }
   }
 
   /**
@@ -63,9 +103,15 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
 
     const rangeElement = document.createElement('div');
     rangeElement.classList.add('datedreamer-range');
-    if (this.darkMode) {
+
+    // Determine dark mode setting
+    const shouldUseDarkMode = this.getDarkModeSetting();
+    if (shouldUseDarkMode) {
       rangeElement.classList.add('dark');
     }
+
+    // Set up dark mode listener if auto mode is enabled
+    this.setupDarkModeListener(rangeElement);
 
     const calendar1WrapElement = document.createElement('div');
     const calendar2WrapElement = document.createElement('div');
@@ -85,6 +131,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
       hideOtherMonthDays: true,
       connector: this.connector,
       darkMode: this.darkMode,
+      darkModeAuto: this.darkModeAuto,
     });
 
     this.calendar2 = new calendar({
@@ -100,6 +147,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
       hideOtherMonthDays: true,
       connector: this.connector,
       darkMode: this.darkMode,
+      darkModeAuto: this.darkModeAuto,
     });
 
     this.calendar2.setDisplayedMonthDate(this.calendar2DisplayedDate);

@@ -103,6 +103,16 @@ Use this if you want a standalone calendar that comes with an input filled and a
         })
     ```
 
+* `darkModeAuto`: Automatically detect and follow the user's system preference for dark mode. When enabled, the calendar will automatically switch between light and dark mode based on the user's system settings. This takes precedence over the `darkMode` setting when enabled.
+    ```javascript
+        new datedreamer.calendar({
+            ...,
+            darkModeAuto: true
+        })
+    ```
+    
+    **Note**: The calendar will listen for system preference changes and update automatically when the user changes their system's dark mode setting.
+
 * `styles`: Use this property to pass css styles that will be passed into the components style tag.
     ```javascript
         new datedreamer.calendar({

@@ -14,6 +14,7 @@ export interface ICalendarOptions {
   inputPlaceholder?: string | undefined;
   hideInputs?: boolean | undefined;
   darkMode?: boolean | undefined;
+  darkModeAuto?: boolean | undefined;
   hideOtherMonthDays?: boolean | undefined;
   rangeMode?: boolean | undefined;
   connector?: CalendarConnector | undefined;

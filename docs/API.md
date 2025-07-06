@@ -48,6 +48,7 @@ const myCalendar = new calendar({
 | `inputPlaceholder` | `string` | `'Enter a date'` | Placeholder text for the date input field |
 | `hideInputs` | `boolean` | `false` | Whether to hide the input field and today button |
 | `darkMode` | `boolean` | `false` | Whether to enable dark mode styling |
+| `darkModeAuto` | `boolean` | `false` | Whether to automatically detect user's system preference for dark mode |
 | `hideOtherMonthDays` | `boolean` | `false` | Whether to hide days from other months |
 | `rangeMode` | `boolean` | `false` | Whether to enable range selection mode |
 | `connector` | `CalendarConnector` | `undefined` | Calendar connector for linking multiple calendars |
@@ -162,6 +163,7 @@ const rangeCalendar = new range({
 | `inputPlaceholder` | `string` | `'Enter a date'` | Placeholder text for the date input field |
 | `hideInputs` | `boolean` | `false` | Whether to hide the input field and today button |
 | `darkMode` | `boolean` | `false` | Whether to enable dark mode styling |
+| `darkModeAuto` | `boolean` | `false` | Whether to automatically detect user's system preference for dark mode |
 | `onChange` | `function` | `undefined` | Callback function triggered when date range changes |
 | `onRender` | `function` | `undefined` | Callback function triggered when calendar renders |
 
@@ -188,6 +190,10 @@ A pre-styled theme with purple accents and modern design.
 
 ## Dark Mode
 
+DateDreamer supports both manual and automatic dark mode detection.
+
+### Manual Dark Mode
+
 Enable dark mode by setting `darkMode: true` in the configuration. This works with both themes.
 
 ```javascript
@@ -197,6 +203,20 @@ const calendar = new calendar({
   theme: 'lite-purple'
 });
 ```
+
+### Automatic Dark Mode Detection
+
+Enable automatic dark mode detection by setting `darkModeAuto: true`. The calendar will automatically follow the user's system preference and update in real-time when the system setting changes.
+
+```javascript
+const calendar = new calendar({
+  element: '#calendar',
+  darkModeAuto: true,
+  theme: 'lite-purple'
+});
+```
+
+**Note**: When `darkModeAuto` is enabled, it takes precedence over the `darkMode` setting. The calendar will listen for system preference changes using the `prefers-color-scheme` media query.
 
 ## Custom Styling
 

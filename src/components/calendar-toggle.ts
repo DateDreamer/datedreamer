@@ -43,6 +43,23 @@ class DateDreamerCalendarToggle extends HTMLElement {
     });
   }
 
+  /**
+   * Determines whether dark mode should be enabled based on user preferences
+   * @returns boolean indicating if dark mode should be active
+   */
+  private getDarkModeSetting(): boolean {
+    // If darkModeAuto is enabled, check system preference
+    if (this.options.darkModeAuto) {
+      return (
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      );
+    }
+
+    // Otherwise, use the manual darkMode setting
+    return this.options.darkMode || false;
+  }
+
   generateTemplate() {
     let selectedDate;
 
@@ -58,12 +75,15 @@ class DateDreamerCalendarToggle extends HTMLElement {
       selectedDate = dayjs().format(this.options.format);
     }
 
+    // Determine dark mode setting for toggle component
+    const shouldUseDarkMode = this.getDarkModeSetting();
+
     const template = calendarToggleRoot(
       this.options.theme,
       this.options.styles,
       this.inputPlaceholder,
       selectedDate,
-      this.options.darkMode
+      shouldUseDarkMode
     );
 
     let selectedElement = undefined;

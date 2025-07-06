@@ -10,6 +10,7 @@ export interface IRangeOptions {
   inputPlaceholder?: string | undefined;
   hideInputs?: boolean | undefined;
   darkMode?: boolean | undefined;
+  darkModeAuto?: boolean | undefined;
   onChange?: ((event: CustomEvent) => void) | undefined;
   onRender?: ((event: CustomEvent) => void) | undefined;
 }
