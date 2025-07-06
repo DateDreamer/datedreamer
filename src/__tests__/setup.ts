@@ -35,7 +35,7 @@ global.IntersectionObserver = class IntersectionObserver {
   takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-} as any;
+} as unknown as typeof IntersectionObserver;
 
 // Clean up after each test
 afterEach(() => {

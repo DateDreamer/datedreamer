@@ -1,10 +1,11 @@
 import dayjs from 'dayjs';
 import { generateErrors } from './calendar-render';
+import { calendar } from './calendar';
 
 /**
  * Handles navigation to the previous month
  */
-export function goToPrevMonth(context: any): void {
+export function goToPrevMonth(context: calendar): void {
   const newDate = new Date(context.displayedMonthDate);
   newDate.setMonth(newDate.getMonth() - 1);
   context.displayedMonthDate = newDate;
@@ -25,7 +26,7 @@ export function goToPrevMonth(context: any): void {
 /**
  * Handles navigation to the next month
  */
-export function goToNextMonth(context: any): void {
+export function goToNextMonth(context: calendar): void {
   const newDate = new Date(context.displayedMonthDate);
   newDate.setMonth(newDate.getMonth() + 1);
   context.displayedMonthDate = newDate;
@@ -46,7 +47,10 @@ export function goToNextMonth(context: any): void {
 /**
  * Handles keyboard navigation within the calendar days
  */
-export function handleDayKeyDown(context: any, event: KeyboardEvent): void {
+export function handleDayKeyDown(
+  context: calendar,
+  event: KeyboardEvent
+): void {
   const target = event.target as HTMLButtonElement;
   const currentDay = parseInt(target.innerText);
   const currentDate = new Date(context.displayedMonthDate);
@@ -57,7 +61,9 @@ export function handleDayKeyDown(context: any, event: KeyboardEvent): void {
       event.preventDefault();
       if (currentDay > 1) {
         const prevDay =
-          target.parentElement?.previousElementSibling?.querySelector('button');
+          target.parentElement?.previousElementSibling?.querySelector(
+            'button'
+          ) as HTMLButtonElement;
         if (prevDay && !prevDay.disabled) {
           prevDay.focus();
         }
@@ -74,8 +80,9 @@ export function handleDayKeyDown(context: any, event: KeyboardEvent): void {
         0
       ).getDate();
       if (currentDay < daysInMonth) {
-        const nextDay =
-          target.parentElement?.nextElementSibling?.querySelector('button');
+        const nextDay = target.parentElement?.nextElementSibling?.querySelector(
+          'button'
+        ) as HTMLButtonElement;
         if (nextDay && !nextDay.disabled) {
           nextDay.focus();
         }
@@ -89,14 +96,13 @@ export function handleDayKeyDown(context: any, event: KeyboardEvent): void {
       event.preventDefault();
       if (currentDay > 7) {
         const weekUp = currentDay - 7;
-        const upButton =
-          context.daysElement?.children[
-            weekUp +
-              context.daysElement.children.length -
-              context.daysElement.children.length +
-              weekUp -
-              1
-          ]?.querySelector('button');
+        const upButton = context.daysElement?.children[
+          weekUp +
+            context.daysElement.children.length -
+            context.daysElement.children.length +
+            weekUp -
+            1
+        ]?.querySelector('button') as HTMLButtonElement;
         if (upButton && !upButton.disabled) {
           upButton.focus();
         }
@@ -114,14 +120,13 @@ export function handleDayKeyDown(context: any, event: KeyboardEvent): void {
       ).getDate();
       if (currentDay + 7 <= daysInCurrentMonth) {
         const weekDown = currentDay + 7;
-        const downButton =
-          context.daysElement?.children[
-            weekDown +
-              context.daysElement.children.length -
-              context.daysElement.children.length +
-              weekDown -
-              1
-          ]?.querySelector('button');
+        const downButton = context.daysElement?.children[
+          weekDown +
+            context.daysElement.children.length -
+            context.daysElement.children.length +
+            weekDown -
+            1
+        ]?.querySelector('button') as HTMLButtonElement;
         if (downButton && !downButton.disabled) {
           downButton.focus();
         }
@@ -141,7 +146,7 @@ export function handleDayKeyDown(context: any, event: KeyboardEvent): void {
       event.preventDefault();
       const firstDay = context.daysElement?.querySelector(
         'button:not([disabled])'
-      );
+      ) as HTMLButtonElement;
       if (firstDay) {
         firstDay.focus();
       }
@@ -154,7 +159,7 @@ export function handleDayKeyDown(context: any, event: KeyboardEvent): void {
         'button:not([disabled])'
       );
       if (allButtons && allButtons.length > 0) {
-        allButtons[allButtons.length - 1].focus();
+        (allButtons[allButtons.length - 1] as HTMLButtonElement).focus();
       }
       break;
     }
@@ -166,7 +171,7 @@ export function handleDayKeyDown(context: any, event: KeyboardEvent): void {
  * @param context - The calendar context
  * @param day - The day of the month in number format
  */
-export function setSelectedDay(context: any, day: number): void {
+export function setSelectedDay(context: calendar, day: number): void {
   const newSelectedDate = new Date(context.displayedMonthDate);
   newSelectedDate.setDate(day);
 
@@ -218,7 +223,10 @@ export function setSelectedDay(context: any, day: number): void {
  * @param context - The calendar context
  * @param e - KeyUp event
  */
-export function dateInputChanged(context: any, e: Event | KeyboardEvent): void {
+export function dateInputChanged(
+  context: calendar,
+  e: Event | KeyboardEvent
+): void {
   if (e instanceof KeyboardEvent && e.code === 'Tab') return;
 
   const newDate = dayjs(
@@ -245,7 +253,7 @@ export function dateInputChanged(context: any, e: Event | KeyboardEvent): void {
  * Sets the selected and viewable month to today.
  * @param context - The calendar context
  */
-export function setDateToToday(context: any): void {
+export function setDateToToday(context: calendar): void {
   context.selectedDate = new Date();
   context.displayedMonthDate = new Date();
   context.rebuildCalendar();
@@ -257,7 +265,7 @@ export function setDateToToday(context: any): void {
  * @param context - The calendar context
  * @param date - The new date that has been selected in the calendar
  */
-export function dateChangedCallback(context: any, date: Date): void {
+export function dateChangedCallback(context: calendar, date: Date): void {
   if (context.onChange) {
     const customEvent = new CustomEvent('onChange', {
       detail: dayjs(date).format(context.format),
@@ -270,7 +278,7 @@ export function dateChangedCallback(context: any, date: Date): void {
  * Triggers the onRender callback that was passed into the calendar options.
  * @param context - The calendar context
  */
-export function onRenderCallback(context: any): void {
+export function onRenderCallback(context: calendar): void {
   if (context.onRender) {
     const customEvent = new CustomEvent('onRender', {
       detail: {

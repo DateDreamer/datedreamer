@@ -1,4 +1,20 @@
 import { range } from '../components/range';
+import { calendar } from '../components/calendar';
+
+// Test interface to access private properties
+interface RangeTestInstance extends range {
+  connector: {
+    startDate: Date | null;
+    endDate: Date | null;
+    pickingEndDate: Date | null;
+    calendars: Array<calendar>;
+    rebuildAllCalendars: () => void;
+    dateChangedCallback?: ((event: CustomEvent) => void) | undefined;
+  };
+  calendar1DisplayedDate: Date;
+  calendar2DisplayedDate: Date;
+  handleDateChange: () => void;
+}
 
 describe('Range Component', () => {
   let container: HTMLElement;
@@ -56,9 +72,13 @@ describe('Range Component', () => {
       onChange,
     });
     // Simulate range selection
-    (rangeInstance as any).connector.startDate = new Date('2024-01-01');
-    (rangeInstance as any).connector.endDate = new Date('2024-01-10');
-    (rangeInstance as any).handleDateChange();
+    (rangeInstance as RangeTestInstance).connector.startDate = new Date(
+      '2024-01-01'
+    );
+    (rangeInstance as RangeTestInstance).connector.endDate = new Date(
+      '2024-01-10'
+    );
+    (rangeInstance as RangeTestInstance).handleDateChange();
     expect(onChange).toHaveBeenCalled();
     const event = onChange.mock.calls[0][0];
     expect(event.detail.startDate).toBeDefined();
@@ -181,8 +201,12 @@ describe('Range Component', () => {
     button.click();
 
     // Check that the connector has the correct dates
-    expect((rangeInstance as any).connector.startDate).toEqual(testStartDate);
-    expect((rangeInstance as any).connector.endDate).toEqual(testEndDate);
+    expect((rangeInstance as RangeTestInstance).connector.startDate).toEqual(
+      testStartDate
+    );
+    expect((rangeInstance as RangeTestInstance).connector.endDate).toEqual(
+      testEndDate
+    );
 
     // Check that onChange was called
     expect(onChange).toHaveBeenCalled();
@@ -216,20 +240,24 @@ describe('Range Component', () => {
     button.click();
 
     // Check that display dates are updated to match the range
-    expect((rangeInstance as any).calendar1DisplayedDate.getFullYear()).toBe(
-      testStartDate.getFullYear()
-    );
-    expect((rangeInstance as any).calendar1DisplayedDate.getMonth()).toBe(
-      testStartDate.getMonth()
-    );
-    expect((rangeInstance as any).calendar1DisplayedDate.getDate()).toBe(1); // First day of month
-    expect((rangeInstance as any).calendar2DisplayedDate.getFullYear()).toBe(
-      testEndDate.getFullYear()
-    );
-    expect((rangeInstance as any).calendar2DisplayedDate.getMonth()).toBe(
-      testEndDate.getMonth()
-    );
-    expect((rangeInstance as any).calendar2DisplayedDate.getDate()).toBe(1); // First day of month
+    expect(
+      (rangeInstance as RangeTestInstance).calendar1DisplayedDate.getFullYear()
+    ).toBe(testStartDate.getFullYear());
+    expect(
+      (rangeInstance as RangeTestInstance).calendar1DisplayedDate.getMonth()
+    ).toBe(testStartDate.getMonth());
+    expect(
+      (rangeInstance as RangeTestInstance).calendar1DisplayedDate.getDate()
+    ).toBe(1); // First day of month
+    expect(
+      (rangeInstance as RangeTestInstance).calendar2DisplayedDate.getFullYear()
+    ).toBe(testEndDate.getFullYear());
+    expect(
+      (rangeInstance as RangeTestInstance).calendar2DisplayedDate.getMonth()
+    ).toBe(testEndDate.getMonth());
+    expect(
+      (rangeInstance as RangeTestInstance).calendar2DisplayedDate.getDate()
+    ).toBe(1); // First day of month
   });
 
   test('should handle same month predefined range selection', () => {
@@ -260,12 +288,20 @@ describe('Range Component', () => {
     button.click();
 
     // Check that the connector has the correct dates set
-    expect((rangeInstance as any).connector.startDate).toEqual(testStartDate);
-    expect((rangeInstance as any).connector.endDate).toEqual(testEndDate);
+    expect((rangeInstance as RangeTestInstance).connector.startDate).toEqual(
+      testStartDate
+    );
+    expect((rangeInstance as RangeTestInstance).connector.endDate).toEqual(
+      testEndDate
+    );
 
     // Check that display dates are updated (less specific than before to avoid month calculation issues)
-    expect((rangeInstance as any).calendar1DisplayedDate).toBeInstanceOf(Date);
-    expect((rangeInstance as any).calendar2DisplayedDate).toBeInstanceOf(Date);
+    expect(
+      (rangeInstance as RangeTestInstance).calendar1DisplayedDate
+    ).toBeInstanceOf(Date);
+    expect(
+      (rangeInstance as RangeTestInstance).calendar2DisplayedDate
+    ).toBeInstanceOf(Date);
   });
 
   test('should handle predefined range with getRange function returning dynamic dates', () => {
@@ -295,9 +331,17 @@ describe('Range Component', () => {
     button.click();
 
     // Check that dates are set (we can't predict exact dates since they're dynamic)
-    expect((rangeInstance as any).connector.startDate).toBeInstanceOf(Date);
-    expect((rangeInstance as any).connector.endDate).toBeInstanceOf(Date);
-    expect((rangeInstance as any).connector.startDate).not.toBeNull();
-    expect((rangeInstance as any).connector.endDate).not.toBeNull();
+    expect(
+      (rangeInstance as RangeTestInstance).connector.startDate
+    ).toBeInstanceOf(Date);
+    expect(
+      (rangeInstance as RangeTestInstance).connector.endDate
+    ).toBeInstanceOf(Date);
+    expect(
+      (rangeInstance as RangeTestInstance).connector.startDate
+    ).not.toBeNull();
+    expect(
+      (rangeInstance as RangeTestInstance).connector.endDate
+    ).not.toBeNull();
   });
 });

@@ -111,7 +111,7 @@ describe('Calendar Component', () => {
     });
 
     // Simulate valid input
-    const inputEvent = { target: { value: '2024-03-10' } } as any;
+    const inputEvent = { target: { value: '2024-03-10' } } as unknown as Event;
     calendarInstance.dateInputChanged(inputEvent);
     // Compare only the date part to avoid timezone issues
     const selected = calendarInstance.selectedDate;
@@ -121,7 +121,9 @@ describe('Calendar Component', () => {
     const dateBeforeInvalidInput = new Date(calendarInstance.selectedDate);
 
     // Simulate invalid input
-    const invalidEvent = { target: { value: 'invalid-date' } } as any;
+    const invalidEvent = {
+      target: { value: 'invalid-date' },
+    } as unknown as Event;
     calendarInstance.dateInputChanged(invalidEvent);
 
     // Verify that the date didn't change (because input was invalid)
@@ -130,7 +132,7 @@ describe('Calendar Component', () => {
 
   test('should handle missing element error', () => {
     expect(() => {
-      new calendar({ element: null as any });
+      new calendar({ element: null as unknown as Element });
     }).toThrow();
   });
 

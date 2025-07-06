@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { IRangeOptions, IPredefinedRange } from '../interfaces/range.interface';
+import { NavigationEventDetail } from '../interfaces/calendar.interface';
 import { calendarStyles } from '../utils/range-utils';
 import { calendar } from './calendar';
 import CalendarConnector from './connector';
@@ -22,7 +23,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
   onChange?:
     | ((event: CustomEvent<{ startDate: string; endDate: string }>) => void)
     | undefined;
-  onRender?: ((event: CustomEvent<any>) => void) | undefined;
+  onRender?: ((event: CustomEvent<Record<string, never>>) => void) | undefined;
 
   selectedStartDate: Date | undefined;
   selectedEndDate: Date | undefined;
@@ -231,7 +232,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
     }
 
     if (this.onRender) {
-      const customEvent = new CustomEvent<any>('onRender');
+      const customEvent = new CustomEvent<Record<string, never>>('onRender');
       this.onRender(customEvent);
     }
   }
@@ -314,7 +315,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
     this.append(styleLink);
   }
 
-  prevHandler(e: CustomEvent) {
+  prevHandler(e: CustomEvent<NavigationEventDetail>) {
     this.calendar1DisplayedDate = e.detail.displayedMonthDate;
     this.calendar2DisplayedDate.setMonth(
       this.calendar2DisplayedDate.getMonth() - 1
@@ -322,7 +323,7 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
     this.resetViewedDated();
   }
 
-  nextHandler(e: CustomEvent) {
+  nextHandler(e: CustomEvent<NavigationEventDetail>) {
     this.calendar2DisplayedDate = e.detail.displayedMonthDate;
     this.calendar1DisplayedDate.setMonth(
       this.calendar1DisplayedDate.getMonth() + 1

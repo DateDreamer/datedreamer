@@ -72,7 +72,12 @@ describe('CalendarToggle Component', () => {
     const input = shadow?.querySelector('#date-input') as HTMLInputElement;
     // Simulate date change event
     const event = new CustomEvent('onChange', { detail: '2024-02-01' });
-    (toggleInstance as any).dateChangedHandler(event);
+    // Access the private method for testing
+    (
+      toggleInstance as unknown as {
+        dateChangedHandler: (event: CustomEvent) => void;
+      }
+    ).dateChangedHandler(event);
     expect(input.value).toBe('2024-02-01');
   });
 });

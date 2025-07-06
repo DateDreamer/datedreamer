@@ -18,5 +18,5 @@ export interface IRangeOptions {
   darkModeAuto?: boolean | undefined;
   predefinedRanges?: IPredefinedRange[] | undefined;
   onChange?: ((event: CustomEvent) => void) | undefined;
-  onRender?: ((event: CustomEvent) => void) | undefined;
+  onRender?: ((event: CustomEvent<Record<string, never>>) => void) | undefined;
 }

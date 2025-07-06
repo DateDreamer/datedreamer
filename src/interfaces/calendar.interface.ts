@@ -1,5 +1,11 @@
 import CalendarConnector from '../components/connector';
 
+// Interface for navigation event details
+export interface NavigationEventDetail {
+  displayedMonthDate: Date;
+  calendar: HTMLElement;
+}
+
 export interface ICalendarOptions {
   element: Element | string;
   selectedDate?: string | Date | undefined;
@@ -19,7 +25,7 @@ export interface ICalendarOptions {
   rangeMode?: boolean | undefined;
   connector?: CalendarConnector | undefined;
   onChange?: ((event: CustomEvent) => void) | undefined;
-  onRender?: ((event: CustomEvent) => void) | undefined;
-  onNextNav?: ((event: CustomEvent) => void) | undefined;
-  onPrevNav?: ((event: CustomEvent) => void) | undefined;
+  onRender?: ((event: CustomEvent<Record<string, never>>) => void) | undefined;
+  onNextNav?: ((event: CustomEvent<NavigationEventDetail>) => void) | undefined;
+  onPrevNav?: ((event: CustomEvent<NavigationEventDetail>) => void) | undefined;
 }

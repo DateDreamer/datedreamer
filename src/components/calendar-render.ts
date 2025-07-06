@@ -5,11 +5,12 @@ import {
   monthNames,
   weekdays,
 } from '../utils/calendar-utils';
+import { calendar } from './calendar';
 
 /**
  * Generates the Previous, Title, and Next header elements.
  */
-export function generateHeader(context: any): void {
+export function generateHeader(context: calendar): void {
   // Previous Button
   if (!context.hidePrevNav) {
     const prevButton = document.createElement('button');
@@ -40,7 +41,7 @@ export function generateHeader(context: any): void {
 /**
  * Generates the date field and today button.
  */
-export function generateInputs(context: any): void {
+export function generateInputs(context: calendar): void {
   if (context.hideInputs) return;
 
   // Date input label
@@ -56,7 +57,9 @@ export function generateInputs(context: any): void {
   dateField.id = 'date-input';
   dateField.placeholder = context.inputPlaceholder;
   dateField.value = dayjs(context.selectedDate).format(context.format);
-  dateField.addEventListener('keyup', (e: any) => context.dateInputChanged(e));
+  dateField.addEventListener('keyup', (e: Event) =>
+    context.dateInputChanged(e)
+  );
   dateField.setAttribute('title', 'Set a date');
 
   // Today button
@@ -72,7 +75,7 @@ export function generateInputs(context: any): void {
 /**
  * Generates errors pushed to the errors array.
  */
-export function generateErrors(context: any): void {
+export function generateErrors(context: calendar): void {
   const dateInput = context.inputsElement?.querySelector('input');
   if (dateInput) {
     dateInput.classList.remove('error');
@@ -102,7 +105,7 @@ export function generateErrors(context: any): void {
  * Generates the day buttons for the calendar grid.
  */
 export function generateDays(
-  context: any,
+  context: calendar,
   focusFirstorLastDay: false | 'first' | 'last' = false
 ): void {
   const selectedDay = context.selectedDate.getDate();
