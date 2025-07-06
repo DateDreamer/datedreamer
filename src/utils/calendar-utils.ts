@@ -411,6 +411,19 @@ export const litePurple = `
   color: #ecf0f1;
 }
 
+.datedreamer__calendar_days .datedreamer__calendar_day button:hover:not(:disabled) {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.datedreamer__calendar_days .datedreamer__calendar_day.active button:hover {
+  background-color: transparent;
+}
+
+.datedreamer__calendar_days .datedreamer__calendar_day.highlight button:hover {
+  background-color: transparent;
+}
+
 .dark .datedreamer__calendar_days .datedreamer__calendar_day button:hover:not(:disabled) {
   background-color: #4a5568;
   border-radius: 4px;
