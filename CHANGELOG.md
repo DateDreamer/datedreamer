@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/DateDreamer/DateDreamer/compare/0.4.1...0.4.2) (2025-07-06)
+
+
+### Bug Fixes
+
+* fixed issue where calendar date would flash upon clicking on it ([06ed152](https://github.com/DateDreamer/DateDreamer/commit/06ed152709a1c18ac260e4563aded5f0200af83c))
+
 ## [0.4.1](https://github.com/DateDreamer/DateDreamer/compare/0.4.0...0.4.1) (2025-07-06)
 
 
