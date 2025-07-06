@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/DateDreamer/DateDreamer/compare/0.4.0...0.4.1) (2025-07-06)
+
+
+### Bug Fixes
+
+* **calendar-range:** fixed issue where calendar dates would dissapear when switching months ([fbde649](https://github.com/DateDreamer/DateDreamer/commit/fbde649c5c34932708737155fe2fccce009ef2db))
+
 # [0.4.0](https://github.com/DateDreamer/DateDreamer/compare/0.3.8...0.4.0) (2025-07-06)
 
 
