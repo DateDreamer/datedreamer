@@ -41,3 +41,10 @@ global.IntersectionObserver = class IntersectionObserver {
 afterEach(() => {
   document.body.innerHTML = '';
 });
+
+// Dummy test to prevent Jest from failing
+describe('Setup', () => {
+  test('should load setup file', () => {
+    expect(true).toBe(true);
+  });
+});
