@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.4.4](https://github.com/DateDreamer/DateDreamer/compare/0.4.3...0.4.4) (2025-07-30)
+
 ## [0.4.3](https://github.com/DateDreamer/DateDreamer/compare/0.4.2...0.4.3) (2025-07-21)
 
 ## [0.4.2](https://github.com/DateDreamer/DateDreamer/compare/0.4.1...0.4.2) (2025-07-06)
