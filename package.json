@@ -1,6 +1,6 @@
 {
   "name": "datedreamer",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "main": "dist/datedreamer.js",
   "repository": "git@github.com:DateDreamer/DateDreamer.git",
   "homepage": "https://datedreamer.github.io/docs/",
@@ -45,7 +45,7 @@
     "husky": "^9.0.11",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.4",
-    "lint-staged": "^15.2.2",
+    "lint-staged": "^16.1.2",
     "prettier": "^3.2.5",
     "release-it": "^19.0.3",
     "sass": "^1.89.2",
