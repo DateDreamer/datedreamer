@@ -419,12 +419,184 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
   };
 
   /**
-   * Triggers the onChange callback that was passed into the calendar options.
-   * @param date The new date that has been selected in the calendar.
-   */
-  private dateChangedCallback(date: Date) {
-    dateChangedCallback(this, date);
-  }
+    * Triggers the onChange callback that was passed into the calendar options.
+    * @param date The new date that has been selected in the calendar.
+    */
+   private dateChangedCallback(date: Date) {
+     dateChangedCallback(this, date);
+   }
+
+   // ============================================================================
+   // GETTER METHODS - Public API for consumers
+   // ============================================================================
+
+   /**
+    * Gets the currently selected date
+    * @returns The selected Date object, or null if no date is selected
+    */
+   getSelectedDate(): Date | null {
+     return this.selectedDate || null;
+   }
+
+   /**
+    * Gets the currently displayed month
+    * @returns The displayed month's Date object
+    */
+   getDisplayMonth(): Date {
+     return this.displayedMonthDate;
+   }
+
+   /**
+    * Gets the year of the currently displayed month
+    * @returns The displayed year as a number
+    */
+   getDisplayedYear(): number {
+     return this.displayedMonthDate.getFullYear();
+   }
+
+   /**
+    * Gets the month name of the currently displayed month
+    * @returns The full month name (e.g., 'January', 'February')
+    */
+   getDisplayMonthName(): string {
+     const months = [
+       'January','February','March','April','May','June',
+       'July','August','September','October','November','December'
+     ];
+     return months[this.displayedMonthDate.getMonth()];
+   }
+
+   /**
+    * Checks if a given date matches the currently selected date
+    * @param date - The date to check against the selected date
+    * @returns true if the date matches, false otherwise
+    */
+   isSelected(date: Date): boolean {
+     if (!this.selectedDate) return false;
+     const d = new Date(date);
+     return (
+       this.selectedDate.getDate() === d.getDate() &&
+       this.selectedDate.getMonth() === d.getMonth() &&
+       this.selectedDate.getFullYear() === d.getFullYear()
+     );
+   }
+
+   /**
+    * Checks if the currently displayed month is in range mode
+    * @returns true if in range mode, false otherwise
+    */
+   getIsInRangeMode(): boolean {
+     return !!this.rangeMode;
+   }
+
+   // ============================================================================
+   // RANGE HELPER: Get connector range data for isDateInRange check
+   // ============================================================================
+
+   /**
+    * Helper to get start and end date from connector for range checks
+    * @returns Object with startDate and endDate, or undefined if not in range mode
+    */
+   private getConnectorRange(): { startDate?: Date; endDate?: Date } | undefined {
+     if (!this.connector || !this.rangeMode) return undefined;
+
+     // Check if connector has the required properties
+     const sDate = this.connector.startDate;
+     const eDate = this.connector.endDate;
+
+     return (sDate && eDate) ? { startDate: sDate, endDate: eDate } : undefined;
+   }
+
+   /**
+    * Checks if a date is within the currently selected range (range mode only)
+    * @param date - The date to check
+    * @returns true if the date is in range, false otherwise
+    */
+   isDateInRange(date: Date): boolean {
+     const range = this.getConnectorRange();
+
+     // Must be in range mode and have valid start/end dates
+     if (!this.rangeMode || !range || !range.startDate || !range.endDate) {
+       return false;
+     }
+
+     return date >= range.startDate && date <= range.endDate;
+   }
+
+   // ============================================================================
+   // CONTROL METHODS - Enable/disable and focus management
+   // ============================================================================
+
+   /**
+    * Disables the calendar (prevents user interaction)
+    */
+   disable(): void {
+     this.disabled = true;
+   }
+
+   /**
+    * Enables the calendar (allows user interaction)
+    */
+   enable(): void {
+     this.disabled = false;
+   }
+
+   /**
+    * Focuses the date input field
+    */
+   focusInput(): void {
+     const inputElement = this.inputsElement?.querySelector<HTMLInputElement>('input');
+     if (inputElement) {
+       inputElement.focus();
+     }
+   }
+
+   /**
+    * Focuses the first day button in the calendar grid
+    */
+   focusFirstDay(): void {
+     const buttons = this.daysElement?.querySelectorAll<HTMLButtonElement>('button:not([disabled])');
+     if (buttons && buttons.length > 0) {
+       buttons[0].focus();
+     }
+   }
+
+   /**
+    * Focuses the last day button in the calendar grid
+    */
+   focusLastDay(): void {
+     const buttons = this.daysElement?.querySelectorAll<HTMLButtonElement>('button:not([disabled])');
+     if (buttons && buttons.length > 0) {
+       buttons[buttons.length - 1].focus();
+     }
+   }
+
+   /**
+    * Clears the current date selection and resets to today
+    */
+   clearSelection(): void {
+     this.selectedDate = new Date();
+     this.displayedMonthDate = new Date(this.selectedDate);
+     this.rebuildCalendar();
+     this.dateChangedCallback(this.selectedDate);
+   }
+
+   /**
+    * Resets selection and view to the currently selected date
+    */
+   resetSelection(): void {
+     this.displayedMonthDate = new Date(this.selectedDate);
+     this.rebuildCalendar();
+   }
+
+   // ============================================================================
+   // HELPER PROPERTIES
+   // ============================================================================
+
+   /**
+    * Flag indicating whether the calendar is disabled
+    */
+   private disabled = false;
 }
 
 customElements.define('datedreamer-calendar', DateDreamerCalendar);
