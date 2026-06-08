@@ -50,6 +50,9 @@ jobs:
           # Yarn command
           cmd: release
 
+      - name: Run Tests before Publish
+        run: yarn test
+
       - name: Publish
         uses: actions/setup-node@v3
         with:

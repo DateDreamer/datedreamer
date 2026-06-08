@@ -33,6 +33,12 @@ jobs:
         # Yarn command
         cmd: install
         
+    - name: Run Tests
+      uses: Borales/actions-yarn@v4.2.0
+      with:
+        # Yarn command
+        cmd: test
+
     - name: Build
       uses: Borales/actions-yarn@v4.2.0
       with:
