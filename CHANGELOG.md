@@ -1,5 +1,20 @@
 # Changelog
 
+# [0.5.0](https://github.com/DateDreamer/datedreamer/compare/0.4.8...0.5.0) (2026-06-09)
+
+
+### Bug Fixes
+
+* migrate ESLint to v9 flat config and improve CI safety ([a992522](https://github.com/DateDreamer/datedreamer/commit/a9925223ee591f559d63068d7bd314d2f9e45730))
+
+
+### Features
+
+* add getter and control methods to calendar ([6634586](https://github.com/DateDreamer/datedreamer/commit/6634586f9dc37f089fde1e55effa80e51c152cba))
+* add getter, control methods, and helper navigation functions ([e7f53bc](https://github.com/DateDreamer/datedreamer/commit/e7f53bc709d077dbf2ceedb0e71e2e5aa0b2f961))
+* update all packages to latest and fix 16 security vulnerabilities ([7be179b](https://github.com/DateDreamer/datedreamer/commit/7be179b4315b397018d8d5f34849348fa9b68021))
+* update all packages to latest and fix 16 security vulnerabilities ([f66c81d](https://github.com/DateDreamer/datedreamer/commit/f66c81d9c374f8a2c2d6f8866b178f28cce7f012))
+
 ## [0.4.8](https://github.com/DateDreamer/DateDreamer/compare/0.4.7...0.4.8) (2025-07-30)
 
 ## [0.4.7](https://github.com/DateDreamer/DateDreamer/compare/0.4.6...0.4.7) (2025-07-30)
