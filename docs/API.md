@@ -84,7 +84,320 @@ Changes the displayed month without changing the selected date.
 myCalendar.setDisplayedMonthDate(new Date('2024-06-01'));
 ```
 
-#### Events
+---
+
+## Calendar Control Methods (Public API)
+
+### Getter Methods
+
+#### `getSelectedDate(): Date | null`
+
+Gets the currently selected date in the calendar.
+
+```javascript
+const selected = myCalendar.getSelectedDate(); // Date object or null
+console.log(selected.getDate(), selected.getMonth(), selected.getFullYear());
+```
+
+#### `getDisplayMonth(): Date`
+
+Gets the currently displayed month.
+
+```javascript
+const displayedMonth = myCalendar.getDisplayMonth();
+console.log(displayedMonth.getFullYear(), displayedMonth.getMonth());
+```
+
+#### `getDisplayedYear(): number`
+
+Gets the year of the currently displayed month.
+
+```javascript
+const year = myCalendar.getDisplayedYear(); // 2024
+```
+
+#### `getDisplayMonthName(): string`
+
+Gets the full name of the currently displayed month.
+
+```javascript
+console.log(myCalendar.getDisplayMonthName()); // "January", "February", etc.
+```
+
+#### `isSelected(date: Date): boolean`
+
+Checks if the given date matches the currently selected date.
+
+```javascript
+const today = new Date();
+const isTodaySelected = myCalendar.isSelected(today);
+```
+
+#### `getIsInRangeMode(): boolean`
+
+Gets whether the calendar is in range selection mode (only for range calendars).
+
+```javascript
+console.log(myCalendar.getIsInRangeMode()); // true or false
+```
+
+---
+
+### Control Methods
+
+#### `disable(): void`
+
+Disables user interaction with the calendar.
+
+```javascript
+myCalendar.disable(); // Prevents clicks, keyboard navigation, etc.
+```
+
+#### `enable(): void`
+
+Enables user interaction with the calendar.
+
+```javascript
+myCalendar.enable(); // Re-enables all interactions
+```
+
+#### `focusInput(): void`
+
+Focuses the date input field (if visible).
+
+```javascript
+myCalendar.focusInput();
+```
+
+#### `focusFirstDay(): void`
+
+Focuses the first clickable day button in the calendar grid.
+
+```javascript
+myCalendar.focusFirstDay();
+```
+
+#### `focusLastDay(): void`
+
+Focuses the last clickable day button in the calendar grid.
+
+```javascript
+myCalendar.focusLastDay();
+```
+
+#### `clearSelection(): void`
+
+Clears the current date selection and resets to today's date.
+
+```javascript
+myCalendar.clearSelection(); // Resets to today
+myCalendar.getSelectedDate(); // Now returns today's date
+```
+
+#### `resetSelection(): void`
+
+Resets the displayed month to match the currently selected date (without changing the selection itself).
+
+```javascript
+myCalendar.resetSelection(); // Display matches selected date again
+```
+
+---
+
+### Helper Navigation Methods
+
+#### `goToMonth(year: number, month: number): void`
+
+Navigates to a specific month by year and month index (0-11).
+
+```javascript
+// Go to June 2024
+myCalendar.goToMonth(2024, 5); // month is 0-indexed (0 = January)
+```
+
+#### `goToPrevWeek(): void`
+
+Navigates back one week (7 days) from the currently selected date.
+
+```javascript
+myCalendar.goToPrevWeek();
+```
+
+#### `goToNextWeek(): void`
+
+Navigates forward one week (7 days) from the currently selected date.
+
+```javascript
+myCalendar.goToNextWeek();
+```
+
+#### `jumpToStartOfMonth(): void`
+
+Jumps to the first day of the displayed month.
+
+```javascript
+myCalendar.jumpToStartOfMonth(); // Goes to 1st of current month
+```
+
+#### `jumpToEndOfMonth(): void`
+
+Jumps to the last day of the displayed month.
+
+```javascript
+myCalendar.jumpToEndOfMonth(); // Goes to last day of current month
+```
+
+#### `isTodayVisible(): boolean`
+
+Checks if today's date is visible in the current calendar view.
+
+```javascript
+console.log(myCalendar.isTodayVisible()); // true if today falls within displayed month
+```
+
+---
+
+## Event System
+
+DateDreamer supports addEventListener for event-based interaction:
+
+### EVENT_CHANGE
+
+Triggered when a date is selected or changed.
+
+```javascript
+const myCalendar = new calendar({
+  element: '#calendar',
+  onChange: (event) => {
+    console.log('Date changed:', event.detail); // Date object
+  }
+});
+
+// Or using addEventListener
+myCalendar.addEventListener(calendar.EVENT_CHANGE, (e) => {
+  console.log('Selected date:', e.detail);
+});
+```
+
+### EVENT_NAVIGATE
+
+Triggered when navigating between months.
+
+```javascript
+myCalendar.addEventListener(calendar.EVENT_NAVIGATE, (e) => {
+  console.log('Navigated to:', new Date(e.detail.displayedMonthDate));
+});
+```
+
+### EVENT_RENDER
+
+Triggered when the calendar completes rendering.
+
+```javascript
+myCalendar.addEventListener(calendar.EVENT_RENDER, (e) => {
+  console.log('Calendar rendered');
+});
+```
+
+---
+
+## Utilities Module
+
+DateDreamer exports a `Utils` namespace with helpful date manipulation functions:
+
+```javascript
+import { Utils } from 'datedreamer';
+```
+
+### Date Validation
+
+#### `Utils.isValidDate(value): boolean`
+
+Checks if a value is a valid Date object.
+
+```javascript
+Utils.isValidDate(new Date()); // true
+Utils.isValidDate('not-a-date'); // false
+```
+
+#### `Utils.isInRange(start: Date, end: Date, date: Date): boolean`
+
+Checks if a date falls within a range (inclusive).
+
+```javascript
+const start = new Date('2024-01-01');
+const end = new Date('2024-12-31');
+Utils.isInRange(start, end, new Date('2024-06-15')); // true
+```
+
+### Date Formatting
+
+#### `Utils.formatDate(date: Date, format?: string): string`
+
+Formats a date using DayJS format tokens.
+
+```javascript
+Utils.formatDate(new Date(), 'MM/DD/YYYY'); // "06/08/2024"
+Utils.formatDate(new Date()); // Uses default format
+```
+
+### Date Comparison
+
+#### `Utils.isSameDay(date1: Date, date2: Date): boolean`
+
+Checks if two dates represent the same day.
+
+```javascript
+Utils.isSameDay(
+  new Date('2024-06-08'),
+  new Date('2024-06-08')
+); // true
+```
+
+### Date Manipulation
+
+#### `Utils.addDays(date: Date, days: number): Date`
+
+Adds a number of days to a date.
+
+```javascript
+const tomorrow = Utils.addDays(new Date(), 1);
+const nextWeek = Utils.addDays(new Date(), 7);
+```
+
+### Week Helpers
+
+#### `Utils.getWeekNumber(date: Date): number`
+
+Gets the ISO week number for a date.
+
+```javascript
+Utils.getWeekNumber(new Date()); // e.g., 24
+```
+
+#### `Utils.isWeekend(date: Date): boolean`
+
+Checks if a date falls on a weekend (Saturday or Sunday).
+
+```javascript
+Utils.isWeekend(new Date()); // true or false
+```
+
+#### `Utils.getWeekdayName(date: Date): string`
+
+Gets the full weekday name.
+
+```javascript
+Utils.getWeekdayName(new Date()); // "Monday", "Tuesday", etc.
+```
+
+#### `Utils.getWeekdayShort(date: Date): string`
+
+Gets the short weekday name.
+
+```javascript
+Utils.getWeekdayShort(new Date()); // "Mon", "Tue", etc.
+```
 
 ##### `onChange`
 

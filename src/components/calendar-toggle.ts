@@ -41,6 +41,11 @@ class DateDreamerCalendarToggle extends HTMLElement {
         this.calendarWrapElement?.classList.remove('active');
       }
     });
+
+    // Add keyboard accessibility - close on Escape key
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+      this.handleKeyDown(event);
+    });
   }
 
   /**
@@ -118,6 +123,15 @@ class DateDreamerCalendarToggle extends HTMLElement {
       this.generateCalendar();
     } else {
       throw new Error(`Could not find ${this.element} in DOM.`);
+    }
+  }
+
+  /**
+   * Handles keyboard accessibility - closes calendar on Escape key
+   */
+  private handleKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Escape' && this.calendarWrapElement) {
+      this.calendarWrapElement.classList.remove('active');
     }
   }
 

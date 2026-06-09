@@ -38,7 +38,7 @@ dayjs.extend(customParseFormat);
  * ```
  */
 class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
-  element: Element | string;
+   element: Element | string;
   calendarElement: HTMLElement | null | undefined = null;
   headerElement: HTMLElement | null | undefined = null;
   inputsElement: HTMLElement | null | undefined = null;
@@ -582,21 +582,93 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
    }
 
    /**
-    * Resets selection and view to the currently selected date
-    */
-   resetSelection(): void {
-     this.displayedMonthDate = new Date(this.selectedDate);
-     this.rebuildCalendar();
-   }
+     * Resets selection and view to the currently selected date
+     */
+    resetSelection(): void {
+      this.displayedMonthDate = new Date(this.selectedDate);
+      this.rebuildCalendar();
+    }
 
-   // ============================================================================
-   // HELPER PROPERTIES
-   // ============================================================================
+    // ============================================================================
+    // HELPER NAVIGATION METHODS - Common Patterns
+    // ============================================================================
 
-   /**
-    * Flag indicating whether the calendar is disabled
-    */
-   private disabled = false;
+    /**
+     * Navigates to a specific month by year and month index (0-11)
+     * @param year - The year to navigate to
+     * @param month - The month index (0 for January, 11 for December)
+     */
+    goToMonth(year: number, month: number): void {
+      const d = new Date(this.displayedMonthDate);
+      d.setFullYear(year);
+      d.setMonth(month);
+      this.displayedMonthDate = d;
+      this.rebuildCalendar(true, 'first');
+    }
+
+    /**
+     * Navigates to the previous week (7 days back)
+     */
+    goToPrevWeek(): void {
+      const today = new Date(this.selectedDate);
+      const startOfWeek = new Date(today);
+      const dayOfWeek = today.getDay();
+      startOfWeek.setDate(today.getDate() - dayOfWeek + 1);
+      
+      this.displayedMonthDate = new Date(startOfWeek);
+      this.rebuildCalendar(true, 'first');
+    }
+
+    /**
+     * Navigates to the next week (7 days forward)
+     */
+    goToNextWeek(): void {
+      const today = new Date(this.selectedDate);
+      const endOfWeek = new Date(today);
+      endOfWeek.setDate(today.getDate() + (6 - today.getDay()));
+      
+      this.displayedMonthDate = new Date(endOfWeek);
+      this.rebuildCalendar(true, 'last');
+    }
+
+    /**
+     * Jumps to the first day of the displayed month
+     */
+    jumpToStartOfMonth(): void {
+      const d = new Date(this.displayedMonthDate);
+      d.setDate(1);
+      this.displayedMonthDate = d;
+      this.rebuildCalendar(true, 'first');
+    }
+
+    /**
+     * Jumps to the last day of the displayed month
+     */
+    jumpToEndOfMonth(): void {
+      const d = new Date(this.displayedMonthDate.getFullYear(), 
+                          this.displayedMonthDate.getMonth() + 1, 0);
+      this.displayedMonthDate = d;
+      this.rebuildCalendar(true, 'last');
+    }
+
+    /**
+     * Checks if today is visible in the current calendar view
+     * @returns true if today's date falls within the displayed month, false otherwise
+     */
+    isTodayVisible(): boolean {
+      const today = new Date();
+      return today.getMonth() === this.displayedMonthDate.getMonth() &&
+             today.getFullYear() === this.displayedMonthDate.getFullYear();
+    }
+
+    // ============================================================================
+    // HELPER PROPERTIES
+    // ============================================================================
+
+    /**
+     * Flag indicating whether the calendar is disabled
+     */
+    private disabled = false;
 }
 
 customElements.define('datedreamer-calendar', DateDreamerCalendar);

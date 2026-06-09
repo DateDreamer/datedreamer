@@ -125,6 +125,100 @@ Use this if you want a standalone calendar that comes with an input filled and a
         })
     ```
 
+## Calendar Control Methods
+
+You can control the calendar programmatically using the following methods:
+
+### Getters
+
+```javascript
+const calendar = new datedreamer.calendar({...options});
+
+// Get selected date
+const selectedDate = calendar.getSelectedDate(); // Date | null
+
+// Get displayed month
+const displayedMonth = calendar.getDisplayMonth(); // Date
+
+// Get displayed year
+const currentYear = calendar.getDisplayedYear(); // number (e.g., 2024)
+
+// Get full month name
+const monthName = calendar.getDisplayMonthName(); // "January", "February", etc.
+
+// Check if a date is selected
+const isJan15Selected = calendar.isSelected(new Date(2024, 0, 15)); // boolean
+```
+
+### Control Methods
+
+```javascript
+// Disable/Enable the calendar
+calendar.disable();    // Prevents user interaction
+calendar.enable();     // Re-enables user interaction
+
+// Focus management
+calendar.focusInput();      // Focuses date input field
+calendar.focusFirstDay();   // Focuses first day button
+calendar.focusLastDay();    // Focuses last day button
+
+// Clear or reset selection
+calendar.clearSelection();       // Resets to today's date
+calendar.resetSelection();       // Resets to current selected date
+```
+
+### Helper Navigation Methods
+
+```javascript
+// Navigate to specific month
+calendar.goToMonth(2024, 5); // Go to June 2024 (0-indexed months)
+
+// Week navigation
+calendar.goToPrevWeek();  // Go back 7 days from selected date
+calendar.goNextWeek();    // Go forward 7 days from selected date
+
+// Month boundaries
+calendar.jumpToStartOfMonth(); // Jump to first day of current month
+calendar.jumpToEndOfMonth();   // Jump to last day of current month
+
+// Check if today is visible
+const isTodayVisible = calendar.isTodayVisible(); // boolean
+```
+
+### Event System
+
+Listen to calendar events using addEventListener:
+
+```javascript
+const calendar = new datedreamer.calendar({...options});
+
+// Listen for date change
+calendar.addEventListener(datedreamer.calendar.EVENT_CHANGE, (e) => {
+    console.log('Date changed:', e.detail);
+});
+
+// Listen for navigation
+calendar.addEventListener(datedreamer.calendar.EVENT_NAVIGATE, (e) => {
+    console.log('Navigated to:', new Date(e.detail.displayedMonthDate));
+});
+
+// Listen for render complete
+calendar.addEventListener(datedreamer.calendar.EVENT_RENDER, (e) => {
+    console.log('Calendar rendered');
+});
+```
+
+### Keyboard Navigation
+
+The calendar supports keyboard navigation:
+
+- **Arrow Left/Right**: Navigate between days
+- **Arrow Up/Down**: Navigate by 7-day increments
+- **Enter/Space**: Select a day
+- **Home**: Jump to first day of month
+- **End**: Jump to last day of month
+- **Escape**: Close toggle calendar
+
 ## Toggle Calendar
 The toggle calendar has the same options as the Standalone Calendar, however the input is a standalone input element which when clicked, triggers the calendar to show.
 

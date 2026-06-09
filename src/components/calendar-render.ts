@@ -11,12 +11,15 @@ import { calendar } from './calendar';
  * Generates the Previous, Title, and Next header elements.
  */
 export function generateHeader(context: calendar): void {
+  const monthName = monthNames[context.displayedMonthDate.getMonth()];
+
   // Previous Button
   if (!context.hidePrevNav) {
     const prevButton = document.createElement('button');
     prevButton.classList.add('datedreamer__calendar_prev');
     prevButton.innerHTML = context.iconPrev ? context.iconPrev : leftChevron;
-    prevButton.setAttribute('aria-label', 'Previous');
+    prevButton.setAttribute('aria-label', `Previous ${monthName} ${context.displayedMonthDate.getFullYear()}`);
+    prevButton.setAttribute('role', 'button');
     prevButton.addEventListener('click', () => context.goToPrevMonth());
     context.headerElement?.append(prevButton);
   }
@@ -24,7 +27,8 @@ export function generateHeader(context: calendar): void {
   // Title
   const title = document.createElement('span');
   title.classList.add('datedreamer__calendar_title');
-  title.innerText = `${monthNames[context.displayedMonthDate.getMonth()]} ${context.displayedMonthDate.getFullYear()}`;
+  title.setAttribute('aria-label', `${monthName} ${context.displayedMonthDate.getFullYear()}`);
+  title.innerText = `${monthName} ${context.displayedMonthDate.getFullYear()}`;
   context.headerElement?.append(title);
 
   // Next Button
@@ -32,7 +36,8 @@ export function generateHeader(context: calendar): void {
     const nextButton = document.createElement('button');
     nextButton.classList.add('datedreamer__calendar_next');
     nextButton.innerHTML = context.iconNext ? context.iconNext : rightChevron;
-    nextButton.setAttribute('aria-label', 'Next');
+    nextButton.setAttribute('aria-label', `Next ${monthName} ${context.displayedMonthDate.getFullYear()}`);
+    nextButton.setAttribute('role', 'button');
     nextButton.addEventListener('click', () => context.goToNextMonth());
     context.headerElement?.append(nextButton);
   }
@@ -136,23 +141,35 @@ export function generateDays(
 
       if (context.rangeMode) {
         if (
-          context.displayedMonthDate.getMonth() ==
-            context.connector?.startDate?.getMonth() &&
-          context.displayedMonthDate.getFullYear() ==
-            context.connector.startDate.getFullYear() &&
-          i - daysToSkipBefore == context.connector.startDate.getDate()
-        ) {
-          day.classList.add('active');
-        }
-        if (
-          context.displayedMonthDate.getMonth() ==
-            context.connector?.endDate?.getMonth() &&
-          context.displayedMonthDate.getFullYear() ==
-            context.connector.endDate.getFullYear() &&
-          i - daysToSkipBefore == context.connector.endDate.getDate()
-        ) {
-          day.classList.add('active');
-        }
+           context.displayedMonthDate.getMonth() ==
+             context.connector?.startDate?.getMonth() &&
+           context.displayedMonthDate.getFullYear() ==
+             context.connector.startDate.getFullYear() &&
+           i - daysToSkipBefore == context.connector.startDate.getDate()
+         ) {
+           day.classList.add('active');
+         }
+
+         // Add aria-selected for active state (range mode start date)
+         const startDateBtn = day.querySelector('button');
+         if (startDateBtn) {
+           startDateBtn.setAttribute('aria-selected', 'true');
+         }
+       if (
+           context.displayedMonthDate.getMonth() ==
+             context.connector?.endDate?.getMonth() &&
+           context.displayedMonthDate.getFullYear() ==
+             context.connector.endDate.getFullYear() &&
+           i - daysToSkipBefore == context.connector.endDate.getDate()
+         ) {
+           day.classList.add('active');
+         }
+
+         // Add aria-selected for active state (range mode end date)
+         const endDateBtn = day.querySelector('button');
+         if (endDateBtn) {
+           endDateBtn.setAttribute('aria-selected', 'true');
+         }
         const selectedDate = new Date(context.displayedMonthDate);
         selectedDate.setDate(i - daysToSkipBefore);
         if (context.connector?.startDate && context.connector.endDate) {
@@ -189,6 +206,11 @@ export function generateDays(
             context.selectedDate.getFullYear()
         ) {
           day.classList.add('active');
+          // Add aria-selected for the currently selected date
+          const selectedBtn = day.querySelector('button');
+          if (selectedBtn) {
+            selectedBtn.setAttribute('aria-selected', 'true');
+          }
         }
       }
       day.append(button);
@@ -214,12 +236,14 @@ export function generateDays(
     } else if (i <= daysToSkipBefore) {
       const day = document.createElement('div');
       day.classList.add('datedreamer__calendar_day', 'disabled');
+      day.setAttribute('role', 'gridcell');
       if (!context.hideOtherMonthDays) {
         const button = document.createElement('button');
         button.innerText = new Date(year, month, 0 - (daysToSkipBefore - i))
           .getDate()
           .toString();
-        button.setAttribute('disabled', 'true');
+        button.setAttribute('aria-disabled', 'true');
+        button.setAttribute('tabindex', '-1');
         button.setAttribute('type', 'button');
         day.append(button);
       }
@@ -231,12 +255,14 @@ export function generateDays(
         daysToSkipAfter;
       const day = document.createElement('div');
       day.classList.add('datedreamer__calendar_day', 'disabled');
+      day.setAttribute('role', 'gridcell');
       if (!context.hideOtherMonthDays) {
         const button = document.createElement('button');
         button.innerText = new Date(year, month + 1, dayNumber)
           .getDate()
           .toString();
-        button.setAttribute('disabled', 'true');
+        button.setAttribute('aria-disabled', 'true');
+        button.setAttribute('tabindex', '-1');
         button.setAttribute('type', 'button');
         day.append(button);
       }
