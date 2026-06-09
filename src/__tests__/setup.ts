@@ -18,24 +18,21 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock ResizeObserver
-global.ResizeObserver = class ResizeObserver {
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
+(window as unknown as {ResizeObserver?: any}).ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
 };
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
-  root: Element | Document | null = null;
-  rootMargin: string = '';
-  thresholds: ReadonlyArray<number> = [];
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
+(window as unknown as {IntersectionObserver?: any}).IntersectionObserver = class IntersectionObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
   takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-} as unknown as typeof IntersectionObserver;
+};
 
 // Clean up after each test
 afterEach(() => {
