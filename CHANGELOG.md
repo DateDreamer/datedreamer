@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.5.1](https://github.com/DateDreamer/datedreamer/compare/0.5.0...0.5.1) (2026-06-09)
+
 # [0.5.0](https://github.com/DateDreamer/datedreamer/compare/0.4.8...0.5.0) (2026-06-09)
 
 
