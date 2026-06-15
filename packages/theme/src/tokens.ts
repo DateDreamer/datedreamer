@@ -2,7 +2,7 @@
 export const defaultTokens = {
   colors: {
     primary: '#7d56da',
-    primary-contrast: '#ffffff',
+    'primary-contrast': '#ffffff',
     background: '#ffffff',
     text: '#2d3436',
     border: '#dfe6e9',

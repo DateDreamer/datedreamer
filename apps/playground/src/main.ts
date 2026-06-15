@@ -1,5 +1,5 @@
-import '../../packages/web-components/src/components/calendar';
-import { generateDefaultThemeCSS } from '../../packages/theme/src';
+import '@datedreamer/web-components/components/calendar';
+import { generateDefaultThemeCSS } from '@datedreamer/theme';
 
 // Apply default theme
 document.head.insertAdjacentHTML('beforeend', `<style>${generateDefaultThemeCSS()}</style>`);

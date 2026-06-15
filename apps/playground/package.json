@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@datedreamer/core": "*",
-    "@datedreamer/web-components": "*",
-    "@datedreamer/theme": "*"
+    "@datedreamer/core": "workspace:*",
+    "@datedreamer/web-components": "workspace:*",
+    "@datedreamer/theme": "workspace:*"
   },
   "devDependencies": {
     "vite": "^5.0.0",

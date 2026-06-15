@@ -10,7 +10,7 @@ export function generateDefaultThemeCSS() {
   return `
     :root {
       --dd-primary: ${defaultTokens.colors.primary};
-      --dd-primary-contrast: ${defaultTokens.colors.primary-contrast};
+      --dd-primary-contrast: ${defaultTokens.colors['primary-contrast']};
       --dd-background: ${defaultTokens.colors.background};
       --dd-text: ${defaultTokens.colors.text};
       --dd-border: ${defaultTokens.colors.border};
