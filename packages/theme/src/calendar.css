@@ -89,6 +89,9 @@ dd-calendar .dd-calendar {
   box-shadow: var(--dd-shadow-md);
   overflow: hidden;
   user-select: none;
+  width: 100%;
+  max-width: 240px;
+  box-sizing: border-box;
 }
 
 /* Header */
@@ -275,9 +278,8 @@ dd-calendar-toggle .dd-toggle-panel {
    Range Picker (dual calendar)
    ============================================================ */
 dd-range .dd-range-container {
-  display: flex;
-  gap: var(--dd-spacing-xl);
-  padding: var(--dd-spacing-lg);
+  display: inline-flex;
+  box-shadow: var(--dd-shadow-lg);
 }
 
 dd-range .dd-range-sidebar {
@@ -305,8 +307,6 @@ dd-range .dd-range-option:hover {
 
 dd-range .dd-range-calendars {
   display: flex;
-  gap: var(--dd-spacing-lg);
-  flex: 1;
 }
 
 /* Connector line between calendars */
