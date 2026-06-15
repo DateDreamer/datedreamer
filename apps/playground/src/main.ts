@@ -1,19 +1,18 @@
 import '@datedreamer/web-components/components/calendar';
-import { generateDefaultThemeCSS } from '@datedreamer/theme';
-
-// Apply default theme
-document.head.insertAdjacentHTML('beforeend', `<style>${generateDefaultThemeCSS()}</style>`);
+import '@datedreamer/web-components/components/range';
+import '@datedreamer/web-components/components/calendar-toggle';
+import '../../../packages/theme/src/calendar.css';
 
 const calendar = document.getElementById('calendar') as HTMLElement;
 const status = document.getElementById('status') as HTMLElement;
 
-// Listen for date changes (using custom events from the calendar)
+// Listen for date changes
 calendar?.addEventListener('dd-date-change', (e: CustomEvent) => {
   const date = e.detail;
   status.textContent = `Selected: ${date.toDateString()}`;
 });
 
-// Theme switching
+// Theme switching via CSS custom property
 window.setTheme = (theme: string) => {
   const themes = {
     default: '#7d56da',
@@ -42,16 +41,15 @@ window.toggleDarkMode = () => {
 // Set to today
 window.setDateToToday = () => {
   if (calendar) {
-    // Trigger a custom event or method to set date to today
-    calendar.dispatchEvent(new CustomEvent('dd-set-today'));
+    const cal = calendar as HTMLElement & { goToToday?: () => void };
+    if (cal.goToToday) {
+      cal.goToToday();
+    } else {
+      // Fallback: dispatch custom event
+      calendar.dispatchEvent(new CustomEvent('dd-set-today'));
+    }
     status.textContent = `Date set to today`;
   }
 };
-
-// Listen for set-today event
-calendar?.addEventListener('dd-set-today', () => {
-  // In a real implementation, the calendar would handle this internally
-  status.textContent = `Calendar updated to today`;
-});
 
 console.log('DateDreamer Playground initialized');

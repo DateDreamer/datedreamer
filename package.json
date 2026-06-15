@@ -9,14 +9,17 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "test": "turbo run test",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "turbo run lint",
     "clean": "rm -rf node_modules && rm -rf packages/*/node_modules && rm -rf apps/*/node_modules && rm -rf dist",
     "playground": "pnpm --filter @datedreamer/playground dev"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
+    "jsdom": "^29.1.1",
     "turbo": "latest",
     "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "vitest": "^2.1.9"
   }
 }

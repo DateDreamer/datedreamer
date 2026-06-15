@@ -1,35 +1,55 @@
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { CalendarEngine } from '@datedreamer/core';
 
-/**
- * A Vue Composable that provides a reactive interface to the DateDreamer engine.
- */
-export function useCalendar(initialState?: any) {
-  const engine = new CalendarEngine(initialState);
-  const state = ref(engine.getState());
+export interface UseCalendarOptions {
+  initialDate?: Date;
+  rangeMode?: boolean;
+  darkMode?: boolean;
+}
 
-  // Sync engine updates to Vue's reactivity system
-  const unsubscribe = engine.subscribe((newState) => {
-    state.value = { ...newState };
+export function useCalendar(options: UseCalendarOptions = {}) {
+  const engine = new CalendarEngine({
+    selectedDate: options.initialDate || new Date(),
+    rangeMode: options.rangeMode || false,
+    darkMode: options.darkMode || false,
+  });
+
+  const state = ref(engine.getState());
+  let unsubscribe: (() => void) | undefined;
+
+  onMounted(() => {
+    unsubscribe = engine.subscribe((newState) => {
+      state.value = { ...newState };
+    });
   });
 
   onUnmounted(() => {
-    unsubscribe();
+    unsubscribe?.();
   });
+
+  const setDate = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    engine.setDate(d);
+  };
 
   const nextMonth = () => engine.nextMonth();
   const prevMonth = () => engine.prevMonth();
-  const setDate = (date: Date) => engine.setDate(date);
-  const setRange = (start: Date, end: Date) => engine.setRange(start, end);
-  const setDarkMode = (enabled: boolean) => engine.setDarkMode(enabled);
+  const goToMonth = (year: number, month: number) => engine.goToMonth(year, month);
+  const setRange = (start: Date | string, end: Date | string) => {
+    const s = typeof start === 'string' ? new Date(start) : start;
+    const e = typeof end === 'string' ? new Date(end) : end;
+    engine.setRange(s, e);
+  };
+  const toggleDarkMode = () => engine.setDarkMode(!state.value.darkMode);
 
   return {
-    state,
-    engine,
+    state: computed(() => state.value),
+    setDate,
     nextMonth,
     prevMonth,
-    setDate,
+    goToMonth,
     setRange,
-    setDarkMode
+    toggleDarkMode,
+    getDaysInMonth: (date?: Date) => engine.getDaysInMonth(date || state.value.displayedMonthDate),
   };
 }

@@ -1,0 +1,346 @@
+/* ============================================================
+   DateDreamer Calendar Theme Tokens
+   ============================================================ */
+
+:root {
+  /* Primary accent — override this to theme the calendar */
+  --dd-primary: #7d56da;
+  --dd-primary-hover: #6a45c8;
+  --dd-primary-light: rgba(125, 86, 218, 0.1);
+
+  /* Backgrounds */
+  --dd-bg: #ffffff;
+  --dd-bg-hover: #f3f4f6;
+  --dd-bg-disabled: #e5e7eb;
+
+  /* Text */
+  --dd-text-primary: #111827;
+  --dd-text-secondary: #6b7280;
+  --dd-text-muted: #9ca3af;
+  --dd-text-on-primary: #ffffff;
+
+  /* Borders & dividers */
+  --dd-border: #e5e7eb;
+  --dd-border-radius: 8px;
+  --dd-border-radius-sm: 4px;
+
+  /* Shadows */
+  --dd-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --dd-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --dd-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Spacing */
+  --dd-spacing-xs: 2px;
+  --dd-spacing-sm: 4px;
+  --dd-spacing-md: 8px;
+  --dd-spacing-lg: 16px;
+  --dd-spacing-xl: 24px;
+
+  /* Typography */
+  --dd-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --dd-font-size-sm: 0.75rem;
+  --dd-font-size-base: 0.875rem;
+  --dd-font-size-lg: 1rem;
+
+  /* Transitions */
+  --dd-transition-fast: 150ms ease;
+  --dd-transition-normal: 200ms ease;
+
+  /* Range picker specific */
+  --dd-range-start-bg: var(--dd-primary);
+  --dd-range-end-bg: var(--dd-primary);
+  --dd-range-middle-bg: rgba(125, 86, 218, 0.15);
+  --dd-range-hover-bg: rgba(125, 86, 218, 0.08);
+
+  /* Connector line */
+  --dd-connector-color: var(--dd-primary);
+}
+
+/* ============================================================
+   Dark Mode Overrides
+   ============================================================ */
+[data-dd-dark-mode],
+dd-calendar[dark-mode] {
+  --dd-bg: #1f2937;
+  --dd-bg-hover: #374151;
+  --dd-bg-disabled: #4b5563;
+
+  --dd-text-primary: #f9fafb;
+  --dd-text-secondary: #d1d5db;
+  --dd-text-muted: #9ca3af;
+
+  --dd-border: #374151;
+  --dd-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --dd-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --dd-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+  --dd-primary-light: rgba(125, 86, 218, 0.2);
+  --dd-range-middle-bg: rgba(125, 86, 218, 0.25);
+  --dd-range-hover-bg: rgba(125, 86, 218, 0.15);
+}
+
+/* ============================================================
+   Calendar Grid Styles
+   ============================================================ */
+dd-calendar .dd-calendar {
+  font-family: var(--dd-font-family);
+  background: var(--dd-bg);
+  border-radius: var(--dd-border-radius);
+  box-shadow: var(--dd-shadow-md);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Header */
+dd-calendar .dd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--dd-spacing-lg);
+  background: var(--dd-primary);
+  color: var(--dd-text-on-primary);
+}
+
+dd-calendar .dd-header-title {
+  font-size: var(--dd-font-size-lg);
+  font-weight: 600;
+}
+
+dd-calendar .dd-nav-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: var(--dd-spacing-sm) var(--dd-spacing-md);
+  border-radius: var(--dd-border-radius-sm);
+  transition: background var(--dd-transition-fast);
+}
+
+dd-calendar .dd-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Weekday headers */
+dd-calendar .dd-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: var(--dd-spacing-md) var(--dd-spacing-lg);
+  border-bottom: 1px solid var(--dd-border);
+}
+
+dd-calendar .dd-weekday {
+  text-align: center;
+  font-size: var(--dd-font-size-sm);
+  font-weight: 600;
+  color: var(--dd-text-secondary);
+  padding: var(--dd-spacing-xs) 0;
+}
+
+/* Day grid */
+dd-calendar .dd-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: var(--dd-spacing-md) var(--dd-spacing-lg);
+  gap: var(--dd-spacing-xs);
+}
+
+dd-calendar .dd-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--dd-border-radius-sm);
+  font-size: var(--dd-font-size-base);
+  cursor: pointer;
+  transition: all var(--dd-transition-fast);
+  color: var(--dd-text-primary);
+  position: relative;
+}
+
+dd-calendar .dd-day:hover:not(.disabled):not(.selected) {
+  background: var(--dd-bg-hover);
+}
+
+dd-calendar .dd-day.other-month {
+  color: var(--dd-text-muted);
+}
+
+dd-calendar .dd-day.today {
+  font-weight: 700;
+  outline: 2px solid var(--dd-primary);
+  outline-offset: -2px;
+}
+
+dd-calendar .dd-day.selected {
+  background: var(--dd-primary);
+  color: var(--dd-text-on-primary);
+  font-weight: 600;
+}
+
+dd-calendar .dd-day.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Range styles */
+dd-calendar .dd-day.range-start {
+  background: var(--dd-range-start-bg);
+  color: var(--dd-text-on-primary);
+  border-radius: var(--dd-border-radius-sm) 0 0 var(--dd-border-radius-sm);
+}
+
+dd-calendar .dd-day.range-end {
+  background: var(--dd-range-end-bg);
+  color: var(--dd-text-on-primary);
+  border-radius: 0 var(--dd-border-radius-sm) var(--dd-border-radius-sm) 0;
+}
+
+dd-calendar .dd-day.in-range {
+  background: var(--dd-range-middle-bg);
+  border-radius: 0;
+}
+
+dd-calendar .dd-day.range-hover {
+  background: var(--dd-range-hover-bg);
+}
+
+/* Event indicators */
+dd-calendar .dd-day.has-events::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--dd-primary);
+}
+
+/* Input fields */
+dd-calendar .dd-input-group {
+  display: flex;
+  gap: var(--dd-spacing-md);
+  padding: var(--dd-spacing-lg);
+  border-bottom: 1px solid var(--dd-border);
+}
+
+dd-calendar .dd-date-input {
+  flex: 1;
+  padding: var(--dd-spacing-sm) var(--dd-spacing-md);
+  border: 1px solid var(--dd-border);
+  border-radius: var(--dd-border-radius-sm);
+  font-size: var(--dd-font-size-base);
+  background: var(--dd-bg);
+  color: var(--dd-text-primary);
+}
+
+dd-calendar .dd-date-input:focus {
+  outline: none;
+  border-color: var(--dd-primary);
+  box-shadow: 0 0 0 2px var(--dd-primary-light);
+}
+
+/* ============================================================
+   Calendar Toggle (popup wrapper)
+   ============================================================ */
+dd-calendar-toggle .dd-toggle-input {
+  width: 100%;
+  padding: var(--dd-spacing-md) var(--dd-spacing-lg);
+  border: 1px solid var(--dd-border);
+  border-radius: var(--dd-border-radius);
+  font-size: var(--dd-font-size-base);
+  background: var(--dd-bg);
+  color: var(--dd-text-primary);
+  cursor: pointer;
+}
+
+dd-calendar-toggle .dd-toggle-input:focus {
+  outline: none;
+  border-color: var(--dd-primary);
+  box-shadow: 0 0 0 2px var(--dd-primary-light);
+}
+
+dd-calendar-toggle .dd-toggle-panel {
+  position: absolute;
+  top: calc(100% + var(--dd-spacing-sm));
+  left: 0;
+  z-index: 1000;
+  background: var(--dd-bg);
+  border-radius: var(--dd-border-radius);
+  box-shadow: var(--dd-shadow-lg);
+}
+
+/* ============================================================
+   Range Picker (dual calendar)
+   ============================================================ */
+dd-range .dd-range-container {
+  display: flex;
+  gap: var(--dd-spacing-xl);
+  padding: var(--dd-spacing-lg);
+}
+
+dd-range .dd-range-sidebar {
+  width: 160px;
+  border-right: 1px solid var(--dd-border);
+  padding: var(--dd-spacing-md) 0;
+}
+
+dd-range .dd-range-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--dd-spacing-sm) var(--dd-spacing-lg);
+  border: none;
+  background: transparent;
+  color: var(--dd-text-primary);
+  font-size: var(--dd-font-size-base);
+  cursor: pointer;
+  transition: background var(--dd-transition-fast);
+}
+
+dd-range .dd-range-option:hover {
+  background: var(--dd-bg-hover);
+}
+
+dd-range .dd-range-calendars {
+  display: flex;
+  gap: var(--dd-spacing-lg);
+  flex: 1;
+}
+
+/* Connector line between calendars */
+dd-range .dd-connector-line {
+  width: 2px;
+  background: var(--dd-connector-color);
+  margin: 0 var(--dd-spacing-sm);
+  align-self: stretch;
+  border-radius: 1px;
+}
+
+/* ============================================================
+   Lite Purple Theme (default)
+   ============================================================ */
+[data-dd-theme="lite-purple"] {
+  --dd-primary: #7d56da;
+  --dd-primary-hover: #6a45c8;
+  --dd-primary-light: rgba(125, 86, 218, 0.1);
+}
+
+[data-dd-theme="forest"] {
+  --dd-primary: #2ecc71;
+  --dd-primary-hover: #27ae60;
+  --dd-primary-light: rgba(46, 204, 113, 0.1);
+}
+
+[data-dd-theme="ocean"] {
+  --dd-primary: #3498db;
+  --dd-primary-hover: #2980b9;
+  --dd-primary-light: rgba(52, 152, 219, 0.1);
+}
+
+[data-dd-theme="sunset"] {
+  --dd-primary: #e67e22;
+  --dd-primary-hover: #d35400;
+  --dd-primary-light: rgba(230, 126, 34, 0.1);
+}

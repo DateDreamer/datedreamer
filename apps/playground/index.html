@@ -49,12 +49,18 @@
       <button onclick="setTheme('sunset')">Sunset (Orange)</button>
     </div>
 
-    <date-dreamer-calendar id="calendar"></date-dreamer-calendar>
+    <dd-calendar id="calendar"></dd-calendar>
 
     <div class="controls">
       <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
       <button onclick="setDateToToday()">Set to Today</button>
     </div>
+    
+    <h2 style="margin-top:1.5rem;">Range Picker</h2>
+    <dd-range id="range" show-sidebar></dd-range>
+
+    <h2 style="margin-top:1.5rem;">Toggle Input</h2>
+    <dd-calendar-toggle placeholder="Pick a date"></dd-calendar-toggle>
     
     <div class="status" id="status">Ready</div>
   </div>
