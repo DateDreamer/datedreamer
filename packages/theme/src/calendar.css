@@ -1,6 +1,8 @@
 /* ============================================================
-   DateDreamer Calendar Theme Tokens
+   DateDreamer Calendar Theme — aligned with original repo styles
    ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 :root {
   /* Primary accent — override this to theme the calendar */
@@ -14,7 +16,7 @@
   --dd-bg-disabled: #e5e7eb;
 
   /* Text */
-  --dd-text-primary: #111827;
+  --dd-text-primary: #2d3436;
   --dd-text-secondary: #6b7280;
   --dd-text-muted: #9ca3af;
   --dd-text-on-primary: #ffffff;
@@ -25,9 +27,7 @@
   --dd-border-radius-sm: 4px;
 
   /* Shadows */
-  --dd-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --dd-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --dd-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --dd-shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
   /* Spacing */
   --dd-spacing-xs: 2px;
@@ -37,7 +37,7 @@
   --dd-spacing-xl: 24px;
 
   /* Typography */
-  --dd-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --dd-font-family: 'Roboto', sans-serif;
   --dd-font-size-sm: 0.75rem;
   --dd-font-size-base: 0.875rem;
   --dd-font-size-lg: 1rem;
@@ -61,207 +61,379 @@
    ============================================================ */
 [data-dd-dark-mode],
 dd-calendar[dark-mode] {
-  --dd-bg: #1f2937;
-  --dd-bg-hover: #374151;
+  --dd-bg: #1a1a1a;
+  --dd-bg-hover: #2d3748;
   --dd-bg-disabled: #4b5563;
 
-  --dd-text-primary: #f9fafb;
+  --dd-text-primary: #ecf0f1;
   --dd-text-secondary: #d1d5db;
   --dd-text-muted: #9ca3af;
 
   --dd-border: #374151;
-  --dd-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --dd-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-  --dd-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-
-  --dd-primary-light: rgba(125, 86, 218, 0.2);
-  --dd-range-middle-bg: rgba(125, 86, 218, 0.25);
-  --dd-range-hover-bg: rgba(125, 86, 218, 0.15);
 }
 
 /* ============================================================
-   Calendar Grid Styles
+   Calendar Container — matches original .datedreamer__calendar
    ============================================================ */
 dd-calendar .dd-calendar {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-family: var(--dd-font-family);
-  background: var(--dd-bg);
-  border-radius: var(--dd-border-radius);
-  box-shadow: var(--dd-shadow-md);
-  overflow: hidden;
-  user-select: none;
   width: 100%;
   max-width: 240px;
+  padding: 14px;
+  box-shadow: var(--dd-shadow-md);
+  background: var(--dd-bg);
+  z-index: 0;
+  position: relative;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Header */
+/* ============================================================
+   Header — plain white bg (no colored bar), matches original
+   ============================================================ */
 dd-calendar .dd-header {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--dd-spacing-lg);
-  background: var(--dd-primary);
-  color: var(--dd-text-on-primary);
+  background: transparent;
+  color: var(--dd-text-primary);
 }
 
 dd-calendar .dd-header-title {
-  font-size: var(--dd-font-size-lg);
+  width: 100%;
+  display: block;
+  flex-grow: 1;
+  text-align: center;
+  color: var(--dd-text-primary);
   font-weight: 600;
+  font-size: 0.875rem;
 }
 
+[data-dd-dark-mode] dd-calendar .dd-header-title,
+dd-calendar[dark-mode] .dd-header-title {
+  color: #fff;
+}
+
+/* Nav buttons — matches original prev/next */
 dd-calendar .dd-nav-btn {
-  background: transparent;
+  background: none;
   border: none;
-  color: inherit;
+  width: 16px;
+  height: 16px;
+  text-align: center;
   cursor: pointer;
-  padding: var(--dd-spacing-sm) var(--dd-spacing-md);
-  border-radius: var(--dd-border-radius-sm);
-  transition: background var(--dd-transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dd-text-primary);
+  transition: color 0.2s ease;
 }
 
 dd-calendar .dd-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  color: #007bff;
 }
 
-/* Weekday headers */
+[data-dd-dark-mode] dd-calendar .dd-nav-btn,
+dd-calendar[dark-mode] .dd-nav-btn {
+  color: #fff;
+}
+
+[data-dd-dark-mode] dd-calendar .dd-nav-btn:hover,
+dd-calendar[dark-mode] .dd-nav-btn:hover {
+  color: #60a5fa;
+}
+
+dd-calendar .dd-nav-btn svg {
+  transform: scale(2);
+}
+
+/* ============================================================
+   Weekday headers — matches original .datedreamer__calendar_days-header
+   ============================================================ */
 dd-calendar .dd-weekdays {
+  margin-top: 12px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  padding: var(--dd-spacing-md) var(--dd-spacing-lg);
-  border-bottom: 1px solid var(--dd-border);
+  text-align: center;
+  color: var(--dd-text-primary);
+  font-size: 0.875rem;
+}
+
+[data-dd-dark-mode] dd-calendar .dd-weekdays,
+dd-calendar[dark-mode] .dd-weekdays {
+  color: #fff;
 }
 
 dd-calendar .dd-weekday {
   text-align: center;
   font-size: var(--dd-font-size-sm);
   font-weight: 600;
-  color: var(--dd-text-secondary);
   padding: var(--dd-spacing-xs) 0;
 }
 
-/* Day grid */
+/* ============================================================
+   Day grid — matches original .datedreamer__calendar_days
+   ============================================================ */
 dd-calendar .dd-days {
+  margin-top: 8px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  padding: var(--dd-spacing-md) var(--dd-spacing-lg);
-  gap: var(--dd-spacing-xs);
+  text-align: center;
 }
 
+/* Individual day buttons — matches original lite-purple style */
 dd-calendar .dd-day {
-  aspect-ratio: 1;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  padding: 5px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  border-radius: var(--dd-border-radius-sm);
-  font-size: var(--dd-font-size-base);
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: black;
   cursor: pointer;
-  transition: all var(--dd-transition-fast);
-  color: var(--dd-text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
   position: relative;
+  margin: var(--dd-spacing-xs);
+}
+
+[data-dd-dark-mode] dd-calendar .dd-day,
+dd-calendar[dark-mode] .dd-day {
+  color: #ecf0f1;
 }
 
 dd-calendar .dd-day:hover:not(.disabled):not(.selected) {
-  background: var(--dd-bg-hover);
+  background-color: #f0f0f0;
+  border-radius: var(--dd-border-radius-sm);
 }
 
+[data-dd-dark-mode] dd-calendar .dd-day:hover:not(.disabled):not(.selected),
+dd-calendar[dark-mode] .dd-day:hover:not(.disabled):not(.selected) {
+  background-color: #4a5568;
+  border-radius: var(--dd-border-radius-sm);
+}
+
+/* Other month days */
 dd-calendar .dd-day.other-month {
   color: var(--dd-text-muted);
 }
 
+/* Today — outline style matching original */
 dd-calendar .dd-day.today {
   font-weight: 700;
-  outline: 2px solid var(--dd-primary);
-  outline-offset: -2px;
+}
+
+/* ============================================================
+   Selected day — pseudo-element approach (matches original)
+   ============================================================ */
+dd-calendar .dd-day.selected,
+dd-calendar .dd-day.active {
+  position: relative;
+}
+
+dd-calendar .dd-day.selected::before,
+dd-calendar .dd-day.active::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: var(--dd-primary);
+  border-radius: 2px;
+  position: absolute;
+  display: block;
+  z-index: -1;
+  top: 50%;
+  right: 0;
+  left: 0;
+  transform: translateY(-50%);
 }
 
 dd-calendar .dd-day.selected {
-  background: var(--dd-primary);
-  color: var(--dd-text-on-primary);
-  font-weight: 600;
+  color: #fff;
 }
 
-dd-calendar .dd-day.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+dd-calendar .dd-day.selected:hover {
+  background-color: transparent;
 }
 
-/* Range styles */
-dd-calendar .dd-day.range-start {
-  background: var(--dd-range-start-bg);
-  color: var(--dd-text-on-primary);
-  border-radius: var(--dd-border-radius-sm) 0 0 var(--dd-border-radius-sm);
+[data-dd-dark-mode] dd-calendar .dd-day.selected:hover,
+dd-calendar[dark-mode] .dd-day.selected:hover {
+  background-color: var(--dd-primary);
 }
 
+/* ============================================================
+   Range styles — pseudo-element approach (matches original)
+   ============================================================ */
+dd-calendar .dd-day.range-start,
 dd-calendar .dd-day.range-end {
-  background: var(--dd-range-end-bg);
-  color: var(--dd-text-on-primary);
-  border-radius: 0 var(--dd-border-radius-sm) var(--dd-border-radius-sm) 0;
+  position: relative;
 }
 
+dd-calendar .dd-day.range-start::before,
+dd-calendar .dd-day.range-end::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: var(--dd-primary);
+  border-radius: 2px;
+  position: absolute;
+  display: block;
+  z-index: -1;
+  top: 50%;
+  right: 0;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+dd-calendar .dd-day.range-start,
+dd-calendar .dd-day.range-end {
+  color: #fff;
+}
+
+/* Highlighted / in-range days — light purple pseudo-element */
 dd-calendar .dd-day.in-range {
-  background: var(--dd-range-middle-bg);
-  border-radius: 0;
+  position: relative;
 }
 
+dd-calendar .dd-day.in-range::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #BFA9F3;
+  position: absolute;
+  display: block;
+  z-index: -1;
+  top: 50%;
+  right: 0;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+dd-calendar .dd-day.in-range:hover {
+  background-color: transparent;
+}
+
+[data-dd-dark-mode] dd-calendar .dd-day.in-range:hover,
+dd-calendar[dark-mode] .dd-day.in-range:hover {
+  background-color: #BFA9F3;
+}
+
+/* Range hover preview */
 dd-calendar .dd-day.range-hover {
   background: var(--dd-range-hover-bg);
 }
 
-/* Event indicators */
-dd-calendar .dd-day.has-events::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--dd-primary);
+/* Disabled days — matches original lite-purple */
+dd-calendar .dd-day.disabled {
+  color: #767676;
+  cursor: default;
+  font-weight: normal;
+  opacity: 1;
 }
 
-/* Input fields */
-dd-calendar .dd-input-group {
-  display: flex;
-  gap: var(--dd-spacing-md);
-  padding: var(--dd-spacing-lg);
-  border-bottom: 1px solid var(--dd-border);
-}
-
-dd-calendar .dd-date-input {
-  flex: 1;
-  padding: var(--dd-spacing-sm) var(--dd-spacing-md);
-  border: 1px solid var(--dd-border);
-  border-radius: var(--dd-border-radius-sm);
-  font-size: var(--dd-font-size-base);
-  background: var(--dd-bg);
-  color: var(--dd-text-primary);
-}
-
-dd-calendar .dd-date-input:focus {
-  outline: none;
-  border-color: var(--dd-primary);
-  box-shadow: 0 0 0 2px var(--dd-primary-light);
+[data-dd-dark-mode] dd-calendar .dd-day.disabled,
+dd-calendar[dark-mode] .dd-day.disabled {
+  color: #555;
 }
 
 /* ============================================================
-   Calendar Toggle (popup wrapper)
+   Input section — matches original .datedreamer__calendar_inputs
    ============================================================ */
-dd-calendar-toggle .dd-toggle-input {
-  width: 100%;
-  padding: var(--dd-spacing-md) var(--dd-spacing-lg);
-  border: 1px solid var(--dd-border);
-  border-radius: var(--dd-border-radius);
-  font-size: var(--dd-font-size-base);
-  background: var(--dd-bg);
-  color: var(--dd-text-primary);
-  cursor: pointer;
+dd-calendar .dd-input-group {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
 }
 
-dd-calendar-toggle .dd-toggle-input:focus {
-  outline: none;
-  border-color: var(--dd-primary);
-  box-shadow: 0 0 0 2px var(--dd-primary-light);
+dd-calendar .dd-input-label {
+  width: 100%;
+  text-align: left !important;
+  display: block;
+  font-size: 12px;
+  margin-bottom: var(--dd-spacing-xs);
+  color: var(--dd-text-primary);
+}
+
+[data-dd-dark-mode] dd-calendar .dd-input-label,
+dd-calendar[dark-mode] .dd-input-label {
+  color: #fff;
+}
+
+dd-calendar .dd-date-input {
+  flex-grow: 1;
+  width: calc(100% - 8px);
+  display: block;
+  padding: 4px 4px 4px 8px;
+  margin-right: 8px;
+  font-weight: 500;
+  border-radius: var(--dd-border-radius-sm);
+  border: 1px solid #e9e8ec;
+  font-size: 12px;
+  background: white;
+  color: black;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+[data-dd-dark-mode] dd-calendar .dd-date-input,
+dd-calendar[dark-mode] .dd-date-input {
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  color: #fff;
+}
+
+dd-calendar .dd-today-btn {
+  padding: 6px 12px;
+  display: inline-block;
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: var(--dd-border-radius-sm);
+  border: 1px solid #e9e8ec;
+  font-size: 12px;
+  background: white;
+  color: black;
+}
+
+[data-dd-dark-mode] dd-calendar .dd-today-btn,
+dd-calendar[dark-mode] .dd-today-btn {
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  color: #fff;
+}
+
+[data-dd-dark-mode] dd-calendar .dd-today-btn:hover,
+dd-calendar[dark-mode] .dd-today-btn:hover {
+  background: #4a5568;
+}
+
+dd-calendar .dd-input-wrap {
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================================
+   Calendar Toggle (popup wrapper) — matches original
+   ============================================================ */
+dd-calendar-toggle .dd-toggle-input {
+  font-weight: 500;
+  border-radius: var(--dd-border-radius-sm);
+  border: 1px solid #e9e8ec;
+  font-size: 12px;
+  background: white;
+  display: block;
+  padding: 4px 4px 4px 8px;
+  margin-right: 8px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+[data-dd-dark-mode] dd-calendar-toggle .dd-toggle-input,
+dd-calendar-toggle[dark-mode] .dd-toggle-input {
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  color: #fff;
 }
 
 dd-calendar-toggle .dd-toggle-panel {
@@ -271,17 +443,33 @@ dd-calendar-toggle .dd-toggle-panel {
   z-index: 1000;
   background: var(--dd-bg);
   border-radius: var(--dd-border-radius);
-  box-shadow: var(--dd-shadow-lg);
+  box-shadow: var(--dd-shadow-md);
 }
 
 /* ============================================================
-   Range Picker (dual calendar)
+   Range Picker (dual calendar) — matches original docs layout
    ============================================================ */
 dd-range .dd-range-container {
   display: inline-flex;
-  box-shadow: var(--dd-shadow-lg);
+  gap: 0;
 }
 
+dd-range .dd-range-calendars {
+  display: flex;
+}
+
+/* Connector line between calendars — matches original dashed border */
+dd-range .dd-connector-line {
+  width: 2px;
+  margin: 0 var(--dd-spacing-sm);
+  align-self: stretch;
+  border-left: 2px dashed #e9e8ec;
+  background: transparent;
+}
+
+/* ============================================================
+   Sidebar (optional, only when show-sidebar attribute is set)
+   ============================================================ */
 dd-range .dd-range-sidebar {
   width: 160px;
   border-right: 1px solid var(--dd-border);
@@ -305,21 +493,8 @@ dd-range .dd-range-option:hover {
   background: var(--dd-bg-hover);
 }
 
-dd-range .dd-range-calendars {
-  display: flex;
-}
-
-/* Connector line between calendars */
-dd-range .dd-connector-line {
-  width: 2px;
-  background: var(--dd-connector-color);
-  margin: 0 var(--dd-spacing-sm);
-  align-self: stretch;
-  border-radius: 1px;
-}
-
 /* ============================================================
-   Lite Purple Theme (default)
+   Theme Overrides — matches original lite-purple color tokens
    ============================================================ */
 [data-dd-theme="lite-purple"] {
   --dd-primary: #7d56da;

@@ -6,15 +6,15 @@ const MONTH_NAMES = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-const WEEKDAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WEEKDAY_SHORT = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sat']; // Matches original docs (2-letter, Sat not Sa)
 
-/** SVG icon helpers */
+/** SVG icon helpers — small chevrons matching original repo (scaled to 2x in CSS) */
 function prevIcon(): string {
-  return '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M12.707 5.293a1 1 0 010 1.414L8.414 10l4.293 4.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z"/></svg>';
+  return '<svg viewBox="0 0 512 512" width="8" height="8"><path d="M342.6 17.4c-14.4-14.4-37.6-14.4-52 0l-224 224c-14.4 14.4-14.4 37.6 0 52l224 224c14.4 14.4 37.6 14.4 52 0s14.4-37.6 0-52L143.1 288H496c21.1 0 38-17 38-38s-17-38-38-38H143.1l199.5-199.6c14.4-14.4 14.4-37.6 0-52z"/></svg>';
 }
 
 function nextIcon(): string {
-  return '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M7.293 14.707a1 1 0 010-1.414L11.586 10 7.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"/></svg>';
+  return '<svg viewBox="0 0 512 512" width="8" height="8"><path d="M169.4 494.6c14.4 14.4 37.6 14.4 52 0l224-224c14.4-14.4 14.4-37.6 0-52L221.4 94.6c-14.4-14.4-37.6-14.4-52 0s-14.4 37.6 0 52L368.9 224H16c-21.1 0-38 17-38 38s17 38 38 38h352.9L169.4 442.6c-14.4 14.4-14.4 37.6 0 52z"/></svg>';
 }
 
 /**
@@ -49,8 +49,8 @@ export class CalendarElement extends HTMLElement {
   private dateInput?: HTMLInputElement;
 
   // --- Config ---
-  private _inputFormat: string = 'YYYY-MM-DD';
-  private _showInput: boolean = false;
+  private _inputFormat: string = 'DD/MM/YYYY'; // Original repo default
+  private _showInput: boolean = true; // Original repo shows inputs by default (hideInputs=false)
   private _hideWeekends: boolean = false;
   private _minDate?: Date;
   private _maxDate?: Date;
@@ -66,7 +66,7 @@ export class CalendarElement extends HTMLElement {
   static get observedAttributes(): string[] {
     return [
       'selected', 'range-mode', 'dark-mode', 'theme', 'connector-id',
-      'show-input', 'input-format', 'hide-weekends', 'min-date', 'max-date',
+      'show-input', 'hide-inputs', 'input-format', 'hide-weekends', 'min-date', 'max-date',
       'disabled-dates', 'prev-icon', 'next-icon'
     ];
   }
@@ -77,10 +77,11 @@ export class CalendarElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    // Process attributes BEFORE rendering so hide-inputs etc. take effect on first paint
+    this.handleAttributes();
     this.render();
     this.subscribeToEngine();
     this.bindEvents();
-    this.handleAttributes();
   }
 
   disconnectedCallback(): void {
@@ -171,7 +172,12 @@ export class CalendarElement extends HTMLElement {
 
       case 'show-input':
         this._showInput = value !== null;
-        this.render();
+        if (this.isConnected) this.render();
+        break;
+
+      case 'hide-inputs':
+        this._showInput = value === null; // attribute present → hide inputs
+        if (this.isConnected) this.render();
         break;
 
       case 'input-format':
@@ -258,19 +264,47 @@ export class CalendarElement extends HTMLElement {
     this.root = document.createElement('div');
     this.root.className = 'dd-calendar';
 
-    // Input group (optional)
+    // Input group (shown by default, matching original repo)
     if (this._showInput) {
       this.inputGroup = document.createElement('div');
       this.inputGroup.className = 'dd-input-group';
+
+      // Label
+      const label = document.createElement('label');
+      label.setAttribute('for', 'dd-date-input');
+      label.textContent = 'Set a date';
+
+      // Input + Today button wrapper
+      const inputWrap = document.createElement('div');
+      inputWrap.className = 'dd-input-wrap';
+
       this.dateInput = document.createElement('input');
       this.dateInput.type = 'text';
+      this.dateInput.id = 'dd-date-input';
       this.dateInput.className = 'dd-date-input';
-      this.dateInput.placeholder = this._inputFormat;
+      this.dateInput.placeholder = 'Enter a date'; // Original repo placeholder
       const state = this.engine.getState();
       if (state.selectedDate) {
         this.dateInput.value = this.formatDate(state.selectedDate);
       }
-      this.inputGroup.appendChild(this.dateInput);
+
+      // Today button
+      const todayBtn = document.createElement('button');
+      todayBtn.type = 'button';
+      todayBtn.textContent = 'Today';
+      todayBtn.addEventListener('click', () => {
+        const now = new Date();
+        this.engine.setDate(now);
+        if (this.dateInput) {
+          this.dateInput.value = this.formatDate(now);
+        }
+        this.renderContent();
+      });
+
+      inputWrap.appendChild(this.dateInput);
+      inputWrap.appendChild(todayBtn);
+      this.inputGroup.appendChild(label);
+      this.inputGroup.appendChild(inputWrap);
       this.root.appendChild(this.inputGroup);
     }
 
@@ -333,65 +367,70 @@ export class CalendarElement extends HTMLElement {
 
     this.daysGrid.innerHTML = '';
 
-    days.forEach((date, index) => {
-      const dayEl = document.createElement('button');
-      dayEl.className = 'dd-day';
-      dayEl.textContent = String(date.getDate());
-      dayEl.setAttribute('tabindex', '-1');
-      dayEl.setAttribute('aria-label', `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`);
+    days.forEach((date: Date, index: number) => {
+      // Wrap in div (original structure for ::before pseudo-element on selected/range)
+      const dayWrap = document.createElement('div');
+      dayWrap.className = 'dd-day';
+
+      const dayBtn = document.createElement('button');
+      dayBtn.type = 'button';
+      dayBtn.textContent = String(date.getDate());
+      dayBtn.setAttribute('tabindex', '-1');
+      dayBtn.setAttribute('aria-label', `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`);
 
       // Focusable first day of the displayed month
       if (this.engine.isCurrentMonth(date) && index === 0) {
-        dayEl.setAttribute('tabindex', '0');
+        dayBtn.setAttribute('tabindex', '0');
       }
 
       const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-      // Classes
+      // Classes on wrapper div
       if (!this.engine.isCurrentMonth(date)) {
-        dayEl.classList.add('other-month');
+        dayWrap.classList.add('other-month');
       }
 
       if (this.engine.isToday(date)) {
-        dayEl.classList.add('today');
+        dayWrap.classList.add('today');
       }
 
       if (state.selectedDate && this.engine.isSameDay(date, state.selectedDate) && !state.rangeMode) {
-        dayEl.classList.add('selected');
+        dayWrap.classList.add('selected');
       }
 
       // Range classes
       if (state.rangeMode) {
         if (this.engine.isRangeStart(date)) {
-          dayEl.classList.add('range-start');
+          dayWrap.classList.add('range-start');
         } else if (this.engine.isRangeEnd(date)) {
-          dayEl.classList.add('range-end');
+          dayWrap.classList.add('range-end');
         } else if (this.engine.isInRange(date)) {
-          dayEl.classList.add('in-range');
+          dayWrap.classList.add('in-range');
         }
       }
 
       // Disabled checks
       const isDisabled = this.isDateDisabled(date);
       if (isDisabled) {
-        dayEl.classList.add('disabled');
-        dayEl.setAttribute('aria-disabled', 'true');
+        dayWrap.classList.add('disabled');
+        dayBtn.setAttribute('aria-disabled', 'true');
       }
 
       // Click handler
-      dayEl.addEventListener('click', () => {
+      dayBtn.addEventListener('click', () => {
         if (!isDisabled) {
           this.handleDayClick(date);
         }
       });
 
       // Keyboard navigation
-      dayEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      dayBtn.addEventListener('keydown', (e: KeyboardEvent) => {
         if (isDisabled) return;
         this.handleDayKeyDown(e, date);
       });
 
-      this.daysGrid.appendChild(dayEl);
+      dayWrap.appendChild(dayBtn);
+      this.daysGrid.appendChild(dayWrap);
     });
   }
 

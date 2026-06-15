@@ -80,7 +80,7 @@ export class RangeElement extends HTMLElement {
   private calendarLeft!: HTMLElement;
   private calendarRight!: HTMLElement;
 
-  private _showSidebar: boolean = true;
+  private _showSidebar: boolean = false; // Original repo has no sidebar by default
   private _presets: RangePreset[] = DEFAULT_PRESETS;
   private _connectorId: string = `dd-range-${Math.random().toString(36).slice(2, 9)}`;
   private _connector?: CalendarConnector;
@@ -186,6 +186,7 @@ export class RangeElement extends HTMLElement {
     this.calendarLeft = document.createElement('dd-calendar');
     this.calendarLeft.setAttribute('connector-id', this._connectorId);
     this.calendarLeft.setAttribute('range-mode', '');
+    this.calendarLeft.setAttribute('hide-inputs', ''); // Original repo hides inputs in range mode
     const darkMode = this.getAttribute('dark-mode');
     if (darkMode) {
       this.calendarLeft.setAttribute('dark-mode', '');
@@ -203,6 +204,7 @@ export class RangeElement extends HTMLElement {
     this.calendarRight = document.createElement('dd-calendar');
     this.calendarRight.setAttribute('connector-id', this._connectorId);
     this.calendarRight.setAttribute('range-mode', '');
+    this.calendarRight.setAttribute('hide-inputs', ''); // Original repo hides inputs in range mode
     if (darkMode) {
       this.calendarRight.setAttribute('dark-mode', '');
     }
