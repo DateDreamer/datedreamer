@@ -1,92 +1,21 @@
 {
-  "name": "datedreamer",
-  "version": "0.5.2",
-  "main": "dist/datedreamer.js",
-  "repository": "git@github.com:DateDreamer/DateDreamer.git",
-  "homepage": "https://datedreamer.github.io/docs/",
-  "contributors": [
-    {
-      "name": "Jorge Felico",
-      "url": "https://github.com/jorgefelico"
-    }
-  ],
+  "name": "datedreamer-monorepo",
+  "private": true,
+  "description": "Monorepo for DateDreamer components",
+  "engines": {
+    "pnpm": ">=8.0.0"
+  },
   "scripts": {
-    "watch": "webpack --watch",
-    "start": "webpack serve --open",
-    "build": "webpack --config webpack.prod.config.js",
-    "release": "release-it --ci",
-    "commit": "cz",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
-    "format": "prettier --write src/**/*.ts",
-    "type-check": "tsc --noEmit",
-    "analyze": "node scripts/analyze-bundle.js"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "rm -rf node_modules && rm -rf packages/*/node_modules && rm -rf apps/*/node_modules && rm -rf dist",
+    "playground": "pnpm --filter @datedreamer/playground dev"
   },
-  "license": "MIT",
-  "files": [
-    "dist"
-  ],
   "devDependencies": {
-    "@release-it/conventional-changelog": "^11.0.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@types/jest": "^30.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.61.0",
-    "@typescript-eslint/parser": "^8.61.0",
-    "commitizen": "^4.3.1",
-    "css-loader": "^7.1.4",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^10.4.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.6",
-    "html-webpack-plugin": "^5.6.7",
-    "husky": "^9.1.7",
-    "jest": "^30.4.2",
-    "jest-environment-jsdom": "^30.4.1",
-    "lint-staged": "^17.0.7",
-    "npm-check-updates": "^22.2.3",
-    "prettier": "^3.8.3",
-    "release-it": "^20.2.0",
-    "sass": "^1.100.0",
-    "sass-loader": "^17.0.0",
-    "style-loader": "^4.0.0",
-    "ts-jest": "^29.4.11",
-    "ts-loader": "^9.6.0",
-    "typescript": "^6.0.3",
-    "webpack": "^5.107.2",
-    "webpack-cli": "^7.0.3",
-    "webpack-dev-server": "5.2.4"
-  },
-  "dependencies": {
-    "dayjs": "^1.11.21",
-    "lodash": "^4.18.1",
-    "sockjs": "0.3.24",
-    "tmp": "^0.2.7",
-    "undici": "^8.4.1",
-    "uuid": "^14.0.0"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "resolutions": {
-    "lodash": "^4.18.0",
-    "tmp": "^0.2.6",
-    "uuid": "^14.0.0",
-    "undici": "^8.4.0"
-  },
-  "overrides": {
-    "commitizen/**/lodash": "^4.18.0",
-    "commitizen/**/tmp": "^0.2.6",
-    "commitizen/**/uuid": "^14.0.0"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "turbo": "latest",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
   }
 }

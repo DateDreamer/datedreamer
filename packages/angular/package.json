@@ -1,0 +1,13 @@
+{
+  "name": "@datedreamer/angular",
+  "version": "0.6.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@datedreamer/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@angular/core": "^16.0.0 || ^17.0.0 || ^18.0.0"
+  }
+}

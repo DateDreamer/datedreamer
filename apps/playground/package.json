@@ -1,0 +1,19 @@
+{
+  "name": "@datedreamer/playground",
+  "private": true,
+  "version": "0.6.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@datedreamer/core": "*",
+    "@datedreamer/web-components": "*",
+    "@datedreamer/theme": "*"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "typescript": "^5.0.0"
+  }
+}

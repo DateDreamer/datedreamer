@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DateDreamer Playground</title>
+  <style>
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      background-color: #f0f2f5;
+      margin: 0;
+      color: #333;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 { color: #333; margin-bottom: 1.5rem; }
+    .controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover { background: #f5f5f5; border-color: #bbb; }
+    .theme-picker { margin-bottom: 20px; }
+    .status { margin-top: 15px; font-size: 0.9rem; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DateDreamer Playground</h1>
+    
+    <div class="theme-picker">
+      <button onclick="setTheme('default')">Default (Purple)</button>
+      <button onclick="setTheme('forest')">Forest (Green)</button>
+      <button onclick="setTheme('ocean')">Ocean (Blue)</button>
+      <button onclick="setTheme('sunset')">Sunset (Orange)</button>
+    </div>
+
+    <date-dreamer-calendar id="calendar"></date-dreamer-calendar>
+
+    <div class="controls">
+      <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+      <button onclick="setDateToToday()">Set to Today</button>
+    </div>
+    
+    <div class="status" id="status">Ready</div>
+  </div>
+
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html>

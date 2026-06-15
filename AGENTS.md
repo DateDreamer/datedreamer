@@ -1,101 +1,55 @@
-# DateDreamer Development Guide
+# Agent Instructions for DateDreamer Monorepo
 
-## Project Overview
-DateDreamer is a lightweight JavaScript calendar library built with TypeScript, exported as a UMD bundle. It provides `calendar`, `calendarToggle`, and `range` components using Day.js for date handling.
+This document provides context, roles, and operational guidelines for AI agents (LLMs, sub-agents, and automated tools) working within the DateDreamer monorepo.
 
-## Setup (First Time)
-```bash
-git clone https://github.com/DateDreamer/DateDreamer.git
-cd DateDreamer
-chmod +x scripts/setup-dev.sh
-./scripts/setup-dev.sh
-# Or manually:
-yarn install
-npx husky install
-yarn format
-```
+## 🏗️ Project Overview
 
-## Quick Start Commands
-| Command | Description |
-|---------|-------------|
-| `yarn start` | Start dev server with webpack |
-| `yarn build` | Build production bundle to dist/ |
-| `yarn test` | Run all tests (Jest) |
-| `yarn lint` | Run ESLint |
-| `yarn type-check` | TypeScript compilation check |
-| `yarn format` | Format code with Prettier |
+DateDreamer is a headless UI architecture. The primary goal is to maintain a strict separation between core business logic/state and framework-specific presentation layers.
 
-## Recommended Dev Workflow
-1. Make changes in `src/`
-2. `yarn lint` → `yarn type-check` → `yarn test` (verify before committing)
-3. `yarn build` (if modifying public API)
-4. Commit with `yarn commit`
+### Architecture Layers
+1.  **Core Layer (`@datedreamer/core`)**: The "Source of Truth". Contains pure TypeScript logic, state machines, and data models. It has **zero** dependencies on the DOM or any UI framework.
+2.  **Design System (`@datedreamer/theme`)**: The visual language. Defines CSS variables, design tokens, and styling primitives.
+3.  **Foundation Layer (`@datedreamer/web-components`)**: Standard Web Components that consume the Theme and Core. These serve as the baseline for all other implementations.
+4.  **Adapter Layer (`@datedreamer/react`, `@datedreamer/vue`, `@datedreamer/angular`)**: Framework-specific wrappers around the Web Components and Core logic. These provide the "idiomatic" experience for developers using these frameworks (e.g., React Hooks, Vue Composables).
 
-## Project Structure
-- `src/index.ts` - Main exports: calendar, calendarToggle, range
-- `src/components/` - Core components: calendar/, calendar-toggle/, range/, calendar-events/, calendar-render/
-- `src/interfaces/` - TypeScript interfaces
-- `src/utils/` - Utility functions
-- `src/__tests__/` - Jest tests (runs against ts-jest with jsdom environment)
+---
 
-## Build System
-- **Webpack** produces UMD bundle at `dist/datedreamer.js`
-- Production build uses `webpack.prod.config.js`
-- TypeScript compiles to ES2016 CommonJS with declaration files
-- Dev server serves from `./public/`
+## 🤖 Agent Roles
 
-## Testing Prerequisites
-Tests run in jsdom environment with mocks for:
-- `window.matchMedia` - mocked in `src/__tests__/setup.ts`
-- `ResizeObserver`, `IntersectionObserver` - global mock classes
+### Core Logic Engineer
+*   **Focus**: `@datedreamer/core`, `@datedreamer/theme`.
+*   **Responsibility**: Implementing state transitions, data models, and design tokens.
+*   **Constraint**: **NEVER** import from `@datedreamer/react`, `@datedreamer/vue`, `@datedreamer/angular`, or any web-component-specific package. Ensure logic is pure and highly testable.
 
-Run single test file:
-```bash
-yarn jest src/components/calendar.test.ts
-```
+### UI/Component Engineer
+*   **Focus**: `@datedreamer/web-components`, `@datedreamer/theme`.
+*   **Responsibility**: Implementing the visual representation of components using the design system.
+*   **Constraint**: All components must be accessible, performant, and strictly adhere to the CSS variables defined in `@datedreamer/theme`.
 
-Run with coverage:
-```bash
-yarn test:coverage
-```
+### Framework Adapter Engineer
+*   **Focus**: `@datedreamer/react`, `@datedreamer/vue`, `@datedreamer/angular`.
+*   **Responsibility**: Creating seamless, idiomatic DX for framework users.
+*   **Constraint**: Do not re-implement logic already present in `@datedreamer/core`. Your job is to "wrap" and "expose" existing functionality in a way that feels natural to the specific framework.
 
-⚠️ **DOM Cleanup**: Always use `afterEach(() => document.body.innerHTML = '')` in your tests to prevent DOM state leaking between test runs. Never manually manipulate `document.body` without cleanup.
+---
 
-## Code Quality Rules
-**ESLint rules enforced (via ESLint v9 flat config):**
-- `prefer-const`: Must use const for immutable bindings
-- `no-console`: Warn (avoid console.log in production code)
-- `@typescript-eslint/no-unused-vars`: Error
-- `@typescript-eslint/explicit-module-boundary-types`: Off
+## 🛠️ Development Workflow
 
-**ESLint warnings (not blocking):**
-- `@typescript-eslint/no-non-null-assertion`: Warn only - use `!` when you're confident the value exists
+### Commands
+*   **Install**: `pnpm install`
+*   **Build All**: `pnpm build`
+*   **Test All**: `pnpm test`
+*   **Lint**: `pnpm lint`
 
-**Prettier config:**
-- 80 char line width
-- 2 space tabs, semi-colons, single quotes
-- ES5 trailing commas
-- LF line endings
+### Core Principles
+*   **Headless First**: If a new feature is requested, ask: "Can this be implemented in `@datedreamer/core` first?"
+*   **Single Source of Truth**: If a piece of logic exists in `core`, it must not be duplicated in an adapter.
+*   **CSS Variables for Theming**: Never hardcode colors or spacing in component files. Always use the tokens provided by `@datedreamer/theme`.
+*   **Type Safety**: All packages must maintain strict TypeScript configuration.
 
-## Git Hooks & Commit Flow
-- Husky pre-commit hooks run ESLint + Prettier on staged `*.ts` files
-- Auto-fix via `eslint --fix` or `yarn format` before commit
-- Conventional commits via `cz` (commitizen)
-- PR descriptions auto-generated by CI
+## 🔍 Troubleshooting & Verification
 
-## Release Process
-1. Bump version in `package.json`
-2. Commit with conventional commit (`yarn commit`)
-3. `yarn build` then `yarn release` (requires CI/GH_TOKEN/NPM_TOKEN)
-
-## Common Gotchas
-- Tests run in jsdom environment, not Node directly
-- Always clean up DOM after tests (`afterEach()` clears body.innerHTML)
-- Dark mode uses `window.matchMedia('(prefers-color-scheme: dark)')` - mocked in setup.ts
-- UMD bundle exports to global window.datedreamer in browser
-
-## Dependencies
-- **dayjs**: Core date handling
-- **webpack + ts-loader**: Build system
-- **sass/sass-loader**: Style processing
-- **jest + @testing-library/jest-dom**: Testing
+Before reporting a fix or a completed feature, an agent should:
+1.  Run `pnpm test` in the relevant package.
+2.  If the change is cross-package, run `pnpm build` from the root.
+3.  Verify that no accidental circular dependencies were introduced between the Core and Adapter layers.

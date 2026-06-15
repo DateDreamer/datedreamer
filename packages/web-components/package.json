@@ -1,0 +1,13 @@
+{
+  "name": "@datedreamer/web-components",
+  "version": "0.6.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@datedreamer/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "dayjs": "^1.11.10"
+  }
+}
