@@ -35,7 +35,11 @@ module.exports = {
             },
             {
                 test: /\.tsx?$/i,
-                use: 'ts-loader',
+                loader: 'esbuild-loader',
+                options: {
+                    loader: 'ts', // Use 'tsx' if you use JSX syntax
+                    target: 'es2020'
+                },
                 exclude: /node_modules/
             }
         ]
@@ -44,3 +48,4 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js']
     }
 }
+

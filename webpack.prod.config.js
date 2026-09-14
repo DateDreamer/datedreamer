@@ -12,24 +12,28 @@ module.exports = {
             type: "umd"
         }
     },
-    module: {
+ module: {
         rules: [
             {
                 test: /\.css$/i,
-                use: ['style-loader', 'css-loader']
+                use: ['style-loader', 'css-loader'] // Or MiniCssExtractPlugin if using it in prod
             },
             {
                 test: /\.scss$/i,
-                use: ['style-loader', 'css-loader','sass-loader']
+                use: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
                 test: /\.tsx?$/i,
-                use: 'ts-loader',
+                loader: 'esbuild-loader',
+                options: {
+                    loader: 'ts',
+                    target: 'es2020'
+                },
                 exclude: /node_modules/
             }
         ]
-    },
-    resolve: {
+    },   
+  resolve: {
         extensions: ['.tsx', '.ts', '.js']
     }
 }
