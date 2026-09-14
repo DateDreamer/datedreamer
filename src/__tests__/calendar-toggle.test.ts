@@ -169,7 +169,10 @@ describe('CalendarToggle Component', () => {
     });
 
     afterEach(() => {
-      window.matchMedia = originalMatchMedia;
+      Object.defineProperty(window.constructor.prototype, 'matchMedia', {
+    value: originalMatchMedia,
+    configurable: true
+  });
     });
 
     test('should detect system dark mode preference when darkModeAuto is enabled', () => {
@@ -213,8 +216,10 @@ describe('CalendarToggle Component', () => {
 
     test('should handle missing window.matchMedia gracefully', () => {
       // Remove matchMedia to test fallback
-      delete (window as unknown as { matchMedia: undefined }).matchMedia;
-
+      Object.defineProperty(window.constructor.prototype, 'matchMedia', {
+        value: undefined,
+        configurable: true // Allows it to be restored later
+      }); 
       expect(() => {
         new calendarToggle({
           element: '#test-toggle',
@@ -223,7 +228,10 @@ describe('CalendarToggle Component', () => {
       }).not.toThrow();
 
       // Restore
-      window.matchMedia = originalMatchMedia;
+      Object.defineProperty(window.constructor.prototype, 'matchMedia', {
+    value: originalMatchMedia,
+    configurable: true
+  });
     });
   });
 
