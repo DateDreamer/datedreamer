@@ -270,6 +270,20 @@ export const unstyledTheme = `
   background: #236bb9;
   color: white;
 }
+
+.datedreamer__calendar_day.disabled button {
+    color: #9e9e9e;
+    cursor: default;
+}
+
+.dark .datedreamer__calendar_day.disabled button {
+    color: #666;
+}
+
+.datedreamer__calendar_prev:disabled, .datedreamer__calendar_next:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
 `;
 
 export const litePurple = `
@@ -435,5 +449,14 @@ export const litePurple = `
 
 .dark .datedreamer__calendar_days .datedreamer__calendar_day.highlight button:hover {
   background-color: #BFA9F3;
+}
+
+.datedreamer__calendar_prev:disabled, .datedreamer__calendar_next:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.dark .datedreamer__calendar_prev:disabled, .dark .datedreamer__calendar_next:disabled {
+  opacity: 0.35;
 }
 `;

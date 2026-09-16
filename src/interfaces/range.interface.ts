@@ -16,6 +16,12 @@ export interface IRangeOptions {
   hideInputs?: boolean | undefined;
   darkMode?: boolean | undefined;
   darkModeAuto?: boolean | undefined;
+  minDate?: Date | string | undefined;
+  maxDate?: Date | string | undefined;
+  disabledDates?:
+    | Array<Date | string>
+    | ((date: Date) => boolean)
+    | undefined;
   predefinedRanges?: IPredefinedRange[] | undefined;
   onChange?: ((event: CustomEvent) => void) | undefined;
   onRender?: ((event: CustomEvent<Record<string, never>>) => void) | undefined;

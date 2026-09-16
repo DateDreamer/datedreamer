@@ -478,4 +478,83 @@ describe('Range Component', () => {
       }).not.toThrow();
     });
   });
+  test('should apply minDate and maxDate to both calendars', () => {
+    const now = new Date();
+    const rangeInstance = new range({
+      element: '#test-range',
+      minDate: new Date(now.getFullYear(), now.getMonth(), 10),
+      maxDate: new Date(now.getFullYear(), now.getMonth() + 1, 20),
+    });
+
+    const [cal1, cal2] = (rangeInstance as RangeTestInstance).connector
+      .calendars;
+    const buttonsFor = (cal: calendar) =>
+      Array.from(
+        cal.shadowRoot?.querySelectorAll<HTMLButtonElement>(
+          '.datedreamer__calendar_days button'
+        ) ?? []
+      );
+
+    const janButtons = buttonsFor(cal1);
+    expect(janButtons.find(b => b.innerText === '9')?.disabled).toBe(true);
+    expect(janButtons.find(b => b.innerText === '10')?.disabled).toBe(false);
+
+    const febButtons = buttonsFor(cal2);
+    expect(febButtons.find(b => b.innerText === '21')?.disabled).toBe(true);
+    expect(febButtons.find(b => b.innerText === '20')?.disabled).toBe(false);
+  });
+
+  test('should apply disabledDates to both calendars', () => {
+
+    const rangeInstance = new range({
+      element: '#test-range',
+      disabledDates: date => date.getDate() === 3,
+    });
+
+    const [cal1, cal2] = (rangeInstance as RangeTestInstance).connector
+      .calendars;
+    const buttonsFor = (cal: calendar) =>
+      Array.from(
+        cal.shadowRoot?.querySelectorAll<HTMLButtonElement>(
+          '.datedreamer__calendar_days button'
+        ) ?? []
+      );
+
+    expect(buttonsFor(cal1).find(b => b.innerText === '3')?.disabled).toBe(
+      true
+    );
+    expect(buttonsFor(cal2).find(b => b.innerText === '3')?.disabled).toBe(
+      true
+    );
+  });
+
+  test('should not apply a predefined range that violates the bounds', () => {
+    const now = new Date();
+    new range({
+      element: '#test-range',
+      minDate: new Date(now.getFullYear(), now.getMonth(), 15),
+      maxDate: new Date(now.getFullYear(), now.getMonth(), 20),
+      predefinedRanges: [
+        {
+          label: 'Out of bounds',
+          getRange: () => ({
+            start: new Date(now.getFullYear(), now.getMonth(), 1),
+            end: new Date(now.getFullYear(), now.getMonth(), 5),
+          }),
+        },
+      ],
+    });
+
+    const button = container.querySelector(
+      '.datedreamer-range-button'
+    ) as HTMLButtonElement;
+    button.click();
+
+    const rangeInstance = container.querySelector(
+      'datedreamer-range'
+    ) as unknown as RangeTestInstance;
+    expect(rangeInstance.connector.startDate).toBeNull();
+    expect(rangeInstance.connector.endDate).toBeNull();
+  });
+
 });

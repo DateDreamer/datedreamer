@@ -6,6 +6,8 @@ import { calendar } from './calendar';
  * Handles navigation to the previous month
  */
 export function goToPrevMonth(context: calendar): void {
+  if (context.isPrevNavBlocked()) return;
+
   const newDate = new Date(context.displayedMonthDate);
   newDate.setMonth(newDate.getMonth() - 1);
   context.displayedMonthDate = newDate;
@@ -27,6 +29,8 @@ export function goToPrevMonth(context: calendar): void {
  * Handles navigation to the next month
  */
 export function goToNextMonth(context: calendar): void {
+  if (context.isNextNavBlocked()) return;
+
   const newDate = new Date(context.displayedMonthDate);
   newDate.setMonth(newDate.getMonth() + 1);
   context.displayedMonthDate = newDate;
@@ -176,6 +180,13 @@ export function setSelectedDay(context: calendar, day: number): void {
   const newSelectedDate = new Date(context.displayedMonthDate);
   newSelectedDate.setDate(day);
 
+  const violation = context.constraintViolationMessage(newSelectedDate);
+  if (violation) {
+    context.errors.push({ type: 'selection-error', message: violation });
+    generateErrors(context);
+    return;
+  }
+
   if (context.rangeMode) {
     if (context.connector) {
       // If both dates are already set, reset and start new range
@@ -229,6 +240,13 @@ export function dateInputChanged(
   ).toDate();
 
   if (!isNaN(newDate.getUTCMilliseconds())) {
+    const violation = context.constraintViolationMessage(newDate);
+    if (violation) {
+      context.errors.push({ type: 'input-error', message: violation });
+      generateErrors(context);
+      return;
+    }
+
     context.selectedDate = newDate;
     context.displayedMonthDate = new Date(newDate);
     context.rebuildCalendar(false);
@@ -248,8 +266,16 @@ export function dateInputChanged(
  * @param context - The calendar context
  */
 export function setDateToToday(context: calendar): void {
-  context.selectedDate = new Date();
-  context.displayedMonthDate = new Date();
+  const today = new Date();
+  const violation = context.constraintViolationMessage(today);
+  if (violation) {
+    context.errors.push({ type: 'selection-error', message: violation });
+    generateErrors(context);
+    return;
+  }
+
+  context.selectedDate = today;
+  context.displayedMonthDate = new Date(today);
   context.rebuildCalendar();
   dateChangedCallback(context, context.selectedDate);
 }

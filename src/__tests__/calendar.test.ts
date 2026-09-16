@@ -674,4 +674,168 @@ describe('Calendar Component', () => {
       }).toThrow('Could not find #non-existent-element in DOM.');
     });
   });
+  describe('Date Constraints', () => {
+    test('should disable days before minDate and keep the boundary selectable', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        minDate: new Date(2024, 0, 10),
+      });
+
+      expect(dayButton(calendarInstance, '9')?.disabled).toBe(true);
+      expect(dayButton(calendarInstance, '10')?.disabled).toBe(false);
+      expect(dayButton(calendarInstance, '15')?.disabled).toBe(false);
+    });
+
+    test('should disable days after maxDate and keep the boundary selectable', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        maxDate: new Date(2024, 0, 20),
+      });
+
+      expect(dayButton(calendarInstance, '21')?.disabled).toBe(true);
+      expect(dayButton(calendarInstance, '20')?.disabled).toBe(false);
+    });
+
+    test('should parse string bounds using the provided format', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: '15/01/2024',
+        format: 'DD/MM/YYYY',
+        minDate: '10/01/2024',
+        maxDate: '20/01/2024',
+      });
+
+      expect(dayButton(calendarInstance, '9')?.disabled).toBe(true);
+      expect(dayButton(calendarInstance, '21')?.disabled).toBe(true);
+      expect(dayButton(calendarInstance, '15')?.disabled).toBe(false);
+    });
+
+    test('should reject selecting a day outside the bounds and show an error', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        minDate: new Date(2024, 0, 10),
+      });
+
+      calendarInstance.setSelectedDay(5);
+
+      expect(calendarInstance.selectedDate.getDate()).toBe(15);
+      const errorText = calendarInstance.shadowRoot
+        ?.querySelector<HTMLSpanElement>('.datedreamer__calendar_errors span')
+        ?.innerText;
+      expect(errorText).toContain('minimum allowed date');
+    });
+
+    test('should reject typing a date outside the bounds in the input', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        format: 'DD/MM/YYYY',
+        maxDate: new Date(2024, 0, 20),
+      });
+
+      const input = calendarInstance.shadowRoot?.querySelector<
+        HTMLInputElement
+      >('#date-input');
+      input!.value = '25/01/2024';
+      input!.dispatchEvent(new KeyboardEvent('keyup', { code: 'Enter' }));
+
+      expect(calendarInstance.selectedDate.getDate()).toBe(15);
+      const errorText = calendarInstance.shadowRoot
+        ?.querySelector<HTMLSpanElement>('.datedreamer__calendar_errors span')
+        ?.innerText;
+      expect(errorText).toContain('maximum allowed date');
+    });
+
+    test('should disable days listed in the disabledDates array', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        format: 'DD/MM/YYYY',
+        disabledDates: [new Date(2024, 0, 8), '12/01/2024'],
+      });
+
+      expect(dayButton(calendarInstance, '8')?.disabled).toBe(true);
+      expect(dayButton(calendarInstance, '12')?.disabled).toBe(true);
+      expect(dayButton(calendarInstance, '13')?.disabled).toBe(false);
+    });
+
+    test('should disable days matching the disabledDates predicate', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        disabledDates: date => date.getDay() === 6,
+      });
+
+      expect(dayButton(calendarInstance, '6')?.disabled).toBe(true);
+      expect(dayButton(calendarInstance, '13')?.disabled).toBe(true);
+      expect(dayButton(calendarInstance, '15')?.disabled).toBe(false);
+    });
+
+    test('should reject selecting a disabled date and show an error', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        disabledDates: [new Date(2024, 0, 20)],
+      });
+
+      calendarInstance.setSelectedDay(20);
+
+      expect(calendarInstance.selectedDate.getDate()).toBe(15);
+      const errorText = calendarInstance.shadowRoot
+        ?.querySelector<HTMLSpanElement>('.datedreamer__calendar_errors span')
+        ?.innerText;
+      expect(errorText).toContain('not available');
+    });
+
+    test('should disable navigation when the adjacent month has no selectable days', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        minDate: new Date(2024, 0, 1),
+        maxDate: new Date(2024, 0, 31),
+      });
+
+      const prev = calendarInstance.shadowRoot?.querySelector<
+        HTMLButtonElement
+      >('.datedreamer__calendar_prev');
+      const next = calendarInstance.shadowRoot?.querySelector<
+        HTMLButtonElement
+      >('.datedreamer__calendar_next');
+
+      expect(prev?.disabled).toBe(true);
+      expect(next?.disabled).toBe(true);
+
+      calendarInstance.goToPrevMonth();
+      expect(calendarInstance.displayedMonthDate.getMonth()).toBe(0);
+      calendarInstance.goToNextMonth();
+      expect(calendarInstance.displayedMonthDate.getMonth()).toBe(0);
+    });
+
+    test('isDateSelectable should reflect all configured constraints', () => {
+      const calendarInstance = new calendar({
+        element: '#test-calendar',
+        selectedDate: new Date(2024, 0, 15),
+        minDate: new Date(2024, 0, 10),
+        maxDate: new Date(2024, 0, 20),
+        disabledDates: [new Date(2024, 0, 15)],
+      });
+
+      expect(calendarInstance.isDateSelectable(new Date(2024, 0, 9))).toBe(
+        false
+      );
+      expect(calendarInstance.isDateSelectable(new Date(2024, 0, 10))).toBe(
+        true
+      );
+      expect(calendarInstance.isDateSelectable(new Date(2024, 0, 15))).toBe(
+        false
+      );
+      expect(calendarInstance.isDateSelectable(new Date(2024, 0, 21))).toBe(
+        false
+      );
+    });
+  });
+
 });

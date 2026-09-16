@@ -22,6 +22,12 @@ export interface ICalendarOptions {
   darkMode?: boolean | undefined;
   darkModeAuto?: boolean | undefined;
   hideOtherMonthDays?: boolean | undefined;
+  minDate?: Date | string | undefined;
+  maxDate?: Date | string | undefined;
+  disabledDates?:
+    | Array<Date | string>
+    | ((date: Date) => boolean)
+    | undefined;
   rangeMode?: boolean | undefined;
   connector?: CalendarConnector | undefined;
   onChange?: ((event: CustomEvent) => void) | undefined;

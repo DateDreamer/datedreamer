@@ -113,6 +113,39 @@ Use this if you want a standalone calendar that comes with an input filled and a
     
     **Note**: The calendar will listen for system preference changes and update automatically when the user changes their system's dark mode setting.
 
+* `minDate`: The earliest date that can be selected, inclusive. Can be a Date object or a string (the `format` option is used to parse strings). Days before this date are disabled, and the previous navigation button is disabled when the displayed month has no selectable days.
+    ```javascript
+        new datedreamer.calendar({
+            ...,
+            minDate: new Date(2024, 0, 1)
+        })
+    ```
+
+* `maxDate`: The latest date that can be selected, inclusive. Can be a Date object or a string (the `format` option is used to parse strings). Days after this date are disabled, and the next navigation button is disabled when the displayed month has no selectable days.
+    ```javascript
+        new datedreamer.calendar({
+            ...,
+            maxDate: '31/12/2024',
+            format: 'DD/MM/YYYY'
+        })
+    ```
+
+* `disabledDates`: Disables specific dates. Can be an array of Date objects or strings (the `format` option is used to parse strings), or a predicate function that receives the date and returns `true` for dates that should be disabled.
+    ```javascript
+        // Disable specific dates
+        new datedreamer.calendar({
+            ...,
+            disabledDates: [new Date(2024, 0, 15), '16/01/2024'],
+            format: 'DD/MM/YYYY'
+        })
+
+        // Disable all Saturdays and Sundays
+        new datedreamer.calendar({
+            ...,
+            disabledDates: (date) => date.getDay() === 0 || date.getDay() === 6
+        })
+    ```
+
 * `styles`: Use this property to pass css styles that will be passed into the components style tag.
     ```javascript
         new datedreamer.calendar({
@@ -148,6 +181,12 @@ const monthName = calendar.getDisplayMonthName(); // "January", "February", etc.
 
 // Check if a date is selected
 const isJan15Selected = calendar.isSelected(new Date(2024, 0, 15)); // boolean
+
+// Check if a date is selectable given min/max and disabledDates constraints
+const isSelectable = calendar.isDateSelectable(new Date(2024, 0, 15)); // boolean
+
+// Check if a date is disabled via the disabledDates option
+const isDisabled = calendar.isDisabledDate(new Date(2024, 0, 15)); // boolean
 ```
 
 ### Control Methods

@@ -23,6 +23,9 @@ export function generateHeader(context: calendar): void {
       `Previous ${monthName} ${context.displayedMonthDate.getFullYear()}`
     );
     prevButton.setAttribute('role', 'button');
+    if (context.isPrevNavBlocked()) {
+      prevButton.disabled = true;
+    }
     prevButton.addEventListener('click', () => context.goToPrevMonth());
     context.headerElement?.append(prevButton);
   }
@@ -46,6 +49,9 @@ export function generateHeader(context: calendar): void {
       'aria-label',
       `Next ${monthName} ${context.displayedMonthDate.getFullYear()}`
     );
+    if (context.isNextNavBlocked()) {
+      nextButton.disabled = true;
+    }
     nextButton.setAttribute('role', 'button');
     nextButton.addEventListener('click', () => context.goToNextMonth());
     context.headerElement?.append(nextButton);
@@ -148,7 +154,14 @@ export function generateDays(
       button.innerText = (i - daysToSkipBefore).toString();
       button.setAttribute('type', 'button');
 
-      if (context.rangeMode) {
+      const dayDate = new Date(year, month, i - daysToSkipBefore);
+      const selectable = context.isDateSelectable(dayDate);
+      if (!selectable) {
+        button.disabled = true;
+        day.classList.add('disabled');
+      }
+
+      if (selectable && context.rangeMode) {
         if (
           context.displayedMonthDate.getMonth() ==
             context.connector?.startDate?.getMonth() &&

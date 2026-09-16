@@ -55,6 +55,14 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
   darkModeAuto: boolean | undefined = false;
   hideOtherMonthDays: boolean | undefined = false;
   rangeMode: boolean | undefined;
+  minDate: Date | undefined = undefined;
+  maxDate: Date | undefined = undefined;
+  disabledDates:
+    | Array<Date | string>
+    | ((date: Date) => boolean)
+    | undefined = undefined;
+
+  private disabledDateSet: Set<number> | undefined = undefined;
 
   connector: CalendarConnector | undefined;
 
@@ -90,6 +98,9 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
    * @param options.darkMode - Whether to enable dark mode styling
    * @param options.darkModeAuto - Whether to automatically detect user's system preference for dark mode
    * @param options.hideOtherMonthDays - Whether to hide days from other months
+   * @param options.minDate - Earliest selectable date; days before it are disabled. Accepts a Date or a string parsed with `format`.
+   * @param options.maxDate - Latest selectable date; days after it are disabled. Accepts a Date or a string parsed with `format`.
+   * @param options.disabledDates - Dates that cannot be selected, as an array of Date/string values or a predicate receiving the day being checked.
    * @param options.rangeMode - Whether to enable range selection mode
    * @param options.connector - Calendar connector for linking multiple calendars
    * @param options.onChange - Callback function triggered when date changes
@@ -161,6 +172,20 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
     if (options.hideOtherMonthDays) {
       this.hideOtherMonthDays = options.hideOtherMonthDays;
+    }
+
+    this.minDate = this.normalizeDay(options.minDate, options.format);
+    this.maxDate = this.normalizeDay(options.maxDate, options.format);
+
+    if (options.disabledDates) {
+      this.disabledDates = options.disabledDates;
+      if (Array.isArray(options.disabledDates)) {
+        this.disabledDateSet = new Set(
+          options.disabledDates
+            .map(value => this.normalizeDay(value, options.format)?.getTime())
+            .filter((value): value is number => value !== undefined)
+        );
+      }
     }
 
     if (typeof options.selectedDate == 'string') {
@@ -393,6 +418,13 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
 
     this.displayedMonthDate = this.selectedDate;
 
+    const violation = this.constraintViolationMessage(this.selectedDate);
+    if (violation) {
+      this.errors.push({ type: 'selection-error', message: violation });
+      generateErrors(this);
+      return;
+    }
+
     this.rebuildCalendar();
 
     this.dateChangedCallback(this.selectedDate);
@@ -532,6 +564,110 @@ class DateDreamerCalendar extends HTMLElement implements ICalendarOptions {
     }
 
     return date >= range.startDate && date <= range.endDate;
+  }
+
+  // ============================================================================
+  // DATE CONSTRAINTS - min/max bounds and disabled dates
+  // ============================================================================
+
+  /**
+   * Normalizes a date value to the start of its day, or undefined if invalid.
+   */
+  private normalizeDay(
+    value: Date | string | undefined,
+    format?: string
+  ): Date | undefined {
+    if (value == null) return undefined;
+    const parsed =
+      typeof value === 'string' ? dayjs(value, format).toDate() : new Date(value);
+    if (isNaN(parsed.getTime())) return undefined;
+    return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+  }
+
+  /**
+   * Checks that a date falls within the configured min/max bounds.
+   */
+  private isWithinBounds(date: Date): boolean {
+    const day = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    if (this.minDate && day < this.minDate) return false;
+    if (this.maxDate && day > this.maxDate) return false;
+    return true;
+  }
+
+  /**
+   * Checks whether a date was disabled via the disabledDates option.
+   */
+  isDisabledDate(date: Date): boolean {
+    if (typeof this.disabledDates === 'function') {
+      return this.disabledDates(date);
+    }
+    if (this.disabledDateSet) {
+      const day = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      );
+      return this.disabledDateSet.has(day.getTime());
+    }
+    return false;
+  }
+
+  /**
+   * Checks whether a date can be selected given all configured constraints.
+   */
+  isDateSelectable(date: Date): boolean {
+    return this.isWithinBounds(date) && !this.isDisabledDate(date);
+  }
+
+  /**
+   * Returns a user-facing message if the date violates a constraint, else undefined.
+   */
+  constraintViolationMessage(date: Date): string | undefined {
+    const day = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    if (this.minDate && day < this.minDate) {
+      return 'The selected date is before the minimum allowed date';
+    }
+    if (this.maxDate && day > this.maxDate) {
+      return 'The selected date is after the maximum allowed date';
+    }
+    if (this.isDisabledDate(date)) {
+      return 'The selected date is not available';
+    }
+    return undefined;
+  }
+
+  /**
+   * Checks whether navigating to the previous month would show no selectable days.
+   */
+  isPrevNavBlocked(): boolean {
+    if (!this.minDate) return false;
+    const lastDayOfPrevMonth = new Date(
+      this.displayedMonthDate.getFullYear(),
+      this.displayedMonthDate.getMonth(),
+      0
+    );
+    return lastDayOfPrevMonth < this.minDate;
+  }
+
+  /**
+   * Checks whether navigating to the next month would show no selectable days.
+   */
+  isNextNavBlocked(): boolean {
+    if (!this.maxDate) return false;
+    const firstDayOfNextMonth = new Date(
+      this.displayedMonthDate.getFullYear(),
+      this.displayedMonthDate.getMonth() + 1,
+      1
+    );
+    return firstDayOfNextMonth > this.maxDate;
   }
 
   // ============================================================================

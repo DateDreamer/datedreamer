@@ -19,6 +19,12 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
   iconNext?: string | undefined;
   darkMode?: boolean | undefined;
   darkModeAuto?: boolean | undefined;
+  minDate?: Date | string | undefined;
+  maxDate?: Date | string | undefined;
+  disabledDates?:
+    | Array<Date | string>
+    | ((date: Date) => boolean)
+    | undefined;
   predefinedRanges?: IPredefinedRange[] | undefined;
   onChange?:
     | ((event: CustomEvent<{ startDate: string; endDate: string }>) => void)
@@ -45,6 +51,9 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
     this.theme = options.theme;
     this.darkMode = options.darkMode;
     this.darkModeAuto = options.darkModeAuto;
+    this.minDate = options.minDate;
+    this.maxDate = options.maxDate;
+    this.disabledDates = options.disabledDates;
     this.predefinedRanges = options.predefinedRanges;
 
     if (this.connector) {
@@ -60,6 +69,13 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
    */
   private handlePredefinedRangeClick(range: IPredefinedRange): void {
     const { start, end } = range.getRange();
+
+    if (
+      !this.calendar1?.isDateSelectable(start) ||
+      !this.calendar1?.isDateSelectable(end)
+    ) {
+      return;
+    }
 
     if (this.connector) {
       this.connector.startDate = new Date(start);
@@ -199,6 +215,9 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
       hideOtherMonthDays: true,
       connector: this.connector,
       darkMode: this.darkMode,
+      minDate: this.minDate,
+      maxDate: this.maxDate,
+      disabledDates: this.disabledDates,
       darkModeAuto: this.darkModeAuto,
     });
 
@@ -215,6 +234,9 @@ class DateDreamerRange extends HTMLElement implements IRangeOptions {
       hideOtherMonthDays: true,
       connector: this.connector,
       darkMode: this.darkMode,
+      minDate: this.minDate,
+      maxDate: this.maxDate,
+      disabledDates: this.disabledDates,
       darkModeAuto: this.darkModeAuto,
     });
 

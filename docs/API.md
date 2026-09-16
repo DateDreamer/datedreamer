@@ -50,6 +50,9 @@ const myCalendar = new calendar({
 | `darkMode` | `boolean` | `false` | Whether to enable dark mode styling |
 | `darkModeAuto` | `boolean` | `false` | Whether to automatically detect user's system preference for dark mode |
 | `hideOtherMonthDays` | `boolean` | `false` | Whether to hide days from other months |
+| `minDate` | `Date \| string` | `undefined` | Earliest selectable date (inclusive); days before it are disabled |
+| `maxDate` | `Date \| string` | `undefined` | Latest selectable date (inclusive); days after it are disabled |
+| `disabledDates` | `(Date \| string)[] \| ((date: Date) => boolean)` | `undefined` | Dates to disable, as an array of dates or a predicate function |
 | `rangeMode` | `boolean` | `false` | Whether to enable range selection mode |
 | `connector` | `CalendarConnector` | `undefined` | Calendar connector for linking multiple calendars |
 | `onChange` | `function` | `undefined` | Callback function triggered when date changes |
@@ -82,6 +85,22 @@ Changes the displayed month without changing the selected date.
 
 ```javascript
 myCalendar.setDisplayedMonthDate(new Date('2024-06-01'));
+```
+
+##### `isDateSelectable(date: Date): boolean`
+
+Checks whether the given date can be selected, taking into account the `minDate`, `maxDate`, and `disabledDates` options.
+
+```javascript
+myCalendar.isDateSelectable(new Date('2024-01-15')); // true or false
+```
+
+##### `isDisabledDate(date: Date): boolean`
+
+Checks whether the given date is disabled via the `disabledDates` option.
+
+```javascript
+myCalendar.isDisabledDate(new Date('2024-01-15')); // true or false
 ```
 
 ---
@@ -477,6 +496,9 @@ const rangeCalendar = new range({
 | `hideInputs` | `boolean` | `false` | Whether to hide the input field and today button |
 | `darkMode` | `boolean` | `false` | Whether to enable dark mode styling |
 | `darkModeAuto` | `boolean` | `false` | Whether to automatically detect user's system preference for dark mode |
+| `minDate` | `Date \| string` | `undefined` | Earliest selectable date (inclusive); applied to both calendars |
+| `maxDate` | `Date \| string` | `undefined` | Latest selectable date (inclusive); applied to both calendars |
+| `disabledDates` | `(Date \| string)[] \| ((date: Date) => boolean)` | `undefined` | Dates to disable, as an array of dates or a predicate function; applied to both calendars |
 | `predefinedRanges` | `IPredefinedRange[]` | `undefined` | Array of predefined range buttons to display |
 | `onChange` | `function` | `undefined` | Callback function triggered when date range changes |
 | `onRender` | `function` | `undefined` | Callback function triggered when calendar renders |
