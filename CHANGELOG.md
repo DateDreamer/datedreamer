@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.6.0](https://github.com/DateDreamer/datedreamer/compare/0.5.5...0.6.0) (2026-09-16)
+
+### Features
+
+* add minDate/maxDate bounds and disabledDates constraints ([851ef8d](https://github.com/DateDreamer/datedreamer/commit/851ef8d0ac0a21cca9c2fd1a211fa6de8f88cb9f))
+
 ## [0.5.5](https://github.com/DateDreamer/datedreamer/compare/0.5.4...0.5.5) (2026-09-16)
 
 ### Bug Fixes
