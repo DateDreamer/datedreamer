@@ -44,21 +44,18 @@ jobs:
           # Yarn command
           cmd: build
 
+      - name: Run Tests before Publish
+        run: yarn test
+
       - name: Semantic Versioning
         uses: Borales/actions-yarn@v4.2.0
         with:
           # Yarn command
           cmd: release
 
-      - name: Run Tests before Publish
-        run: yarn test
-
       - name: Publish
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
-      - run: yarn
-      - run: yarn publish
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          yarn publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
