@@ -92,13 +92,17 @@ export function handleDayKeyDown(
       break;
     }
 
-    case 'ArrowUp':
+    case 'ArrowUp': {
       event.preventDefault();
       if (currentDay > 7) {
-        const weekUp = currentDay - 7;
-        const upButton = context.daysElement?.children[
-          weekUp - 1
-        ]?.querySelector('button') as HTMLButtonElement;
+        const dayCells = context.daysElement?.children;
+        const currentIndex =
+          dayCells && target.parentElement
+            ? Array.prototype.indexOf.call(dayCells, target.parentElement)
+            : -1;
+        const upButton = dayCells?.[currentIndex - 7]?.querySelector(
+          'button'
+        ) as HTMLButtonElement | null;
         if (upButton && !upButton.disabled) {
           upButton.focus();
         }
@@ -106,6 +110,7 @@ export function handleDayKeyDown(
         goToPrevMonth(context);
       }
       break;
+    }
 
     case 'ArrowDown': {
       event.preventDefault();
@@ -115,10 +120,14 @@ export function handleDayKeyDown(
         0
       ).getDate();
       if (currentDay + 7 <= daysInCurrentMonth) {
-        const weekDown = currentDay + 7;
-        const downButton = context.daysElement?.children[
-          weekDown - 1
-        ]?.querySelector('button') as HTMLButtonElement;
+        const dayCells = context.daysElement?.children;
+        const currentIndex =
+          dayCells && target.parentElement
+            ? Array.prototype.indexOf.call(dayCells, target.parentElement)
+            : -1;
+        const downButton = dayCells?.[currentIndex + 7]?.querySelector(
+          'button'
+        ) as HTMLButtonElement | null;
         if (downButton && !downButton.disabled) {
           downButton.focus();
         }

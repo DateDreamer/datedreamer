@@ -224,30 +224,26 @@ describe('Calendar Events', () => {
 
     test('should handle ArrowUp navigation within month', () => {
       // Day 15 - 7 = Day 8 (valid for navigation up)
-      const mockUpButton = document.createElement('button');
-      mockUpButton.focus = jest.fn();
-
-      // Create a button with day 15 (this should try to go up to day 8)
-      const day15Button = document.createElement('button');
-      day15Button.innerText = '15';
-
-      // Mock the complex structure properly
-      const mockDaysElement = document.createElement('div');
-      Object.defineProperty(mockDaysElement, 'children', {
-        value: {
-          7: { querySelector: () => mockUpButton },
-          length: 42,
-        },
-      });
-      mockCalendar.daysElement = mockDaysElement;
+      const daysElement = document.createElement('div');
+      const cells: HTMLButtonElement[] = [];
+      for (let i = 0; i < 42; i++) {
+        const cell = document.createElement('div');
+        const btn = document.createElement('button');
+        btn.innerText = String(i + 1);
+        btn.focus = jest.fn();
+        cell.appendChild(btn);
+        daysElement.appendChild(cell);
+        cells.push(btn);
+      }
+      mockCalendar.daysElement = daysElement;
 
       mockEvent = new KeyboardEvent('keydown', { key: 'ArrowUp' });
-      Object.defineProperty(mockEvent, 'target', { value: day15Button });
+      Object.defineProperty(mockEvent, 'target', { value: cells[14] });
       Object.defineProperty(mockEvent, 'preventDefault', { value: jest.fn() });
 
       CalendarEvents.handleDayKeyDown(mockCalendar, mockEvent);
 
-      expect(mockUpButton.focus).toHaveBeenCalled();
+      expect(cells[7].focus).toHaveBeenCalled();
     });
 
     test('should handle ArrowUp on early days to go to previous month', () => {
@@ -270,17 +266,26 @@ describe('Calendar Events', () => {
 
     test('should handle ArrowDown navigation within month', () => {
       // Test with day 15, adding 7 would be day 22 (valid for January)
-      const earlyDayButton = document.createElement('button');
-      earlyDayButton.innerText = '15';
+      const daysElement = document.createElement('div');
+      const cells: HTMLButtonElement[] = [];
+      for (let i = 0; i < 42; i++) {
+        const cell = document.createElement('div');
+        const btn = document.createElement('button');
+        btn.innerText = String(i + 1);
+        btn.focus = jest.fn();
+        cell.appendChild(btn);
+        daysElement.appendChild(cell);
+        cells.push(btn);
+      }
+      mockCalendar.daysElement = daysElement;
 
       mockEvent = new KeyboardEvent('keydown', { key: 'ArrowDown' });
-      Object.defineProperty(mockEvent, 'target', { value: earlyDayButton });
+      Object.defineProperty(mockEvent, 'target', { value: cells[14] });
       Object.defineProperty(mockEvent, 'preventDefault', { value: jest.fn() });
 
-      // Since we can't easily mock the complex DOM structure, let's just verify no error
-      expect(() => {
-        CalendarEvents.handleDayKeyDown(mockCalendar, mockEvent);
-      }).not.toThrow();
+      CalendarEvents.handleDayKeyDown(mockCalendar, mockEvent);
+
+      expect(cells[21].focus).toHaveBeenCalled();
     });
 
     test('should handle ArrowDown on late days to go to next month', () => {

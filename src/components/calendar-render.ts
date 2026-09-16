@@ -18,7 +18,10 @@ export function generateHeader(context: calendar): void {
     const prevButton = document.createElement('button');
     prevButton.classList.add('datedreamer__calendar_prev');
     prevButton.innerHTML = context.iconPrev ? context.iconPrev : leftChevron;
-    prevButton.setAttribute('aria-label', `Previous ${monthName} ${context.displayedMonthDate.getFullYear()}`);
+    prevButton.setAttribute(
+      'aria-label',
+      `Previous ${monthName} ${context.displayedMonthDate.getFullYear()}`
+    );
     prevButton.setAttribute('role', 'button');
     prevButton.addEventListener('click', () => context.goToPrevMonth());
     context.headerElement?.append(prevButton);
@@ -27,7 +30,10 @@ export function generateHeader(context: calendar): void {
   // Title
   const title = document.createElement('span');
   title.classList.add('datedreamer__calendar_title');
-  title.setAttribute('aria-label', `${monthName} ${context.displayedMonthDate.getFullYear()}`);
+  title.setAttribute(
+    'aria-label',
+    `${monthName} ${context.displayedMonthDate.getFullYear()}`
+  );
   title.innerText = `${monthName} ${context.displayedMonthDate.getFullYear()}`;
   context.headerElement?.append(title);
 
@@ -36,7 +42,10 @@ export function generateHeader(context: calendar): void {
     const nextButton = document.createElement('button');
     nextButton.classList.add('datedreamer__calendar_next');
     nextButton.innerHTML = context.iconNext ? context.iconNext : rightChevron;
-    nextButton.setAttribute('aria-label', `Next ${monthName} ${context.displayedMonthDate.getFullYear()}`);
+    nextButton.setAttribute(
+      'aria-label',
+      `Next ${monthName} ${context.displayedMonthDate.getFullYear()}`
+    );
     nextButton.setAttribute('role', 'button');
     nextButton.addEventListener('click', () => context.goToNextMonth());
     context.headerElement?.append(nextButton);
@@ -141,35 +150,29 @@ export function generateDays(
 
       if (context.rangeMode) {
         if (
-           context.displayedMonthDate.getMonth() ==
-             context.connector?.startDate?.getMonth() &&
-           context.displayedMonthDate.getFullYear() ==
-             context.connector.startDate.getFullYear() &&
-           i - daysToSkipBefore == context.connector.startDate.getDate()
-         ) {
-           day.classList.add('active');
-         }
+          context.displayedMonthDate.getMonth() ==
+            context.connector?.startDate?.getMonth() &&
+          context.displayedMonthDate.getFullYear() ==
+            context.connector.startDate.getFullYear() &&
+          i - daysToSkipBefore == context.connector.startDate.getDate()
+        ) {
+          day.classList.add('active');
+        }
 
-         // Add aria-selected for active state (range mode start date)
-         const startDateBtn = day.querySelector('button');
-         if (startDateBtn) {
-           startDateBtn.setAttribute('aria-selected', 'true');
-         }
-       if (
-           context.displayedMonthDate.getMonth() ==
-             context.connector?.endDate?.getMonth() &&
-           context.displayedMonthDate.getFullYear() ==
-             context.connector.endDate.getFullYear() &&
-           i - daysToSkipBefore == context.connector.endDate.getDate()
-         ) {
-           day.classList.add('active');
-         }
+        // Add aria-selected for active state (range mode start date)
+        button.setAttribute('aria-selected', 'true');
+        if (
+          context.displayedMonthDate.getMonth() ==
+            context.connector?.endDate?.getMonth() &&
+          context.displayedMonthDate.getFullYear() ==
+            context.connector.endDate.getFullYear() &&
+          i - daysToSkipBefore == context.connector.endDate.getDate()
+        ) {
+          day.classList.add('active');
+        }
 
-         // Add aria-selected for active state (range mode end date)
-         const endDateBtn = day.querySelector('button');
-         if (endDateBtn) {
-           endDateBtn.setAttribute('aria-selected', 'true');
-         }
+        // Add aria-selected for active state (range mode end date)
+        button.setAttribute('aria-selected', 'true');
         const selectedDate = new Date(context.displayedMonthDate);
         selectedDate.setDate(i - daysToSkipBefore);
         if (context.connector?.startDate && context.connector.endDate) {
@@ -207,10 +210,7 @@ export function generateDays(
         ) {
           day.classList.add('active');
           // Add aria-selected for the currently selected date
-          const selectedBtn = day.querySelector('button');
-          if (selectedBtn) {
-            selectedBtn.setAttribute('aria-selected', 'true');
-          }
+          button.setAttribute('aria-selected', 'true');
         }
       }
       day.append(button);

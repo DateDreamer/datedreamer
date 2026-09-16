@@ -12,18 +12,17 @@ export namespace Utils {
   }
 
   /** Format a date using DayJS format string */
-  export function formatDate(
-    date: Date,
-    format?: string
-  ): string {
+  export function formatDate(date: Date, format?: string): string {
     return dayjs(date).format(format);
   }
 
   /** Check if two dates represent the same day */
   export function isSameDay(a: Date, b: Date): boolean {
-    return a.getFullYear() === b.getFullYear() &&
-           a.getMonth() === b.getMonth() &&
-           a.getDate() === b.getDate();
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
   }
 
   /** Add days to a date */
@@ -42,10 +41,14 @@ export namespace Utils {
   /** Get ISO week number */
   export function getWeekNumber(date: Date): number {
     const d = new Date(date);
+    // The Thursday of the current ISO week determines its week number.
     d.setDate(d.getDate() + 4 - (d.getDay() || 7));
     const yearStart = new Date(d.getFullYear(), 0, 1);
-    const weekNo = Math.ceil(((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(yearStart.getFullYear(), 0, 0)) / 86400000 + 1) / 7);
-    return weekNo;
+    const dayOfYear =
+      (Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) -
+        Date.UTC(yearStart.getFullYear(), 0, 0)) /
+      86400000;
+    return Math.floor((dayOfYear - 1) / 7) + 1;
   }
 
   /** Get week day name */
