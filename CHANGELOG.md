@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.5](https://github.com/DateDreamer/datedreamer/compare/0.5.4...0.5.5) (2026-09-16)
+
+### Bug Fixes
+
+* correct ISO week number calculation and stabilize tests after dependency updates ([4e93369](https://github.com/DateDreamer/datedreamer/commit/4e933693d9a493b50920bf4375c640de8fb1d185))
+
 ## [0.5.4](https://github.com/DateDreamer/datedreamer/compare/0.5.3...0.5.4) (2026-09-14)
 
 ## [0.5.3](https://github.com/DateDreamer/datedreamer/compare/0.5.2...0.5.3) (2026-09-14)
