@@ -54,7 +54,7 @@
     "npm-check-updates": "^23.1.0",
     "prettier": "^3.9.9",
     "release-it": "^21.1.0",
-    "sass": "^1.104.1",
+    "sass": "^1.105.1",
     "sass-loader": "^17.0.1",
     "sockjs": "0.3.24",
     "style-loader": "^4.0.0",
